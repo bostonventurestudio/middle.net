@@ -1030,3 +1030,13 @@ input[type=submit] {
     margin: 0;
   }
 }
+
+.map-location {
+  height: 500px;
+  margin-bottom: 20px;
+}
+
+/*.map-location div:first-child {*/
+/*  height: 500px !important;*/
+/*  position: relative;*/
+/*}*/
