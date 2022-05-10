@@ -9,7 +9,7 @@ export const LinkForm = props => {
                     <span>middle.net/5j9ioJ</span>
                 </div>
                 <div className="copy-location">
-                    <a href="#">
+                    <a href="/">
                         <div className="icon-holder">
                             <i className="icon-copy"/>
                         </div>

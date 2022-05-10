@@ -32,7 +32,7 @@ export const Location = props => {
                     </div>
                 </div>
                 <div className="directions-block">
-                    <a href="#">
+                    <a href="/">
                         <div className="icon-holder">
                             <i className="icon-directions"/>
                         </div>
