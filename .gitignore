@@ -23,3 +23,8 @@ yarn-debug.log*
 yarn-error.log*
 
 .idea/
+*.pyc
+venv
+local.py
+__MACOSX
+/designs/css
