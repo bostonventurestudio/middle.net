@@ -10,14 +10,7 @@ Geocode.enableDebug();
 export class MapContainer extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            address: '',
-
-            position: {
-                lat: this.props.center.lat,
-                lng: this.props.center.lng
-            },
-        };
+        this.state = this.props.state;
     }
 
     handleChange = address => {
