@@ -1,0 +1,65 @@
+{% extends 'oscar/dashboard/offers/step_form.html' %}
+
+
+{% load i18n %}
+
+{% block summary %}
+    {% include 'oscar/dashboard/offers/summary.html' %}
+{% endblock %}
+
+{% block progress %}
+    {% include 'oscar/dashboard/offers/progress.html' with step=3 %}
+{% endblock %}
+
+{% block form_fields %}
+    <span class="error-block">{{ form.non_field_errors }}</span>
+
+    {% if form.fields.custom_condition.choices %}
+    <h4>{% trans "Build a new condition" %}</h4>
+    {% endif %}
+    {% include "oscar/dashboard/partials/form_field.html" with field=form.range %}
+    <p>
+        {% url 'dashboard:range-list' as range_list_url %}
+        {% blocktrans %}
+        Ranges can be created and edited from within the <a href="{{ range_list_url }}" target="_blank">range dashboard</a>.
+        {% endblocktrans %}
+    </p>
+    {% include "oscar/dashboard/partials/form_field.html" with field=form.type %}
+    {% include "oscar/dashboard/partials/form_field.html" with field=form.value %}
+    {% include "oscar/dashboard/partials/form_field.html" with field=form.previous_visits %}
+
+    {% if form.fields.custom_condition.choices %}
+        <h4>{% trans "...or choose a pre-defined one" %}</h4>
+        {% include "oscar/dashboard/partials/form_field.html" with field=form.custom_condition %}
+    {% endif %}
+{% endblock %}
+
+{% block submittext %}{% trans "Continue to step 4" %}{% endblock %}
+
+{% block scripts %}
+    {{ block.super }}
+    <script>
+        $(document).ready(function() {
+            // Block: update value label and show/hide previous visits field
+            (function() {
+                const label = $("label[for='id_value']");
+                const typeElem = $("select#id_type");
+                const previousVisits = $("label[for='id_previous_visits']").parent();
+    
+                const updateLabel = offerType => {
+                    if (offerType == "Frequency") {
+                        label.text(" Number of days ");
+                        previousVisits.show();
+                    } else {
+                        label.text(" Value ");
+                        previousVisits.hide();
+                    }
+                }
+                
+                updateLabel(typeElem[0].value)
+                typeElem.change(e => updateLabel(e.currentTarget.value));
+            })();
+            // End block
+        });
+    </script>
+{% endblock %}

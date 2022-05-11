@@ -1,0 +1,35 @@
+{% extends "oscar/layout.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans 'Login' %} | {{ block.super }}
+{% endblock %}
+
+{% block breadcrumbs %}
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ homepage_url }}">{% trans 'Home' %}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{% trans 'Login' %}</li>
+        </ol>
+    </nav>
+{% endblock %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="offset-md-3 col-sm-6 login_form">
+            <form id="login_form" action="{{ request.get_full_path }}" method="post" class="card card-body bg-light" >
+                <h2>{% trans 'Log In' %}</h2>
+                {% csrf_token %}
+                {% include "oscar/partials/form_fields.html" with form=login_form %}
+                <p><a href="{% url 'password-reset' %}">{% trans "I've forgotten my password" %}</a></p>
+                <button name="login_submit" type="submit" value="Log In" class="btn btn-lg btn-primary" data-loading-text="{% trans "Logging in..." %}">{% trans 'Log In' %}</button>
+            </form>
+        </div>
+    </div>
+
+{% endblock content %}

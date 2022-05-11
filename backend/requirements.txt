@@ -1,0 +1,7 @@
+asgiref==3.5.0
+Django==3.2
+djangorestframework==3.12.4
+mysqlclient==1.4.6
+pytz==2022.1
+sqlparse==0.4.2
+typing_extensions==4.2.0
