@@ -57,13 +57,13 @@ class Form extends Component {
 
         var url = window.location.pathname;
         var slug = url.substring(url.lastIndexOf('/') + 1);
-        const data = JSON.stringify({
+        const data = {
             name: this.state.name,
             address: this.state.address,
             latitude: this.state.position.lat.toFixed(5),
             longitude: this.state.position.lng.toFixed(5),
             slug: slug
-        });
+        };
         try {
             const response = await saveLocation(data);
             const locations = response.data;

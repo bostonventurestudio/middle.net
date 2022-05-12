@@ -2,9 +2,9 @@ import React, {Component} from 'react';
 import {GoogleApiWrapper, Map, Marker} from 'google-maps-react';
 import Geocode from "react-geocode";
 import PlacesAutocomplete from 'react-places-autocomplete';
-import {GoogleMapsAPI} from '../../config';
+import {GoogleAPIKey} from '../../config';
 
-Geocode.setApiKey(GoogleMapsAPI);
+Geocode.setApiKey(GoogleAPIKey);
 Geocode.enableDebug();
 
 class LocationSearch extends Component {
@@ -60,5 +60,5 @@ class LocationSearch extends Component {
 }
 
 export default GoogleApiWrapper({
-    apiKey: (GoogleMapsAPI)
+    apiKey: (GoogleAPIKey)
 })(LocationSearch)

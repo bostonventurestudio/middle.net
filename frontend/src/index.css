@@ -1047,3 +1047,7 @@ input[type=submit] {
   max-height: 500px !important;
   position: relative;
 }
+
+.not-found {
+  text-align: center;
+}
