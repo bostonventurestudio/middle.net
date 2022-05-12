@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import Form from "../form/Form";
 
 
 export class NotFound extends Component {

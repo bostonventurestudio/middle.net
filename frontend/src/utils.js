@@ -1,6 +1,6 @@
 import axios from "axios";
 import {GoogleAPIKey, GooglePlacesAPIBaseURL, LocationAPIURL, NearbyPlacesAPIURL} from "./config";
-import {KEYWORD, RADIUS, TYPE} from "./constants";
+import {RADIUS, TYPE} from "./constants";
 
 export function getLocations(slug) {
     return axios.get(LocationAPIURL + slug);
@@ -28,4 +28,9 @@ export function getNearbyPlaces(location) {
         url: `${GooglePlacesAPIBaseURL}?location=${location}&radius=${RADIUS}&type=${TYPE}&rank_by=${RADIUS}&key=${GoogleAPIKey}`,
     }
     return axios.post(NearbyPlacesAPIURL, data);
+}
+
+export function goToAddLocationPage(event) {
+    event.preventDefault();
+    window.location.href = `/${window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1)}`;
 }

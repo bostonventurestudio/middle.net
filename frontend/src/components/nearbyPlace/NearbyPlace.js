@@ -35,7 +35,7 @@ class NearbyPlace extends Component {
                         </div>
                     </div>
                     <div className="directions-block">
-                        <a href={GoogleMapDirectionLink+`?api=1&destination=${this.props.place.geometry.location.lat},${this.props.place.geometry.location.lng}`} target={"_blank"}>
+                        <a href={GoogleMapDirectionLink+`?api=1&destination=${this.props.place.geometry.location.lat},${this.props.place.geometry.location.lng}`}>
                             <div className="icon-holder">
                                 <i className="icon-directions"/>
                             </div>

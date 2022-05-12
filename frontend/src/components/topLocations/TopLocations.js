@@ -61,7 +61,6 @@ export class TopLocations extends Component {
             try {
                 response = await getNearbyPlaces(center.lat + " " + center.lng);
                 this.setState({nearbyPlaces: response.data});
-                console.log(response.data);
             } catch (e) {
                 console.log(e);
             }
@@ -70,7 +69,7 @@ export class TopLocations extends Component {
     }
 
     render() {
-        if(!this.state.canRender){
+        if (!this.state.canRender) {
             return null;
         }
         return (
@@ -84,7 +83,7 @@ export class TopLocations extends Component {
                                 <div id="list-view" className="b-tab active">
                                     <div className="list-view-block">
                                         {this.state.nearbyPlaces.map((place, index) => {
-                                            return <NearbyPlace place={place} index={index + 1}/>
+                                            return <NearbyPlace place={place} index={index + 1} key={index}/>
                                         })}
                                     </div>
                                 </div>

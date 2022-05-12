@@ -1,8 +1,7 @@
 import React from 'react';
-import {copyToClipboard} from "../../utils";
+import {copyToClipboard, goToAddLocationPage} from "../../utils";
 
 export const LinkForm = props => {
-
 
     return (
         <form className="form">
@@ -22,6 +21,7 @@ export const LinkForm = props => {
                 </div>
             </div>
             <p>Share this URL with a friend to find places to meet in the middle.</p>
+            <button onClick={(event) => {goToAddLocationPage(event, window.location.pathname)}} type="submit" className="btn-primary">Add another location <i className="icon-right-2"/></button>
         </form>
     );
 };
