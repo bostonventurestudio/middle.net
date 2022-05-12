@@ -3,7 +3,7 @@ import {LinkForm} from "../linkForm/LinkForm";
 import {Location} from "../location/Location";
 import {Map} from "../map/Map";
 
-export class NewUrl extends Component {
+export class TopLocations extends Component {
 
     constructor(props) {
         super(props);
@@ -32,7 +32,7 @@ export class NewUrl extends Component {
             <main id="main">
                 <div className="content-block">
                     <div className="container">
-                        <LinkForm/>
+                        <LinkForm textToCopy={window.location.href}/>
                         <div className="search-results-block">
                             <p>Top places in the middle:</p>
                             <div className="tabset">

@@ -1,4 +1,4 @@
 export {Home} from './home/Home';
-export {NewUrl} from './newUrl/NewUrl';
+export {TopLocations} from './topLocations/TopLocations';
 export {Header} from './header/Header';
 export {Footer} from './footer/Footer';
