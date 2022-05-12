@@ -10,7 +10,7 @@ logger = getLogger(__name__)
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
-        fields = ["name", "latitude", "longitude", "google_place_id", "slug"]
+        fields = '__all__'
     # name = serializers.CharField(required=True, max_length=200)
     # address = serializers.CharField(required=False)
     # google_place_id = serializers.CharField(required=False)
