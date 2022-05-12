@@ -33,8 +33,8 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    'apps.core',
-    'apps.common',
+    'backend.apps.core',
+    'backend.apps.common',
 ]
 
 SITE_ID = 1

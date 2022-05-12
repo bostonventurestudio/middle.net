@@ -2,7 +2,7 @@ from logging import getLogger
 
 from rest_framework import serializers
 
-from apps.core.models import Location
+from backend.apps.core.models import Location
 
 logger = getLogger(__name__)
 
@@ -49,4 +49,4 @@ class LocationSerializer(serializers.ModelSerializer):
 class LocationModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Location
-        fields = ["name", "latitude","longitude","google_place_id","slug","created_at"]
+        fields = '__all__'

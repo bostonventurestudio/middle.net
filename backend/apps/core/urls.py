@@ -1,6 +1,6 @@
 from django.urls import path, re_path
 
-from apps.core.views import LocationView
+from backend.apps.core.views import LocationView
 
 urlpatterns = [
     path('location/', LocationView.as_view()),
