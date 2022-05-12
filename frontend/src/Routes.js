@@ -7,8 +7,9 @@ export default function Routes() {
         <Router>
             <Header/>
             <Switch>
-                <Route path="/:url" element={<NewUrl/>}/>
                 <Route path="/" element={<Home/>}/>
+                <Route path="/:url" element={<Home/>}/>
+                <Route path="/top-locations/:url" element={<NewUrl/>}/>
             </Switch>
             <Footer/>
         </Router>

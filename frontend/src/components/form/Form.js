@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import axios from 'axios';
-import Map from "../locationSearch/LocationSearch";
-import {APIBaseURL} from "../../config";
+import {saveLocation} from "../../utils";
+import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
+import LocationSearch from "../locationSearch/LocationSearch";
 
 class Form extends Component {
 
@@ -16,35 +16,62 @@ class Form extends Component {
             },
         };
         this.setName = this.setName.bind(this);
-        this.setCurrentPosition = this.setCurrentPosition.bind(this);
+        this.setAddress = this.setAddress.bind(this);
+        this.setPosition = this.setPosition.bind(this);
+        this.handleAddressSelect = this.handleAddressSelect.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    setName(event) {
-        this.setState({name: event.target.value});
+    componentDidMount() {
+        navigator.geolocation.getCurrentPosition(this.setPosition);
+        // todo: Also set current address here by getting from geocode api
     }
 
-    setCurrentPosition(position) {
+    setName(name) {
+        this.setState({name: name});
+    }
+
+    setAddress(address) {
+        this.setState({address: address});
+    }
+
+    setPosition(position) {
         this.setState({position: {lat: position.coords.latitude, lng: position.coords.longitude}});
     }
 
-    componentDidMount() {
-        navigator.geolocation.getCurrentPosition(this.setCurrentPosition);
+    handleAddressSelect(address) {
+        this.setState({address: address});
+        geocodeByAddress(address)
+            .then(results => getLatLng(results[0]))
+            .then(latLng => this.setState({position: latLng}))
+            .catch(error => console.error('Error', error));
     }
 
-    handleSubmit = event => {
+    async handleSubmit(event) {
         event.preventDefault();
+        // todo: Check if address is valid and update lat and lng
+        // geocodeByAddress(address)
+        //     .then(results => getLatLng(results[0]))
+        //     .then(latLng => this.setState({position: latLng}))
+        //     .catch(error => console.error('Error', error));
+
+        var url = window.location.pathname;
+        var slug = url.substring(url.lastIndexOf('/') + 1);
         const data = JSON.stringify({
             name: this.state.name,
-            latitude: this.state.position.lat,
-            longitude: this.state.position.lng,
-            address: this.state.address
-        })
-        axios.post(APIBaseURL, {data})
-            .then(res => {
-                console.log(res);
-                console.log(res.data);
-            })
+            address: this.state.address,
+            latitude: this.state.position.lat.toFixed(5),
+            longitude: this.state.position.lng.toFixed(5),
+            slug: slug
+        });
+        try {
+            const response = await saveLocation(data);
+            const locations = response.data;
+            window.location.href = "/top-locations/" + locations[0].slug;
+
+        } catch (e) {
+            console.log(e);
+        }
     };
 
 
@@ -53,9 +80,11 @@ class Form extends Component {
             <div>
                 <form className="form" onSubmit={this.handleSubmit}>
                     <div className="input-holder">
-                        <input type="text" placeholder="Enter your nickname or initials" value={this.state.name} onChange={this.setName} required/>
+                        <input type="text" placeholder="Enter your nickname or initials" value={this.state.name} onChange={event => {
+                            this.setName(event.target.value)
+                        }} required/>
                     </div>
-                    <Map state={this.state} zoom={16}/>
+                    <LocationSearch address={this.state.address} position={this.state.position} setAddress={this.setAddress} handleAddressSelect={this.handleAddressSelect} zoom={16}/>
                     <button type="submit" className="btn-primary">Middle <i className="icon-right-2"/></button>
                 </form>
             </div>
