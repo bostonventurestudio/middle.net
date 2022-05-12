@@ -72,6 +72,7 @@ export class TopLocations extends Component {
         if (!this.state.canRender) {
             return null;
         }
+        console.log(this.state)
         return (
             <main id="main">
                 <div className="content-block">
@@ -88,7 +89,7 @@ export class TopLocations extends Component {
                                     </div>
                                 </div>
                                 <div id="map-view" className="b-tab">
-                                    <MapView/>
+                                    <MapView center={this.state.center} locations={this.state.locations}/>
                                 </div>
                             </div>
                             <div className="tab-links">
