@@ -3,6 +3,9 @@ import {GoogleAPIKey, GooglePlacesAPIBaseURL, LocationAPIURL, NearbyPlacesAPIURL
 import {RADIUS, TYPE} from "./constants";
 import Geocode from "react-geocode";
 
+Geocode.setApiKey(GoogleAPIKey);
+Geocode.enableDebug();
+
 export function getLocations(slug) {
     return axios.get(LocationAPIURL + slug);
 }

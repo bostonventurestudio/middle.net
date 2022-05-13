@@ -1,7 +1,6 @@
 import React, {Component} from "react";
 import {GoogleApiWrapper, InfoWindow, Map, Marker} from "google-maps-react";
 import {GoogleAPIKey} from "../../config";
-import Geocode from "react-geocode";
 import {getAddressFormLatLng} from "../../utils";
 
 export class MapView extends Component {

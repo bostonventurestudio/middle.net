@@ -1059,7 +1059,7 @@ input[type=submit] {
   max-width: 90%;
   position: absolute;
   z-index: 99;
-  background-color: #9fd1fc;
+  background-color: #e0eef8;
   border-radius: 2px;
 }
 
@@ -1068,4 +1068,5 @@ input[type=submit] {
   border-bottom: 1px solid #5A9AE4;
   position: relative;
   z-index: 10;
+  padding: 0 5px;
 }
