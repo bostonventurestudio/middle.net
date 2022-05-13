@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import {GoogleApiWrapper, InfoWindow, Map, Marker} from 'google-maps-react';
 import Geocode from "react-geocode";
 import PlacesAutocomplete from 'react-places-autocomplete';
-import {GoogleAPIKey} from '../../config';
+
+const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
 
 Geocode.setApiKey(GoogleAPIKey);
 Geocode.enableDebug();

@@ -1,7 +1,8 @@
 import React, {Component} from "react";
 import {GoogleApiWrapper, InfoWindow, Map, Marker} from "google-maps-react";
-import {GoogleAPIKey} from "../../config";
 import {getAddressFormLatLng} from "../../utils";
+
+const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
 
 export class MapView extends Component {
     constructor(props) {

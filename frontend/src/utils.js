@@ -1,7 +1,9 @@
 import axios from "axios";
-import {GoogleAPIKey, GooglePlacesAPIBaseURL, LocationAPIURL, NearbyPlacesAPIURL} from "./config";
+import {GooglePlacesAPIBaseURL, LocationAPIURL, NearbyPlacesAPIURL} from "./config";
 import {RADIUS, TYPE} from "./constants";
 import Geocode from "react-geocode";
+
+const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
 
 Geocode.setApiKey(GoogleAPIKey);
 Geocode.enableDebug();
