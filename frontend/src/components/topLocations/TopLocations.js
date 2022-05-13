@@ -69,7 +69,6 @@ export class TopLocations extends Component {
 
     render() {
         if(!this.state.canRender) return null;
-        console.log(this.state)
         return (
             <main id="main">
                 <div className="content-block">

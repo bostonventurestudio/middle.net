@@ -38,7 +38,6 @@ class Form extends Component {
 
     setName(name) {
         this.setState({name: name});
-        console.log(this.state)
     }
 
     setAddress(address) {
