@@ -4,12 +4,26 @@ import {GoogleAPIKey} from "../../config";
 import {getAddressFormLatLng} from "../../utils";
 
 export class MapView extends Component {
-    state = {
-        activeMarker: {},
-        selectedPlace: {},
-        showingInfoWindow: false,
-        centerAddress: "Center of locations"
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            activeMarker: {},
+            selectedPlace: {},
+            showingInfoWindow: false,
+            centerAddress: "Center of locations",
+            isFullScreen: false
+        };
+        this.onMapClicked = this.onMapClicked.bind(this);
+        this.onMarkerClick = this.onMarkerClick.bind(this);
+        this.onInfoWindowClose = this.onInfoWindowClose.bind(this);
+        this.onFullScreenToggle = this.onFullScreenToggle.bind(this);
+        document.addEventListener('fullscreenchange', this.onFullScreenToggle);
+
+    }
+
+    onFullScreenToggle = (event) => {
+        this.setState({isFullScreen: !this.state.isFullScreen})
+    }
 
     onMarkerClick = (props, marker) =>
         this.setState({
@@ -34,7 +48,7 @@ export class MapView extends Component {
 
     async componentDidMount() {
         try {
-            const response =  await getAddressFormLatLng(this.props.center.lat, this.props.center.lng);
+            const response = await getAddressFormLatLng(this.props.center.lat, this.props.center.lng);
             this.setState({
                 centerAddress: response.results[0].formatted_address
             });
@@ -47,33 +61,31 @@ export class MapView extends Component {
         if (!this.props.loaded) return <div>Loading...</div>;
 
         return (
-            <div className="map-holder">
-                <div className="location-map">
-                    <Map google={this.props.google} onClick={this.onMapClicked} zoom={12} style={{width: "80%", height: "500px", position: "relative"}} initialCenter={this.props.center}>
-                        <Marker position={this.props.center} name={this.state.centerAddress} onClick={this.onMarkerClick}
-                                icon={{
-                                    url: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
-                                    anchor: new this.props.google.maps.Point(16, 16),
-                                    scaledSize: new this.props.google.maps.Size(32, 32)
-                                }}/>
+            <div className={this.state.isFullScreen ? "map-holder-full" : "map-holder"}>
+                <Map google={this.props.google} onClick={this.onMapClicked} zoom={12} style={{width: "80%", height: "500px", position: "relative"}} initialCenter={this.props.center}>
+                    <Marker position={this.props.center} name={this.state.centerAddress} onClick={this.onMarkerClick}
+                            icon={{
+                                url: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
+                                anchor: new this.props.google.maps.Point(16, 16),
+                                scaledSize: new this.props.google.maps.Size(32, 32)
+                            }}/>
 
-                        {this.props.locations.map((location, index) => {
-                            return (
-                                <Marker position={{lat: location.latitude, lng: location.longitude}} name={`${location.name}: ${location.address}`} onClick={this.onMarkerClick}/>
-                            )
-                        })}
+                    {this.props.locations.map((location, index) => {
+                        return (
+                            <Marker position={{lat: location.latitude, lng: location.longitude}} name={`${location.name}: ${location.address}`} onClick={this.onMarkerClick}/>
+                        )
+                    })}
 
-                        <InfoWindow
-                            marker={this.state.activeMarker}
-                            onClose={this.onInfoWindowClose}
-                            visible={this.state.showingInfoWindow}
-                        >
-                            <div>
-                                <h4>{this.state.selectedPlace.name}</h4>
-                            </div>
-                        </InfoWindow>
-                    </Map>
-                </div>
+                    <InfoWindow
+                        marker={this.state.activeMarker}
+                        onClose={this.onInfoWindowClose}
+                        visible={this.state.showingInfoWindow}
+                    >
+                        <div>
+                            <h4>{this.state.selectedPlace.name}</h4>
+                        </div>
+                    </InfoWindow>
+                </Map>
             </div>
         );
     }

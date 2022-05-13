@@ -9,10 +9,23 @@ Geocode.enableDebug();
 
 class LocationSearch extends Component {
 
-    state = {
-        activeMarker: {},
-        showingInfoWindow: false,
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            activeMarker: {},
+            showingInfoWindow: false,
+        };
+        this.onMapClicked = this.onMapClicked.bind(this);
+        this.onMarkerClick = this.onMarkerClick.bind(this);
+        this.onInfoWindowClose = this.onInfoWindowClose.bind(this);
+        this.onFullScreenToggle = this.onFullScreenToggle.bind(this);
+        document.addEventListener('fullscreenchange', this.onFullScreenToggle);
+
+    }
+
+    onFullScreenToggle = (event) => {
+        this.setState({isFullScreen: !this.state.isFullScreen})
+    }
 
     onMarkerClick = (props, marker) =>
         this.setState({
@@ -61,7 +74,7 @@ class LocationSearch extends Component {
                         </div>
                     )}
                 </PlacesAutocomplete>
-                <div className="location-map">
+                <div className={this.state.isFullScreen ? "map-holder-full" : "map-holder"}>
                     <Map
                         google={this.props.google}
                         onClick={this.onMapClicked}

@@ -21,6 +21,11 @@ body {
   margin: 0;
 }
 
+html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
 /* HTML5 display definitions
    ========================================================================== */
 /**
@@ -1038,15 +1043,22 @@ input[type=submit] {
   }
 }
 
-.location-map {
+.map-holder, .map-holder-full {
   height: 500px;
   margin-bottom: 20px;
 }
 
-.location-map div:first-child {
+.map-holder div:first-child {
   max-height: 500px !important;
   position: relative;
 }
+
+.map-holder-full div:first-child {
+  max-height: 100% !important;
+  position: relative;
+}
+
+
 
 .not-found {
   text-align: center;

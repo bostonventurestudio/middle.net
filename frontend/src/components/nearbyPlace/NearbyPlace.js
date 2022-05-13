@@ -11,7 +11,7 @@ class NearbyPlace extends Component {
                     <span className="num">{this.props.index}</span>
                     <div className="img-detail-block">
                         <div className="img-holder">
-                            {this.props.place.photos.length > 0 ? <img src={`${GooglePlaceImageURL}?photoreference=${this.props.place.photos[0].photo_reference}&sensor=false&maxheight=70&maxwidth=60&key=AIzaSyAE6enNZ1pwRa0RVk6dZqqXh9HTkijOgX0`} alt=""/> :
+                            {this.props.place.photos && this.props.place.photos.length > 0 ? <img src={`${GooglePlaceImageURL}?photoreference=${this.props.place.photos[0].photo_reference}&sensor=false&maxheight=70&maxwidth=60&key=AIzaSyAE6enNZ1pwRa0RVk6dZqqXh9HTkijOgX0`} alt=""/> :
                             <img src={image} alt=""/>}
                         </div>
                         <div className="detail-block">
