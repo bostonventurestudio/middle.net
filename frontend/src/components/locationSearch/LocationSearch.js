@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {GoogleApiWrapper, Map, Marker} from 'google-maps-react';
+import {GoogleApiWrapper, InfoWindow, Map, Marker} from 'google-maps-react';
 import Geocode from "react-geocode";
 import PlacesAutocomplete from 'react-places-autocomplete';
 import {GoogleAPIKey} from '../../config';
@@ -8,6 +8,31 @@ Geocode.setApiKey(GoogleAPIKey);
 Geocode.enableDebug();
 
 class LocationSearch extends Component {
+
+    state = {
+        activeMarker: {},
+        showingInfoWindow: false,
+    };
+
+    onMarkerClick = (props, marker) =>
+        this.setState({
+            activeMarker: marker,
+            showingInfoWindow: true
+        });
+
+    onInfoWindowClose = () =>
+        this.setState({
+            activeMarker: null,
+            showingInfoWindow: false
+        });
+
+    onMapClicked = () => {
+        if (this.state.showingInfoWindow)
+            this.setState({
+                activeMarker: null,
+                showingInfoWindow: false
+            });
+    };
 
     render() {
         return (
@@ -18,18 +43,20 @@ class LocationSearch extends Component {
                             <div className="input-holder">
                                 <input{...getInputProps({placeholder: "Enter your location", className: "location-search-input",})} required/>
                             </div>
-                            <div className="autocomplete-dropdown-container">
-                                {loading && <div>Loading...</div>}
-                                {suggestions.map(suggestion => {
-                                    const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
-                                    // inline style for demonstration purpose
-                                    const style = suggestion.active ? {backgroundColor: "#fafafa", cursor: "pointer"} : {backgroundColor: '#ffffff', cursor: 'pointer'};
-                                    return (
-                                        <div {...getSuggestionItemProps(suggestion, {className, style,})}>
-                                            <span>{suggestion.description}</span>
-                                        </div>
-                                    );
-                                })}
+                            <div style={{position: "relative"}}>
+                                <div className="autocomplete-dropdown-container">
+                                    {loading && <div class="suggestion-item">Loading...</div>}
+                                    {suggestions.map(suggestion => {
+                                        const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
+                                        // inline style for demonstration purpose
+                                        const style = suggestion.active ? {backgroundColor: "#fafafa", cursor: "pointer"} : {backgroundColor: '#ffffff', cursor: 'pointer'};
+                                        return (
+                                            <div {...getSuggestionItemProps(suggestion, {className, style,})}>
+                                                <span>{suggestion.description}</span>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
                             </div>
                         </div>
                     )}
@@ -37,6 +64,7 @@ class LocationSearch extends Component {
                 <div className="location-map">
                     <Map
                         google={this.props.google}
+                        onClick={this.onMapClicked}
                         initialCenter={{
                             lat: this.props.position.lat,
                             lng: this.props.position.lng
@@ -51,7 +79,17 @@ class LocationSearch extends Component {
                                 lat: this.props.position.lat,
                                 lng: this.props.position.lng
                             }}
-                            name={"Selected Location"}/>
+                            name={this.props.address}
+                            onClick={this.onMarkerClick}/>
+                        <InfoWindow
+                            marker={this.state.activeMarker}
+                            onClose={this.onInfoWindowClose}
+                            visible={this.state.showingInfoWindow}
+                        >
+                            <div>
+                                <h4>{this.props.address}</h4>
+                            </div>
+                        </InfoWindow>
                     </Map>
                 </div>
             </div>

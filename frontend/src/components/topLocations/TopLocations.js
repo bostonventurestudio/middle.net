@@ -35,7 +35,6 @@ export class TopLocations extends Component {
         event.target.classList.add('active');
         var id = event.currentTarget.getAttribute('data-tab');
         document.getElementById(id).classList.add('active');
-        console.log(this.state);
     }
 
     async componentWillMount() {
@@ -69,9 +68,7 @@ export class TopLocations extends Component {
     }
 
     render() {
-        if (!this.state.canRender) {
-            return null;
-        }
+        if(!this.state.canRender) return null;
         console.log(this.state)
         return (
             <main id="main">
@@ -83,9 +80,9 @@ export class TopLocations extends Component {
                             <div className="tabset">
                                 <div id="list-view" className="b-tab active">
                                     <div className="list-view-block">
-                                        {this.state.nearbyPlaces.map((place, index) => {
+                                        {this.state.nearbyPlaces.length > 0 ? this.state.nearbyPlaces.map((place, index) => {
                                             return <NearbyPlace place={place} index={index + 1} key={index}/>
-                                        })}
+                                        }) : <h4>No places available</h4>}
                                     </div>
                                 </div>
                                 <div id="map-view" className="b-tab">

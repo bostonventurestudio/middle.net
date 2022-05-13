@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {saveLocation} from "../../utils";
+import {getAddressFormLatLng, saveLocation} from "../../utils";
 import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
 import LocationSearch from "../locationSearch/LocationSearch";
 
@@ -22,17 +22,33 @@ class Form extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    componentDidMount() {
-        navigator.geolocation.getCurrentPosition(this.setPosition);
-        // todo: Also set current address here by getting from geocode api
+    async componentDidMount() {
+        await navigator.geolocation.getCurrentPosition(async (position) => {
+            this.setPosition(position);
+            try {
+                const response = await getAddressFormLatLng(position.coords.latitude, position.coords.longitude);
+                this.setState({
+                    address: response.results[0].formatted_address
+                });
+            } catch (e) {
+                console.log(e);
+            }
+        });
     }
 
     setName(name) {
         this.setState({name: name});
+        console.log(this.state)
     }
 
     setAddress(address) {
-        this.setState({address: address});
+        this.setState({
+            address: address,
+            position: {
+                lat: 0,
+                lng: 0
+            },
+        });
     }
 
     setPosition(position) {
@@ -49,11 +65,10 @@ class Form extends Component {
 
     async handleSubmit(event) {
         event.preventDefault();
-        // todo: Check if address is valid and update lat and lng
-        // geocodeByAddress(address)
-        //     .then(results => getLatLng(results[0]))
-        //     .then(latLng => this.setState({position: latLng}))
-        //     .catch(error => console.error('Error', error));
+        if (this.state.position.lat === 0 && this.state.position.lng === 0) {
+             alert('Invalid Location: Please enter correct location.');
+             return;
+        }
 
         var url = window.location.pathname;
         var slug = url.substring(url.lastIndexOf('/') + 1);

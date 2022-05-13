@@ -1,6 +1,7 @@
 import axios from "axios";
 import {GoogleAPIKey, GooglePlacesAPIBaseURL, LocationAPIURL, NearbyPlacesAPIURL} from "./config";
 import {RADIUS, TYPE} from "./constants";
+import Geocode from "react-geocode";
 
 export function getLocations(slug) {
     return axios.get(LocationAPIURL + slug);
@@ -33,4 +34,8 @@ export function getNearbyPlaces(location) {
 export function goToAddLocationPage(event) {
     event.preventDefault();
     window.location.href = `/${window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1)}`;
+}
+
+export function getAddressFormLatLng(lat, lng) {
+    return Geocode.fromLatLng(lat, lng);
 }

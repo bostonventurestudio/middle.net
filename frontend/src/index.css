@@ -1051,3 +1051,21 @@ input[type=submit] {
 .not-found {
   text-align: center;
 }
+
+.autocomplete-dropdown-container{
+  margin-top: -10px;
+  margin-left: 10px;
+  font-size: 18px;
+  max-width: 90%;
+  position: absolute;
+  z-index: 99;
+  background-color: #9fd1fc;
+  border-radius: 2px;
+}
+
+.autocomplete-dropdown-container .suggestion-item {
+  background: transparent !important;
+  border-bottom: 1px solid #5A9AE4;
+  position: relative;
+  z-index: 10;
+}

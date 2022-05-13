@@ -1,12 +1,15 @@
 import React, {Component} from "react";
 import {GoogleApiWrapper, InfoWindow, Map, Marker} from "google-maps-react";
 import {GoogleAPIKey} from "../../config";
+import Geocode from "react-geocode";
+import {getAddressFormLatLng} from "../../utils";
 
 export class MapView extends Component {
     state = {
         activeMarker: {},
         selectedPlace: {},
-        showingInfoWindow: false
+        showingInfoWindow: false,
+        centerAddress: "Center of locations"
     };
 
     onMarkerClick = (props, marker) =>
@@ -30,6 +33,17 @@ export class MapView extends Component {
             });
     };
 
+    async componentDidMount() {
+        try {
+            const response =  await getAddressFormLatLng(this.props.center.lat, this.props.center.lng);
+            this.setState({
+                centerAddress: response.results[0].formatted_address
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     render() {
         if (!this.props.loaded) return <div>Loading...</div>;
 
@@ -37,7 +51,7 @@ export class MapView extends Component {
             <div className="map-holder">
                 <div className="location-map">
                     <Map google={this.props.google} onClick={this.onMapClicked} zoom={12} style={{width: "80%", height: "500px", position: "relative"}} initialCenter={this.props.center}>
-                        <Marker position={this.props.center} name="Center" onClick={this.onMarkerClick}
+                        <Marker position={this.props.center} name={this.state.centerAddress} onClick={this.onMarkerClick}
                                 icon={{
                                     url: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
                                     anchor: new this.props.google.maps.Point(16, 16),
@@ -46,7 +60,7 @@ export class MapView extends Component {
 
                         {this.props.locations.map((location, index) => {
                             return (
-                                <Marker position={{lat: location.latitude, lng: location.longitude}} name={location.address} onClick={this.onMarkerClick}/>
+                                <Marker position={{lat: location.latitude, lng: location.longitude}} name={`${location.name}: ${location.address}`} onClick={this.onMarkerClick}/>
                             )
                         })}
 
