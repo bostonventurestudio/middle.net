@@ -1000,6 +1000,14 @@ input[type=submit] {
   font-size: 16px;
   line-height: 20px;
 }
+
+.search-results-block .list-holder .phone_number {
+  display: block;
+  margin: 10px 0;
+  font-size: 16px;
+  line-height: 20px;
+}
+
 .search-results-block .list-holder .detail {
   display: block;
 }
