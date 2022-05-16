@@ -21,14 +21,14 @@ Required google API Key having follwing APIs enabled:
     cd frontend
 
 ### 3- Made .env File:
-    touch .evn
+    touch .env
 
 Place your Google API Key in this file.
     
     REACT_APP_GOOGLE_API_KEY = 'your_google_api_key'
 
 ### 4- Install Dependencies:
-    npm install
+    npm install --legacy-peer-deps
 
 ### 5- Start Server:
     npm start
