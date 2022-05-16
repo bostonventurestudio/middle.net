@@ -73,7 +73,7 @@ export class MapView extends Component {
 
                     {this.props.locations.map((location, index) => {
                         return (
-                            <Marker position={{lat: location.latitude, lng: location.longitude}} name={`${location.name}: ${location.address}`} onClick={this.onMarkerClick}/>
+                            <Marker key={index} position={{lat: location.latitude, lng: location.longitude}} name={`${location.name}: ${location.address}`} onClick={this.onMarkerClick}/>
                         )
                     })}
 
