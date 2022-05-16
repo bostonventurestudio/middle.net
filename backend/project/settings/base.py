@@ -33,8 +33,8 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    'backend.apps.core',
-    'backend.apps.common',
+    'apps.core',
+    'apps.common',
 ]
 
 SITE_ID = 1
@@ -177,6 +177,8 @@ STATICFILES_DIRS = (
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 PAGE_SIZE = 20
+
+SECRET_KEY='&@q%^^d9y&0_*ohe6n*s+da-)s$g11ypt5ud4+$axvtk2ho!f7'
 
 #
 # CACHES = {

@@ -1,6 +1,6 @@
 from django.urls import path, re_path
 
-from backend.apps.core.views import LocationView, NearbyPlacesView
+from apps.core.views import LocationView, NearbyPlacesView
 
 urlpatterns = [
     path('location/', LocationView.as_view()),

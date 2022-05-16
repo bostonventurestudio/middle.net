@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from backend.apps.core.models import Location
+from apps.core.models import Location
 
 # Register your models here.
 

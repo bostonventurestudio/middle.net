@@ -2,7 +2,7 @@ from logging import getLogger
 
 from rest_framework import serializers
 
-from backend.apps.core.models import Location
+from apps.core.models import Location
 
 logger = getLogger(__name__)
 
