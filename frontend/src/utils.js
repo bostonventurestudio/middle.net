@@ -35,7 +35,7 @@ export function getCenterOfPolygonLatLngs(arr) {
 
 export function getNearbyPlaces(location) {
     const data = {
-        url: `${GooglePlacesAPIBaseURL}?location=${location}&radius=${RADIUS}&type=${TYPE}&rank_by=${RADIUS}&key=${GoogleAPIKey}`,
+        url: `${GooglePlacesAPIBaseURL}?location=${location}&radius=${RADIUS}&type=${TYPE}&key=${GoogleAPIKey}`,
     }
     return axios.post(NearbyPlacesAPIURL, data);
 }
