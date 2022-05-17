@@ -27,8 +27,21 @@ Place your Google API Key in this file.
     
     REACT_APP_GOOGLE_API_KEY = 'your_google_api_key'
 
-### 4- Install Dependencies:
+### 4- Django App URL:
+In config.js change APIBaseURL to django app url like `"http://127.0.0.1:8000"`.
+
+    export const APIBaseURL = "your django app url";
+    
+
+### 5- Install Dependencies:
     npm install --legacy-peer-deps
 
-### 5- Start Server:
+### 6- Give frontend access of backend:
+In backend/project/settings/base.py place following
+
+    CORS_ALLOWED_ORIGINS = [
+        'your_frontend_url',
+        ]
+
+### 7- Start Server:
     npm start
