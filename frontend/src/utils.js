@@ -16,6 +16,10 @@ export function saveLocation(data) {
     return axios.post(LocationAPIURL, data);
 }
 
+export function deleteLocation(slug, id) {
+    return axios.delete(`${LocationAPIURL}${slug}?id=${id}`);
+}
+
 export function copyToClipboard(event, textToCopy) {
     event.preventDefault();
     navigator.clipboard.writeText(textToCopy);

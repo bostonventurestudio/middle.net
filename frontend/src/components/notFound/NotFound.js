@@ -7,7 +7,7 @@ export class NotFound extends Component {
             <main id="main">
                 <div className="content-block">
                     <div className="container">
-                        <h2 className="not-found">Requested URL not found.</h2>
+                        <h2 className="not-found">No Location Available for Requested URL</h2>
                     </div>
                 </div>
             </main>

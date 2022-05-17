@@ -926,6 +926,22 @@ input[type=submit] {
   flex-flow: row wrap;
   justify-content: space-between;
 }
+
+.search-results-block .list-holder .right-block .btn-primary {
+  display: block;
+  border-radius: 30px;
+  border: none;
+  padding: 10px 20px;
+  color: #fff;
+  background: #5A9AE4;
+  font-size: 12px;
+  line-height: 10px;
+}
+.search-results-block .list-holder .right-block .btn-primary:hover {
+  background: #448de0;
+}
+
+
 @media (min-width: 768px) {
   .search-results-block .list-holder .right-block {
     text-align: right;

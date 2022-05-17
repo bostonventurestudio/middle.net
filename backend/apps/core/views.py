@@ -2,6 +2,7 @@ import json
 
 import requests
 from rest_framework import status
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -18,6 +19,13 @@ class LocationView(APIView):
         serializer.is_valid(raise_exception=True)
         location = serializer.save()
         return Response(LocationModelSerializer(Location.objects.filter(slug=location.slug), many=True).data)
+
+    def delete(self, request, slug):
+        if 'id' in request.query_params:
+            get_object_or_404(Location, slug=slug, id=request.query_params.get('id')).delete()
+            return Response('Location deleted successfully', status=status.HTTP_204_NO_CONTENT)
+        return Response('id is required', status=status.HTTP_400_BAD_REQUEST)
+
 
 
 class NearbyPlacesView(APIView):

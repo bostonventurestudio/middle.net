@@ -24,4 +24,4 @@ class Location(models.Model):
 @receiver(pre_save, sender=Location)
 def build_slug(sender, instance, *args, **kwargs):
     if not instance.slug:
-        instance.slug = str(uuid.uuid4())[:8]
+        instance.slug = str(uuid.uuid4())[:6]

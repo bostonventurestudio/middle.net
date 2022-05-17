@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import {LinkForm} from "../linkForm/LinkForm";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
-import {getCenterOfPolygonLatLngs, getLocations, getNearbyPlaces} from "../../utils";
+import {deleteLocation, getCenterOfPolygonLatLngs, getLocations, getNearbyPlaces} from "../../utils";
 import MapView from "../MapView/MapView";
+import Location from "../location/Location";
 
 export class TopLocations extends Component {
 
@@ -11,14 +12,12 @@ export class TopLocations extends Component {
         this.state = {
             locations: [],
             nearbyPlaces: [],
-            center: {
-                lat: 0,
-                lng: 0
-            },
+            center: null,
             canRender: false
         };
         this.change = this.change.bind(this);
         this.clear = this.clear.bind(this);
+        this.deleteLocationHandler = this.deleteLocationHandler.bind(this);
     }
 
     clear() {
@@ -37,6 +36,46 @@ export class TopLocations extends Component {
         document.getElementById(id).classList.add('active');
     }
 
+    async setCenterAndNearbyPlaces(response){
+        var lagLngs = response.data.map(location => [location.latitude, location.longitude]);
+            var center = getCenterOfPolygonLatLngs(lagLngs);
+            this.setState({center: center});
+            try {
+                response = await getNearbyPlaces(center.lat + " " + center.lng);
+                this.setState({nearbyPlaces: response.data});
+            } catch (e) {
+                console.log(e);
+            }
+    }
+
+    async deleteLocationHandler(id) {
+        var url = window.location.pathname;
+        var slug = url.substring(url.lastIndexOf('/') + 1);
+        var response = null;
+        if (slug) {
+            try {
+                await deleteLocation(slug, id);
+                response = await getLocations(slug);
+                this.setState({locations: response.data});
+                if (response.data.length === 0) {
+                    window.location.href = "/not-found";
+                } else if (response.data.length === 1) {
+                    this.setState({
+                        center: null,
+                        nearbyPlaces: []
+                    });
+                    return;
+                }
+            } catch (e) {
+                console.log(e);
+                window.location.href = "/not-found";
+            }
+        }
+        if (response) {
+            await this.setCenterAndNearbyPlaces(response);
+        }
+    }
+
     async componentWillMount() {
         var url = window.location.pathname;
         var slug = url.substring(url.lastIndexOf('/') + 1);
@@ -47,6 +86,9 @@ export class TopLocations extends Component {
                 this.setState({locations: response.data});
                 if (response.data.length === 0) {
                     window.location.href = "/not-found";
+                } else if (response.data.length === 1) {
+                    this.setState({canRender: true});
+                    return;
                 }
             } catch (e) {
                 console.log(e);
@@ -54,21 +96,13 @@ export class TopLocations extends Component {
             }
         }
         if (response) {
-            var lagLngs = response.data.map(location => [location.latitude, location.longitude]);
-            var center = getCenterOfPolygonLatLngs(lagLngs);
-            this.setState({center: center});
-            try {
-                response = await getNearbyPlaces(center.lat + " " + center.lng);
-                this.setState({nearbyPlaces: response.data});
-            } catch (e) {
-                console.log(e);
-            }
+            await this.setCenterAndNearbyPlaces(response);
         }
         this.setState({canRender: true});
     }
 
     render() {
-        if(!this.state.canRender) return null;
+        if (!this.state.canRender) return null;
         return (
             <main id="main">
                 <div className="content-block">
@@ -77,20 +111,28 @@ export class TopLocations extends Component {
                         <div className="search-results-block">
                             <p>Top places in the middle:</p>
                             <div className="tabset">
-                                <div id="list-view" className="b-tab active">
+                                <div id="top-places" className="b-tab active">
                                     <div className="list-view-block">
                                         {this.state.nearbyPlaces.length > 0 ? this.state.nearbyPlaces.map((place, index) => {
                                             return <NearbyPlace place={place} index={index + 1} key={index}/>
+                                        }) : <h4>No places available in the middle.</h4>}
+                                    </div>
+                                </div>
+                                <div id="locations" className="b-tab">
+                                    <div className="list-view-block">
+                                        {this.state.locations.length > 0 ? this.state.locations.map((location, index) => {
+                                            return <Location location={location} index={index + 1} key={index} deleteLocation={this.deleteLocationHandler}/>
                                         }) : <h4>No places available</h4>}
                                     </div>
                                 </div>
-                                <div id="map-view" className="b-tab">
-                                    <MapView center={this.state.center} locations={this.state.locations}/>
+                                <div id="map" className="b-tab">
+                                    <MapView center={this.state.center} locations={this.state.locations} nearbyPlaces={this.state.nearbyPlaces}/>
                                 </div>
                             </div>
                             <div className="tab-links">
-                                <a href="#list-view" data-tab="list-view" className="b-nav-tab active" onClick={this.change}>List view</a>
-                                <a href="#map-view" data-tab="map-view" className="b-nav-tab" onClick={this.change}>Map view</a>
+                                <a href="#top-places" data-tab="top-places" className="b-nav-tab active" onClick={this.change}>Top Places</a>
+                                <a href="#locations" data-tab="locations" className="b-nav-tab" onClick={this.change}>Locations</a>
+                                <a href="#map" data-tab="map" className="b-nav-tab" onClick={this.change}>Map</a>
                             </div>
                         </div>
                     </div>
