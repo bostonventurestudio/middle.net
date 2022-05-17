@@ -49,6 +49,7 @@ export class TopLocations extends Component {
     }
 
     async deleteLocationHandler(id) {
+        this.setState({canRender: false});
         var url = window.location.pathname;
         var slug = url.substring(url.lastIndexOf('/') + 1);
         var response = null;
@@ -64,6 +65,7 @@ export class TopLocations extends Component {
                         center: null,
                         nearbyPlaces: []
                     });
+                    this.setState({canRender: true});
                     return;
                 }
             } catch (e) {
@@ -74,6 +76,7 @@ export class TopLocations extends Component {
         if (response) {
             await this.setCenterAndNearbyPlaces(response);
         }
+        this.setState({canRender: true});
     }
 
     async componentWillMount() {
