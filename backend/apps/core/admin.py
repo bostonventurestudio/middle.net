@@ -4,6 +4,10 @@ from apps.core.models import Location
 
 # Register your models here.
 
-admin.site.register(Location)
 
+class LocationAdmin(admin.ModelAdmin):
+    list_display = ['name', 'slug', 'address']
+    class Meta:
+        model = Location
 
+admin.site.register(Location, LocationAdmin)

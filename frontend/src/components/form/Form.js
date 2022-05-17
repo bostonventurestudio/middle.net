@@ -10,6 +10,7 @@ class Form extends Component {
         this.state = {
             name: '',
             address: '',
+            place_id: '',
             position: {
                 lat: 0,
                 lng: 0
@@ -28,7 +29,8 @@ class Form extends Component {
             try {
                 const response = await getAddressFormLatLng(position.coords.latitude, position.coords.longitude);
                 this.setState({
-                    address: response.results[0].formatted_address
+                    address: response.results[0].formatted_address,
+                    place_id: response.results[0].place_id
                 });
             } catch (e) {
                 console.log(e);
@@ -57,7 +59,10 @@ class Form extends Component {
     handleAddressSelect(address) {
         this.setState({address: address});
         geocodeByAddress(address)
-            .then(results => getLatLng(results[0]))
+            .then(results => {
+                this.setState({place_id: results[0].place_id});
+                return getLatLng(results[0]);
+            })
             .then(latLng => this.setState({position: latLng}))
             .catch(error => console.error('Error', error));
     }
@@ -65,14 +70,15 @@ class Form extends Component {
     async handleSubmit(event) {
         event.preventDefault();
         if (this.state.position.lat === 0 && this.state.position.lng === 0) {
-             alert('Invalid Location: Please enter correct location.');
-             return;
+            alert('Invalid Location: Please enter correct location.');
+            return;
         }
 
         var url = window.location.pathname;
         var slug = url.substring(url.lastIndexOf('/') + 1);
         const data = {
             name: this.state.name,
+            google_place_id: this.state.place_id,
             address: this.state.address,
             latitude: this.state.position.lat.toFixed(5),
             longitude: this.state.position.lng.toFixed(5),
