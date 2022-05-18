@@ -960,7 +960,7 @@ input[type=submit] {
 }
 .search-results-block .list-holder .rating-list li {
   display: inline-block;
-  vertical-align: top;
+  vertical-align: baseline;
   color: #797979;
 }
 .search-results-block .list-holder .rating-list i {

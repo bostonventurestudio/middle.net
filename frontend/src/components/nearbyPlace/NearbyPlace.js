@@ -3,6 +3,8 @@ import image from "../../images/img-1.jpg";
 import {Rating} from "react-simple-star-rating";
 import {GoogleMapDirectionLink, GooglePlaceImageURL} from "../../config";
 
+const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
+
 class NearbyPlace extends Component {
     render() {
         return (
@@ -11,7 +13,7 @@ class NearbyPlace extends Component {
                     <span className="num">{this.props.index}</span>
                     <div className="img-detail-block">
                         <div className="img-holder">
-                            {this.props.place.photos && this.props.place.photos.length > 0 ? <img src={`${GooglePlaceImageURL}?photoreference=${this.props.place.photos[0].photo_reference}&sensor=false&maxheight=80&maxwidth=70&key=AIzaSyAE6enNZ1pwRa0RVk6dZqqXh9HTkijOgX0`} alt=""/> :
+                            {this.props.place.photos && this.props.place.photos.length > 0 ? <img src={`${GooglePlaceImageURL}?photoreference=${this.props.place.photos[0].photo_reference}&sensor=false&maxheight=80&maxwidth=70&key=${GoogleAPIKey}`} alt=""/> :
                             <img src={image} alt=""/>}
                         </div>
                         <div className="detail-block">
@@ -28,7 +30,7 @@ class NearbyPlace extends Component {
                             <Rating ratingValue={this.props.place.rating ? this.props.place.rating * 20 : 0} readonly={true} size={15}/>
                         </ul>
                         <div className="timing-info">
-                            <span className="open">{this.props.place.opening_hours && this.props.place.opening_hours.open_now ? "Open" : "Close"}</span>
+                            <span className="open">{this.props.place.opening_hours && this.props.place.opening_hours.open_now ? "Open" : "Closed"}</span>
                         </div>
                     </div>
                     <div className="directions-block">
