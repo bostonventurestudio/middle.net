@@ -2,6 +2,14 @@ import React, {Component} from 'react';
 import {getAddressFormLatLng, saveLocation} from "../../utils";
 import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
 import LocationSearch from "../locationSearch/LocationSearch";
+import MapHolder from "../mapHolder/MapHolder";
+import {GoogleApiWrapper} from "google-maps-react";
+import Geocode from "react-geocode";
+import FormInputs from "../formInputs/FormInputs";
+const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
+
+Geocode.setApiKey(GoogleAPIKey);
+Geocode.enableDebug()
 
 class Form extends Component {
 
@@ -38,8 +46,8 @@ class Form extends Component {
         });
     }
 
-    setName(name) {
-        this.setState({name: name});
+    setName(event) {
+        this.setState({name: event.target.value});
     }
 
     setAddress(address) {
@@ -99,17 +107,14 @@ class Form extends Component {
         return (
             <div>
                 <form className="form" onSubmit={this.handleSubmit}>
-                    <div className="input-holder">
-                        <input type="text" placeholder="Enter your nickname or initials" value={this.state.name} onChange={event => {
-                            this.setName(event.target.value)
-                        }} required/>
-                    </div>
-                    <LocationSearch address={this.state.address} position={this.state.position} setAddress={this.setAddress} handleAddressSelect={this.handleAddressSelect} zoom={16}/>
+                    <FormInputs name={this.state.name} position={this.state.position} address={this.state.address} setName={this.setName} setAddress={this.setAddress} handleAddressSelect={this.handleAddressSelect}/>
+                    <MapHolder google={this.props.google} position={this.state.position} zoom={16} address={this.state.address}/>
                     <button type="submit" className="btn-primary">Middle <i className="icon-right-2"/></button>
                 </form>
             </div>
         );
     }
 }
-
-export default Form;
+export default GoogleApiWrapper({
+    apiKey: (GoogleAPIKey)
+})(Form)

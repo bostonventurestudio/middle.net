@@ -866,6 +866,37 @@ input[type=submit] {
   color: #5A9AE4;
 }
 
+.form .add-location {
+  margin-bottom: 15px;
+  max-width: 80%;
+  position: relative;
+  height: 62px;
+  background: #fff;
+  border: 1px solid #5A9AE4;
+  display: flex;
+  align-items: center;
+}
+@media (min-width: 768px) {
+  .form .add-location {
+    max-width: 526px;
+  }
+}
+.form .add-location a {
+  text-decoration: none;
+  color: #797979;
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  width: 100%;
+}
+.form .add-location .icon {
+  font-size: 32px;
+  line-height: 36px;
+  color: #5A9AE4;
+  display: inline-block;
+  margin: -3px 12px 0 0;
+}
+
 .search-results-block {
   margin-top: 40px;
 }
