@@ -30,6 +30,7 @@ class Form extends Component {
         this.setName = this.setName.bind(this);
         this.setAddress = this.setAddress.bind(this);
         this.setPosition = this.setPosition.bind(this);
+        this.setPlaceId = this.setPlaceId.bind(this);
         this.setIsCorrectLocation = this.setIsCorrectLocation.bind(this);
         this.handleAddressSelect = this.handleAddressSelect.bind(this);
         this.addNewForm = this.addNewForm.bind(this);
@@ -66,10 +67,12 @@ class Form extends Component {
         });
     }
 
-    setAddress(address, form_key) {
+    setAddress(address, form_key, isInvalid = true) {
         this.setState(state => {
             state.forms_data[form_key].address = address;
-            state.forms_data[form_key].position = {lat: 0, lng: 0};
+            if (isInvalid) {
+                state.forms_data[form_key].position = {lat: 0, lng: 0};
+            }
             return state;
         });
     }
@@ -176,7 +179,10 @@ class Form extends Component {
                             <span className="text">Add another location</span>
                         </button>
                     </div>
-                    <MapHolder google={this.props.google} forms_count={this.state.forms_count} forms_data={this.state.forms_data}/>
+                    <MapHolder google={this.props.google} forms_count={this.state.forms_count} forms_data={this.state.forms_data}
+                               setAddress={this.setAddress}
+                               setPosition={this.setPosition}
+                               setPlaceId={this.setPlaceId}/>
                     <button type="submit" className="btn-primary">Middle <i className="icon-right-2"/></button>
                 </form>
             </div>

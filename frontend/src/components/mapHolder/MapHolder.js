@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {InfoWindow, Map, Marker} from "google-maps-react";
+import {getAddressFormLatLng} from "../../utils";
 
 class MapHolder extends Component {
 
@@ -15,6 +16,7 @@ class MapHolder extends Component {
         this.onMarkerClick = this.onMarkerClick.bind(this);
         this.onInfoWindowClose = this.onInfoWindowClose.bind(this);
         this.onFullScreenToggle = this.onFullScreenToggle.bind(this);
+        this.onMarkerDragEnd = this.onMarkerDragEnd.bind(this);
         document.addEventListener('fullscreenchange', this.onFullScreenToggle);
 
     }
@@ -24,16 +26,12 @@ class MapHolder extends Component {
         this.setState({isFullScreen: !this.state.isFullScreen})
     }
 
-    onMarkerClick = (props, marker) => {
+    onMarkerClick = (props, marker) =>
         this.setState({
             activeMarker: marker,
             selectedPlace: props,
             showingInfoWindow: true
         });
-        console.log(this.state)
-        console.log(props)
-    }
-
 
     onInfoWindowClose = () =>
         this.setState({
@@ -48,6 +46,22 @@ class MapHolder extends Component {
                 showingInfoWindow: false
             });
     };
+
+    async onMarkerDragEnd(coord, form_key) {
+        const {latLng} = coord;
+        const lat = latLng.lat();
+        const lng = latLng.lng();
+        try {
+            const response = await getAddressFormLatLng(lat, lng);
+            this.props.setAddress(response.results[0].formatted_address, form_key, false);
+            this.props.setPlaceId(response.results[0].place_id, form_key);
+            this.props.setPosition({lat: lat, lng: lng}, form_key);
+            console.log(response)
+        } catch (e) {
+            console.log(e);
+        }
+    };
+
 
     render() {
         return (
@@ -71,8 +85,10 @@ class MapHolder extends Component {
                                     lat: this.props.forms_data[form_key].position.lat,
                                     lng: this.props.forms_data[form_key].position.lng
                                 }}
+                                draggable={true}
                                 name={this.props.forms_data[form_key].address}
-                                onClick={this.onMarkerClick}/>
+                                onClick={this.onMarkerClick}
+                                onDragend={(event, map, coord) => this.onMarkerDragEnd(coord, form_key)}/>
                         ))
                     }
 
