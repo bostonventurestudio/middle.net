@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import image from "../../images/img-1.jpg";
 import {Rating} from "react-simple-star-rating";
 import {GoogleMapDirectionLink, GooglePlaceImageURL} from "../../config";
+import {BAR, RESTAURANT} from "../../constants";
 
 const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
 
@@ -18,6 +19,7 @@ class NearbyPlace extends Component {
                         </div>
                         <div className="detail-block">
                             <span className="title">{this.props.place.name}</span>
+                            <span className="detail">{this.props.place.types.includes(BAR.toLowerCase()) ? BAR : RESTAURANT}</span>
                             <span className="detail">{this.props.place.vicinity}</span>
                             <span className="phone_number">{this.props.place.international_phone_number}</span>
                         </div>
