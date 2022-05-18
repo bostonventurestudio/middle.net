@@ -34,6 +34,7 @@ class Form extends Component {
         this.setIsCorrectLocation = this.setIsCorrectLocation.bind(this);
         this.handleAddressSelect = this.handleAddressSelect.bind(this);
         this.addNewForm = this.addNewForm.bind(this);
+        this.deleteForm = this.deleteForm.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -123,6 +124,18 @@ class Form extends Component {
         });
     }
 
+    deleteForm(event, form_key) {
+        event.preventDefault();
+        const forms_count = this.state.forms_count - 1;
+        const forms_data = this.state.forms_data;
+        delete forms_data[form_key];
+        this.setState(state => {
+            state.forms_count = forms_count;
+            state.forms_data = forms_data;
+            return state;
+        });
+    }
+
     async handleSubmit(event) {
         event.preventDefault();
         var canSubmit = true;
@@ -172,7 +185,9 @@ class Form extends Component {
                                         position={this.state.forms_data[form_key].position}
                                         address={this.state.forms_data[form_key].address}
                                         setName={this.setName} setAddress={this.setAddress}
-                                        handleAddressSelect={this.handleAddressSelect}/>
+                                        handleAddressSelect={this.handleAddressSelect}
+                                        canDelete={this.state.forms_count > 1 && index === this.state.forms_count - 1}
+                                        deleteForm={this.deleteForm}/>
                         ))
                     }
                     <div className="add-location">
