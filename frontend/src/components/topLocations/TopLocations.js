@@ -13,7 +13,8 @@ export class TopLocations extends Component {
             locations: [],
             nearbyPlaces: [],
             center: null,
-            canRender: false
+            canRender: false,
+            canRenderMap: true
         };
         this.change = this.change.bind(this);
         this.clear = this.clear.bind(this);
@@ -49,7 +50,7 @@ export class TopLocations extends Component {
     }
 
     async deleteLocationHandler(id) {
-        this.setState({canRender: false});
+        this.setState({canRenderMap: false});
         var url = window.location.pathname;
         var slug = url.substring(url.lastIndexOf('/') + 1);
         var response = null;
@@ -65,7 +66,7 @@ export class TopLocations extends Component {
                         center: null,
                         nearbyPlaces: []
                     });
-                    this.setState({canRender: true});
+                    this.setState({canRenderMap: true});
                     return;
                 }
             } catch (e) {
@@ -76,7 +77,7 @@ export class TopLocations extends Component {
         if (response) {
             await this.setCenterAndNearbyPlaces(response);
         }
-        this.setState({canRender: true});
+        this.setState({canRenderMap: true});
     }
 
     async componentWillMount() {
@@ -129,7 +130,7 @@ export class TopLocations extends Component {
                                     </div>
                                 </div>
                                 <div id="map" className="b-tab">
-                                    <MapView center={this.state.center} locations={this.state.locations} nearbyPlaces={this.state.nearbyPlaces}/>
+                                    {this.state.canRenderMap && <MapView center={this.state.center} locations={this.state.locations} nearbyPlaces={this.state.nearbyPlaces}/>}
                                 </div>
                             </div>
                             <div className="tab-links">
