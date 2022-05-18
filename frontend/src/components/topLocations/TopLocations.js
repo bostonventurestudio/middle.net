@@ -134,9 +134,9 @@ export class TopLocations extends Component {
                                 </div>
                             </div>
                             <div className="tab-links">
-                                <a href="#top-places" data-tab="top-places" className="b-nav-tab active" onClick={this.change}>Top Places</a>
-                                <a href="#locations" data-tab="locations" className="b-nav-tab" onClick={this.change}>Locations</a>
-                                <a href="#map" data-tab="map" className="b-nav-tab" onClick={this.change}>Map</a>
+                                <a href="#top-places" data-tab="top-places" className="b-nav-tab active" onClick={this.change}>Top Places View</a>
+                                <a href="#locations" data-tab="locations" className="b-nav-tab" onClick={this.change}>Locations View</a>
+                                <a href="#map" data-tab="map" className="b-nav-tab" onClick={this.change}>Map View</a>
                             </div>
                         </div>
                     </div>

@@ -9,7 +9,7 @@ export default function Routes() {
             <Switch>
                 <Route path="/" element={<Home/>}/>
                 <Route path="/:url" element={<Home/>}/>
-                <Route path="/top-locations/:url" element={<TopLocations/>}/>
+                <Route path="/top-places/:url" element={<TopLocations/>}/>
                 <Route path="/not-found" element={<NotFound/>}/>
             </Switch>
             <Footer/>

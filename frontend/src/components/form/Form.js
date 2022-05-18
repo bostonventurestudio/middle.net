@@ -147,7 +147,7 @@ class Form extends Component {
         try {
             const response = await saveLocation(data);
             const locations = response.data;
-            window.location.href = "/top-locations/" + locations[0].slug;
+            window.location.href = "/top-places/" + locations[0].slug;
 
         } catch (e) {
             console.log(e);
@@ -176,7 +176,7 @@ class Form extends Component {
                             <span className="text">Add another location</span>
                         </button>
                     </div>
-                    <MapHolder google={this.props.google} forms_count={this.state.forms_count} forms_data={this.state.forms_data} zoom={12}/>
+                    <MapHolder google={this.props.google} forms_count={this.state.forms_count} forms_data={this.state.forms_data}/>
                     <button type="submit" className="btn-primary">Middle <i className="icon-right-2"/></button>
                 </form>
             </div>

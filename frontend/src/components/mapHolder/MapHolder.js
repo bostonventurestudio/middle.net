@@ -63,7 +63,7 @@ class MapHolder extends Component {
                         lat: this.props.forms_data[`form_${this.props.forms_count}`].position.lat,
                         lng: this.props.forms_data[`form_${this.props.forms_count}`].position.lng
                     }}
-                    zoom={this.props.zoom} style={{width: "80%", height: "500px"}}>
+                    zoom={12} style={{width: "80%", height: "500px"}}>
                     {
                         Object.keys(this.props.forms_data).map((form_key, index) => (
                             <Marker
