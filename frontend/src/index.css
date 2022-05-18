@@ -1003,9 +1003,16 @@ input[type=submit] {
 .search-results-block .list-holder .img-holder {
   margin-right: 10px;
   flex-shrink: 0;
+  width: 68px;
+  height: 68px;
 }
 .search-results-block .list-holder .img-holder img {
   display: block;
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 .search-results-block .list-holder .img-detail-block {
   display: flex;
