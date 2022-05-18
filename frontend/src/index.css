@@ -753,6 +753,12 @@ input[type=submit] {
     max-width: 526px;
   }
 }
+
+.form .input-holder .error {
+  color: red;
+  margin-left: 10px;
+}
+
 .form .search-icon {
   position: absolute;
   top: 19px;
@@ -881,13 +887,15 @@ input[type=submit] {
     max-width: 526px;
   }
 }
-.form .add-location a {
+.form .add-location button {
   text-decoration: none;
   color: #797979;
   display: flex;
   align-items: center;
   padding: 15px 20px;
   width: 100%;
+  background: none;
+  border: none;
 }
 .form .add-location .icon {
   font-size: 32px;

@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import {GoogleApiWrapper, InfoWindow, Map, Marker} from "google-maps-react";
-import Geocode from "react-geocode";
+import {InfoWindow, Map, Marker} from "google-maps-react";
 
 class MapHolder extends Component {
 
@@ -8,6 +7,7 @@ class MapHolder extends Component {
         super(props);
         this.state = {
             activeMarker: {},
+            selectedPlace: {},
             showingInfoWindow: false,
             isFullScreen: false
         };
@@ -24,11 +24,16 @@ class MapHolder extends Component {
         this.setState({isFullScreen: !this.state.isFullScreen})
     }
 
-    onMarkerClick = (props, marker) =>
+    onMarkerClick = (props, marker) => {
         this.setState({
             activeMarker: marker,
+            selectedPlace: props,
             showingInfoWindow: true
         });
+        console.log(this.state)
+        console.log(props)
+    }
+
 
     onInfoWindowClose = () =>
         this.setState({
@@ -51,28 +56,33 @@ class MapHolder extends Component {
                     google={this.props.google}
                     onClick={this.onMapClicked}
                     initialCenter={{
-                        lat: this.props.position.lat,
-                        lng: this.props.position.lng
+                        lat: this.props.forms_data[`form_${this.props.forms_count}`].position.lat,
+                        lng: this.props.forms_data[`form_${this.props.forms_count}`].position.lng
                     }}
                     center={{
-                        lat: this.props.position.lat,
-                        lng: this.props.position.lng
+                        lat: this.props.forms_data[`form_${this.props.forms_count}`].position.lat,
+                        lng: this.props.forms_data[`form_${this.props.forms_count}`].position.lng
                     }}
                     zoom={this.props.zoom} style={{width: "80%", height: "500px"}}>
-                    <Marker
-                        position={{
-                            lat: this.props.position.lat,
-                            lng: this.props.position.lng
-                        }}
-                        name={this.props.address}
-                        onClick={this.onMarkerClick}/>
+                    {
+                        Object.keys(this.props.forms_data).map((form_key, index) => (
+                            <Marker
+                                position={{
+                                    lat: this.props.forms_data[form_key].position.lat,
+                                    lng: this.props.forms_data[form_key].position.lng
+                                }}
+                                name={this.props.forms_data[form_key].address}
+                                onClick={this.onMarkerClick}/>
+                        ))
+                    }
+
                     <InfoWindow
                         marker={this.state.activeMarker}
                         onClose={this.onInfoWindowClose}
                         visible={this.state.showingInfoWindow}
                     >
                         <div>
-                            <h4>{this.props.address}</h4>
+                            <h4>{this.state.selectedPlace.name}</h4>
                         </div>
                     </InfoWindow>
                 </Map>

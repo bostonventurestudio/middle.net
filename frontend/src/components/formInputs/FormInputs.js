@@ -6,15 +6,9 @@ class FormInputs extends Component {
         return (
             <>
                 <div className="input-holder">
-                    <input type="text" placeholder="Enter your nickname or initials" value={this.props.name} onChange={this.props.setName} required/>
+                    <input type="text" placeholder="Enter your nickname or initials" value={this.props.name} onChange={(event) => {this.props.setName(event, this.props.form_key)}} required/>
                 </div>
-                <LocationSearch address={this.props.address} position={this.props.position} setAddress={this.props.setAddress} handleAddressSelect={this.props.handleAddressSelect} zoom={16}/>
-                <div className="add-location">
-                    <a href="#">
-                        <span className="icon">+</span>
-                        <span className="text">Add another location</span>
-                    </a>
-                </div>
+                <LocationSearch form_key={this.props.form_key} isCorrectLocation={this.props.isCorrectLocation} address={this.props.address} position={this.props.position} setAddress={this.props.setAddress} handleAddressSelect={this.props.handleAddressSelect}/>
             </>
         );
     }

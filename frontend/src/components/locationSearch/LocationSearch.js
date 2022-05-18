@@ -11,15 +11,20 @@ class LocationSearch extends Component {
     render() {
         return (
             <div id='googleMaps'>
-                <PlacesAutocomplete value={this.props.address} onChange={this.props.setAddress} onSelect={this.props.handleAddressSelect}>
+                <PlacesAutocomplete value={this.props.address} onChange={(address) => {
+                    this.props.setAddress(address, this.props.form_key)
+                }} onSelect={(address) => {
+                    this.props.handleAddressSelect(address, this.props.form_key)
+                }}>
                     {({getInputProps, suggestions, getSuggestionItemProps, loading}) => (
                         <div>
                             <div className="input-holder">
                                 <input{...getInputProps({placeholder: "Enter your location", className: "location-search-input",})} required/>
+                                {!this.props.isCorrectLocation && <span className="error">ERROR: Invalid Location</span>}
                             </div>
                             <div style={{position: "relative"}}>
                                 <div className="autocomplete-dropdown-container">
-                                    {loading && <div class="suggestion-item">Loading...</div>}
+                                    {loading && <div className="suggestion-item">Loading...</div>}
                                     {suggestions.map(suggestion => {
                                         const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
                                         // inline style for demonstration purpose
