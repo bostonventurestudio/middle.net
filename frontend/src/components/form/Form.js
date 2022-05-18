@@ -105,8 +105,10 @@ class Form extends Component {
             .catch(error => console.error('Error', error));
     }
 
-    addNewForm(event) {
-        event.preventDefault();
+    addNewForm(event = null) {
+        if (event) {
+            event.preventDefault();
+        }
         const forms_count = this.state.forms_count + 1;
         this.setState(state => {
             state.forms_count = forms_count;
@@ -182,7 +184,9 @@ class Form extends Component {
                     <MapHolder google={this.props.google} forms_count={this.state.forms_count} forms_data={this.state.forms_data}
                                setAddress={this.setAddress}
                                setPosition={this.setPosition}
-                               setPlaceId={this.setPlaceId}/>
+                               setPlaceId={this.setPlaceId}
+                               addNewForm={this.addNewForm}
+                    />
                     <button type="submit" className="btn-primary">Middle <i className="icon-right-2"/></button>
                 </form>
             </div>

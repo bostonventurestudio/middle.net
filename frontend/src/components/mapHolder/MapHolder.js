@@ -39,18 +39,26 @@ class MapHolder extends Component {
             showingInfoWindow: false
         });
 
-    onMapClicked = () => {
-        if (this.state.showingInfoWindow)
+    async onMapClicked(coord) {
+        if (this.state.showingInfoWindow) {
             this.setState({
                 activeMarker: null,
                 showingInfoWindow: false
             });
+        } else {
+            const forms_count = this.props.forms_count + 1;
+            this.props.addNewForm();
+            await this.populateLocationData(coord, `form_${forms_count}`);
+        }
     };
 
     async onMarkerDragEnd(coord, form_key) {
-        const {latLng} = coord;
-        const lat = latLng.lat();
-        const lng = latLng.lng();
+        await this.populateLocationData(coord, form_key);
+    };
+
+    async populateLocationData(coord, form_key) {
+        const lat = coord.latLng.lat();
+        const lng = coord.latLng.lng();
         try {
             const response = await getAddressFormLatLng(lat, lng);
             this.props.setAddress(response.results[0].formatted_address, form_key, false);
@@ -60,7 +68,7 @@ class MapHolder extends Component {
         } catch (e) {
             console.log(e);
         }
-    };
+    }
 
 
     render() {
@@ -68,7 +76,7 @@ class MapHolder extends Component {
             <div className={this.state.isFullScreen ? "map-holder-full" : "map-holder"}>
                 <Map
                     google={this.props.google}
-                    onClick={this.onMapClicked}
+                    onClick={(event, map, coord) => this.onMapClicked(coord)}
                     initialCenter={{
                         lat: this.props.forms_data[`form_${this.props.forms_count}`].position.lat,
                         lng: this.props.forms_data[`form_${this.props.forms_count}`].position.lng
