@@ -150,7 +150,7 @@ class Form extends Component {
         try {
             const response = await saveLocation(data);
             const locations = response.data;
-            window.location.href = "/top-places/" + locations[0].slug;
+            window.location.href = `/top-places/${locations[0].slug}?redirected=True`;
 
         } catch (e) {
             console.log(e);
