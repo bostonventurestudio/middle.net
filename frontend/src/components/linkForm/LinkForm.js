@@ -1,5 +1,6 @@
 import React from 'react';
-import {copyToClipboard, goToAddLocationPage} from "../../utils";
+import {copyToClipboard} from "../../utils";
+import {Link} from "react-router-dom";
 
 export const LinkForm = props => {
     return (
@@ -20,9 +21,7 @@ export const LinkForm = props => {
                 </div>
             </div>
             <p>Share this URL with a friend to find places to meet in the middle.</p>
-            <button onClick={(event) => {
-                goToAddLocationPage(event, window.location.pathname)
-            }} type="submit" className="btn-primary">Add another Location <i className="icon-right-2"/></button>
+            <Link className="btn-primary" to={`/${window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1)}`}>Add another Location <i className="icon-right-2"/></Link>
         </form>
     );
 };

@@ -41,11 +41,6 @@ export function getNearbyPlaces(location) {
     return axios.post(NearbyPlacesAPIURL, data);
 }
 
-export function goToAddLocationPage(event) {
-    event.preventDefault();
-    window.location.href = `/${window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1)}`;
-}
-
 export function getAddressFormLatLng(lat, lng) {
     return Geocode.fromLatLng(lat, lng);
 }
@@ -55,11 +50,11 @@ export function getWelcomeMessage(locations) {
     var prefix = "";
     if (locations.length >= 4) {
         prefix = `${locations[0].name}, ${locations[1].name} and ${locations.length - 2} other`;
-    }else if(locations.length === 3){
+    } else if (locations.length === 3) {
         prefix = `${locations[0].name}, ${locations[1].name} and ${locations[2].name}`;
-    }else if(locations.length === 2){
+    } else if (locations.length === 2) {
         prefix = `${locations[0].name} and ${locations[1].name}`;
-    }else{
+    } else {
         prefix = `${locations[0].name}`;
     }
     return prefix + str;

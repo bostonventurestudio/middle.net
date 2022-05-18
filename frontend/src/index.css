@@ -827,6 +827,7 @@ input[type=submit] {
   background: #5A9AE4;
   font-size: 20px;
   line-height: 24px;
+  text-decoration: none;
 }
 .form .btn-primary:hover {
   background: #448de0;
