@@ -9,10 +9,10 @@ export const LinkForm = props => {
             <div className="location-url">
                 <div className="url-text">
                     <span>{props.textToCopy}</span>
+                    <div id="copied" className="copied-link">link has been copied!</div>
                 </div>
                 <div className="copy-location">
-                    <button onClick={(event) => copyToClipboard(event, props.textToCopy)}>
-
+                    <button onClick={(event) => copyToClipboard(event, props.textToCopy, "copied")}>
                         <div className="icon-holder">
                             <i className="icon-copy"/>
                         </div>

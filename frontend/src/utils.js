@@ -20,7 +20,8 @@ export function deleteLocation(slug, id) {
     return axios.delete(`${LocationAPIURL}${slug}?id=${id}`);
 }
 
-export function copyToClipboard(event, textToCopy) {
+export function copyToClipboard(event, textToCopy, element_id) {
+    document.getElementById(element_id).style.display = "block";
     event.preventDefault();
     navigator.clipboard.writeText(textToCopy);
 }
