@@ -80,7 +80,7 @@ TEMPLATES = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
+    'https://m.middle.net',
 ]
 
 HAYSTACK_CONNECTIONS = {

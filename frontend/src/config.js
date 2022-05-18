@@ -1,4 +1,4 @@
-export const APIBaseURL = "http://127.0.0.1:8000";
+export const APIBaseURL = "https://api.middle.net";
 export const LocationAPIURL = `${APIBaseURL}/api/location/`;
 export const NearbyPlacesAPIURL = `${APIBaseURL}/api/nearby-places/`;
 export const GooglePlacesAPIBaseURL = "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
