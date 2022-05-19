@@ -1,15 +1,15 @@
 import json
+from datetime import datetime
 
 import requests
+from apps.core.models import Location
+from apps.core.serializers import LocationModelSerializer, LocationSerializer
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.core.models import Location
-from apps.core.serializers import LocationModelSerializer, LocationSerializer
-
-from backend.apps.core.utils import populate_slug_for_multiple_locations
+from apps.core.utils import populate_slug_for_multiple_locations, get_open_close_time
 
 
 class LocationView(APIView):
@@ -32,10 +32,16 @@ class LocationView(APIView):
 class NearbyPlacesView(APIView):
     def post(self, request):
         try:
-            response = requests.request("GET", request.data.get('url'))
+            response = requests.request("GET", request.data.get('places_url'))
+            if response.status_code != status.HTTP_200_OK:
+                return Response(response.text, status=response.status_code)
+            places = json.loads(response.text)['results'][:5]
+            for place in places:
+                place['abc'] = json.loads(response.text).get('result')
+                response = requests.request("GET", f'{request.data.get("opening_hours_url")}&place_id={place["place_id"]}')
+                if response.status_code == status.HTTP_200_OK:
+                    place['open_at'], place['close_at'] = get_open_close_time(json.loads(response.text).get('result'))
+            return Response(places)
         except Exception as e:
+            print(e)
             return Response(e.args, status=status.HTTP_400_BAD_REQUEST)
-        if response.status_code == status.HTTP_200_OK:
-            return Response(json.loads(response.text)['results'][:5])
-        else:
-            return Response(response.text, status=response.status_code)
