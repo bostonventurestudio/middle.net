@@ -64,7 +64,6 @@ class MapHolder extends Component {
             this.props.setAddress(response.results[0].formatted_address, form_key, false);
             this.props.setPlaceId(response.results[0].place_id, form_key);
             this.props.setPosition({lat: lat, lng: lng}, form_key);
-            console.log(response)
         } catch (e) {
             console.log(e);
         }

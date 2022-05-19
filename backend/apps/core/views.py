@@ -37,7 +37,6 @@ class NearbyPlacesView(APIView):
                 return Response(response.text, status=response.status_code)
             places = json.loads(response.text)['results'][:5]
             for place in places:
-                place['abc'] = json.loads(response.text).get('result')
                 response = requests.request("GET", f'{request.data.get("opening_hours_url")}&place_id={place["place_id"]}')
                 if response.status_code == status.HTTP_200_OK:
                     place['open_at'], place['close_at'] = get_open_close_time(json.loads(response.text).get('result'))

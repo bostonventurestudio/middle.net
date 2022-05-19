@@ -45,7 +45,6 @@ export class TopLocations extends Component {
         try {
             response = await getNearbyPlaces(center.lat + " " + center.lng);
             this.setState({nearbyPlaces: response.data});
-            console.log(response);
         } catch (e) {
             console.log(e);
         }
