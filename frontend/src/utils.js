@@ -21,7 +21,7 @@ export function deleteLocation(slug, id) {
 }
 
 export function copyToClipboard(event, textToCopy, element_id) {
-    document.getElementById(element_id).style.display = "block";
+    document.getElementById(element_id).style.display = "inline";
     event.preventDefault();
     navigator.clipboard.writeText(textToCopy);
 }

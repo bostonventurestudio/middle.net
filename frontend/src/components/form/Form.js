@@ -151,6 +151,9 @@ class Form extends Component {
 
         var url = window.location.pathname;
         var slug = url.substring(url.lastIndexOf('/') + 1);
+        if (slug === "add-location") {
+            slug = "";
+        }
         var data = [];
         for (form_key in this.state.forms_data) {
             data.push({
@@ -165,7 +168,7 @@ class Form extends Component {
         try {
             const response = await saveLocation(data);
             const locations = response.data;
-            window.location.href = `/top-places/${locations[0].slug}?redirected=True`;
+            window.location.href = `/${locations[0].slug}?redirected=True`;
         } catch (e) {
             console.log(e);
         }

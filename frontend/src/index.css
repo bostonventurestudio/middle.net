@@ -863,6 +863,7 @@ input[type=submit] {
   color: #5A9AE4;
   text-align: end;
   display: none;
+  padding-left: 25px;
 }
 
 .form .location-url .copy-location {

@@ -9,7 +9,7 @@ export const LinkForm = props => {
             <div className="location-url">
                 <div className="url-text">
                     <span>{props.textToCopy}</span>
-                    <div id="copied" className="copied-link">link has been copied!</div>
+                    <span id="copied" className="copied-link">link has been copied!</span>
                 </div>
                 <div className="copy-location">
                     <button onClick={(event) => copyToClipboard(event, props.textToCopy, "copied")}>
@@ -21,7 +21,7 @@ export const LinkForm = props => {
                 </div>
             </div>
             <p>Share this URL with a friend to find places to meet in the middle.</p>
-            <Link className="btn-primary" to={`/${window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1)}`}>Add another Location <i className="icon-right-2"/></Link>
+            <Link className="btn-primary" to={`/add-location/${window.location.pathname.substring(window.location.pathname.lastIndexOf('/') + 1)}`}>Add another Location <i className="icon-right-2"/></Link>
         </form>
     );
 };

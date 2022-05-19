@@ -114,7 +114,7 @@ export class TopLocations extends Component {
         return (
             <main id="main">
                 <div className="content-block">
-                    {this.state.canRender && <div className="container">
+                    {this.state.canRender ? <div className="container">
                         <LinkForm message={this.state.showMessage ? getWelcomeMessage(this.state.locations) : "Ok, we have your location!"} textToCopy={window.location.origin + window.location.pathname}/>
                         <div className="search-results-block">
                             <p>Top places in the middle:</p>
@@ -143,7 +143,7 @@ export class TopLocations extends Component {
                                 <a href="#map" data-tab="map" className="b-nav-tab" onClick={this.change}>Map View</a>
                             </div>
                         </div>
-                    </div>}
+                    </div> : <div className="container"><p>Loading...</p></div>}
                 </div>
             </main>
         )
