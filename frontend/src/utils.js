@@ -50,7 +50,7 @@ export function getWelcomeMessage(locations) {
     var str = " entered their location, enter your name and location to find a place to meet in the middle!";
     var prefix = "";
     if (locations.length >= 4) {
-        prefix = `${locations[0].name}, ${locations[1].name} and ${locations.length - 2} other`;
+        prefix = `${locations[0].name}, ${locations[1].name} and ${locations.length - 2} others`;
     } else if (locations.length === 3) {
         prefix = `${locations[0].name}, ${locations[1].name} and ${locations[2].name}`;
     } else if (locations.length === 2) {
