@@ -33,6 +33,7 @@ class NearbyPlace extends Component {
                         </ul>
                         <div className="timing-info">
                             <span className="open">{this.props.place.opening_hours && this.props.place.opening_hours.open_now ? "Open" : "Closed"}</span>
+                            <span className="time">{this.props.place.opening_hours && this.props.place.opening_hours.open_now ? this.props.place.close_at : this.props.place.open_at}</span>
                         </div>
                     </div>
                     <div className="directions-block">

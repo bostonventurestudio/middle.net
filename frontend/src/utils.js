@@ -1,5 +1,5 @@
 import axios from "axios";
-import {GooglePlacesAPIBaseURL, LocationAPIURL, NearbyPlacesAPIURL} from "./config";
+import {GooglePlaceOpeningHoursURL, GooglePlacesAPIBaseURL, LocationAPIURL, NearbyPlacesAPIURL} from "./config";
 import {RADIUS, TYPE} from "./constants";
 import Geocode from "react-geocode";
 
@@ -36,7 +36,8 @@ export function getCenterOfPolygonLatLngs(arr) {
 
 export function getNearbyPlaces(location) {
     const data = {
-        url: `${GooglePlacesAPIBaseURL}?location=${location}&radius=${RADIUS}&type=${TYPE}&key=${GoogleAPIKey}`,
+        places_url: `${GooglePlacesAPIBaseURL}?location=${location}&radius=${RADIUS}&type=${TYPE}&key=${GoogleAPIKey}`,
+        opening_hours_url: `${GooglePlaceOpeningHoursURL}?fields=opening_hours&key=${GoogleAPIKey}`,
     }
     return axios.post(NearbyPlacesAPIURL, data);
 }

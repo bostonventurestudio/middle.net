@@ -45,6 +45,7 @@ export class TopLocations extends Component {
         try {
             response = await getNearbyPlaces(center.lat + " " + center.lng);
             this.setState({nearbyPlaces: response.data});
+            console.log(response);
         } catch (e) {
             console.log(e);
         }
@@ -83,7 +84,7 @@ export class TopLocations extends Component {
 
     async componentWillMount() {
         const redirected = new URLSearchParams(window.location.search).get('redirected');
-        if(redirected){
+        if (redirected) {
             this.setState({showMessage: false});
         }
         var url = window.location.pathname;
