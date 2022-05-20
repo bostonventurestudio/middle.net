@@ -48,13 +48,15 @@ export class MapView extends Component {
     };
 
     async componentDidMount() {
-        try {
-            const response = await getAddressFormLatLng(this.props.center.lat, this.props.center.lng);
-            this.setState({
-                centerAddress: response.results[0].formatted_address
-            });
-        } catch (e) {
-            console.log(e);
+        if (this.props.center) {
+            try {
+                const response = await getAddressFormLatLng(this.props.center.lat, this.props.center.lng);
+                this.setState({
+                    centerAddress: response.results[0].formatted_address
+                });
+            } catch (e) {
+                console.log(e);
+            }
         }
     }
 

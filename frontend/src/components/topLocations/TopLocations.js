@@ -96,7 +96,10 @@ export class TopLocations extends Component {
                 if (response.data.length === 0) {
                     window.location.href = "/not-found";
                 } else if (response.data.length === 1) {
-                    this.setState({canRender: true});
+                    this.setState({
+                        center: null,
+                        canRender: true
+                    });
                     return;
                 }
             } catch (e) {
