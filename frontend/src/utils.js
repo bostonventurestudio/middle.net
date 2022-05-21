@@ -1,6 +1,6 @@
 import axios from "axios";
-import {GooglePlaceOpeningHoursURL, GooglePlacesAPIBaseURL, LocationAPIURL, NearbyPlacesAPIURL} from "./config";
-import {RADIUS, TYPE} from "./constants";
+import {LocationAPIURL} from "./config";
+import {OPEN, OPEN_24_HOURS} from "./constants";
 import Geocode from "react-geocode";
 
 const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -34,12 +34,20 @@ export function getCenterOfPolygonLatLngs(arr) {
     return {lat: cx, lng: cy};
 }
 
-export function getNearbyPlaces(location) {
-    const data = {
-        places_url: `${GooglePlacesAPIBaseURL}?location=${location}&radius=${RADIUS}&type=${TYPE}&key=${GoogleAPIKey}`,
-        opening_hours_url: `${GooglePlaceOpeningHoursURL}?fields=opening_hours&key=${GoogleAPIKey}`,
+export function get12HourTime(opening_hours, open_or_close) {
+    var day = ((new Date()).getDay() + 6) % 7;
+    if (opening_hours && opening_hours.weekday_text && opening_hours.weekday_text.length >= day && opening_hours.weekday_text[day]) {
+        var time_str = opening_hours.weekday_text[day].split(": ");
+        if (time_str.length >= 1) {
+            if (time_str[1] === OPEN_24_HOURS) {
+                return time_str[1];
+            } else {
+                time_str = time_str[1].split(" – ");
+                return open_or_close === OPEN ? `Opens ${time_str[0]}` : `Closes ${time_str[time_str.length - 1]}`;
+            }
+        }
     }
-    return axios.post(NearbyPlacesAPIURL, data);
+    return '';
 }
 
 export function getAddressFormLatLng(lat, lng) {

@@ -1,5 +1,4 @@
 export {Home} from './home/Home';
-export {TopLocations} from './topLocations/TopLocations';
 export {NotFound} from './notFound/NotFound';
 export {About} from "./about/About";
 export {Team} from "./team/Team";

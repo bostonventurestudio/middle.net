@@ -1,6 +1,7 @@
 import React from "react";
 import {BrowserRouter as Router, Navigate, Route, Routes as Switch} from "react-router-dom";
-import {About, Contact, Footer, Header, Home, NotFound, Privacy, Team, Term, TopLocations} from './components';
+import {About, Contact, Footer, Header, Home, NotFound, Privacy, Team, Term} from './components';
+import TopLocations from "./components/topLocations/TopLocations";
 
 export default function Routes() {
     return (

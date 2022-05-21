@@ -83,7 +83,7 @@ export class MapView extends Component {
                     {this.props.nearbyPlaces.map((place, index) => {
                         return (
                             <Marker icon={{url: "https://cdn-icons-png.flaticon.com/512/45/45332.png", anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}
-                                    key={index} position={{lat: place.geometry.location.lat, lng: place.geometry.location.lng}} name={`${place.name}: ${place.vicinity}`} onClick={this.onMarkerClick}/>)
+                                    key={index} position={{lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}} name={`${place.name}: ${place.vicinity}`} onClick={this.onMarkerClick}/>)
                     })}
 
                     <InfoWindow

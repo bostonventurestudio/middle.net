@@ -1,15 +1,20 @@
 import React, {Component} from 'react';
 import {LinkForm} from "../linkForm/LinkForm";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
-import {deleteLocation, getCenterOfPolygonLatLngs, getLocations, getNearbyPlaces, getWelcomeMessage} from "../../utils";
+import {deleteLocation, getCenterOfPolygonLatLngs, getLocations, getWelcomeMessage} from "../../utils";
 import MapView from "../MapView/MapView";
 import Location from "../location/Location";
+import {GoogleApiWrapper} from "google-maps-react";
+import {RADIUS, TYPE} from "../../constants";
 
-export class TopLocations extends Component {
+const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
+
+class TopLocations extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
+            service: new window.google.maps.places.PlacesService(document.createElement('div')),
             locations: [],
             nearbyPlaces: [],
             center: null,
@@ -19,6 +24,10 @@ export class TopLocations extends Component {
         };
         this.change = this.change.bind(this);
         this.clear = this.clear.bind(this);
+        this.setCenterAndNearbyPlaces = this.setCenterAndNearbyPlaces.bind(this);
+        this.getNearbyPlaceDetail = this.getNearbyPlaceDetail.bind(this);
+        this.setNearbyPlaceDetail = this.setNearbyPlaceDetail.bind(this);
+        this.setNearbyPlaces = this.setNearbyPlaces.bind(this);
         this.deleteLocationHandler = this.deleteLocationHandler.bind(this);
     }
 
@@ -36,6 +45,30 @@ export class TopLocations extends Component {
         event.target.classList.add('active');
         var id = event.currentTarget.getAttribute('data-tab');
         document.getElementById(id).classList.add('active');
+        console.log(this.state);
+    }
+
+    async getNearbyPlaceDetail(nearbyPlace, index) {
+        this.state.service.getDetails({placeId: nearbyPlace.place_id}, await this.setNearbyPlaceDetail);
+    }
+
+    async setNearbyPlaceDetail(nearbyPlace, status) {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+            var nearbyPlaces = this.state.nearbyPlaces;
+            nearbyPlaces.push(nearbyPlace);
+            this.setState({nearbyPlaces: nearbyPlaces});
+        }else {
+            console.log(nearbyPlace);
+        }
+    }
+
+    async setNearbyPlaces(result, status) {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+            result = result.slice(0, 5);
+            result.forEach(await this.getNearbyPlaceDetail);
+        } else {
+            console.log("e:", result);
+        }
     }
 
     async setCenterAndNearbyPlaces(response) {
@@ -43,8 +76,12 @@ export class TopLocations extends Component {
         var center = getCenterOfPolygonLatLngs(lagLngs);
         this.setState({center: center});
         try {
-            response = await getNearbyPlaces(center.lat + " " + center.lng);
-            this.setState({nearbyPlaces: response.data});
+            var request = {
+                location: center,
+                radius: RADIUS,
+                type: TYPE,
+            };
+            this.state.service.nearbySearch(request, await this.setNearbyPlaces);
         } catch (e) {
             console.log(e);
         }
@@ -152,3 +189,8 @@ export class TopLocations extends Component {
         )
     }
 }
+
+export default GoogleApiWrapper({
+    apiKey: GoogleAPIKey,
+    libraries: ["places"],
+})(TopLocations);

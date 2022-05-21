@@ -1,4 +1,7 @@
-export const RADIUS = 3000;
-export const TYPE = "restaurant|bar|cafe";
+export const RADIUS = 2000;
+export const TYPE = ["restaurant"];
 export const KEYWORD = "cafe";
 export const RANK_BY = "distance";
+export const OPEN = 0;
+export const CLOSE = 1;
+export const OPEN_24_HOURS = "Open 24 hours";

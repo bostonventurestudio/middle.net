@@ -1083,8 +1083,8 @@ input[type=submit] {
 .search-results-block .list-holder .img-holder {
   margin-right: 10px;
   flex-shrink: 0;
-  width: 68px;
-  height: 68px;
+  width: 70px;
+  height: 70px;
 }
 .search-results-block .list-holder .img-holder img {
   display: block;
@@ -1106,9 +1106,7 @@ input[type=submit] {
 
 .search-results-block .list-holder .phone_number {
   display: block;
-  margin: 10px 0;
-  font-size: 16px;
-  line-height: 20px;
+  margin-top: 5px;
 }
 
 .search-results-block .list-holder .detail {
