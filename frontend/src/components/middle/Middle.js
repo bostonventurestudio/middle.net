@@ -23,7 +23,8 @@ class Middle extends Component {
             forms_data: {},
             locations: [],
             nearbyPlaces: [],
-            center: null,
+            center: {lat: 0, lng: 0},
+            mapCenter: {lat: 0, lng: 0},
             canRender: false,
             canRenderMap: true,
             showMessage: true,
@@ -314,13 +315,14 @@ class Middle extends Component {
             }
         }
         if (lagLngs.length < 2) {
-            this.setState({canRenderMap: true});
+            this.setState({
+                canRenderMap: true,
+                center: {lat: 0, lng: 0},
+                mapCenter: lagLngs.length === 1 ? {lat: lagLngs[0][0], lng: lagLngs[0][1]} : {lat: 0, lng: 0}
+            });
             return;
         }
         var center = getCenterOfPolygonLatLngs(lagLngs);
-        this.setState({
-            center: center,
-        });
         try {
             var request = {
                 location: center,
@@ -331,7 +333,11 @@ class Middle extends Component {
         } catch (e) {
             console.log(e);
         }
-        this.setState({canRenderMap: true});
+        this.setState({
+            center: center,
+            mapCenter: center,
+            canRenderMap: true
+        });
     }
 
     render() {
@@ -381,7 +387,7 @@ class Middle extends Component {
                         <div id="map" className="b-tab">
                             {this.state.canRenderMap && <MapHolder google={this.props.google} forms_count={this.state.forms_count}
                                                                    center={this.state.center} forms_data={this.state.forms_data} nearbyPlaces={this.state.nearbyPlaces}
-                                                                   setAddress={this.setAddress} setPosition={this.setPosition}
+                                                                   setAddress={this.setAddress} setPosition={this.setPosition} mapCenter={this.state.mapCenter}
                                                                    setPlaceId={this.setPlaceId} addNewForm={this.addNewForm} setCenterAndNearbyPlaces={this.setCenterAndNearbyPlaces}
                             />}
                         </div>

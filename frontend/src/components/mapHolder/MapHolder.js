@@ -71,7 +71,7 @@ class MapHolder extends Component {
     }
 
     async componentDidMount() {
-        if (this.props.center) {
+        if (this.props.center.lat !== 0 && this.props.center.lng !== 0) {
             try {
                 const response = await getLocationDetailFormLatLng(this.props.center.lat, this.props.center.lng);
                 this.setState({
@@ -90,16 +90,10 @@ class MapHolder extends Component {
                 <Map
                     google={this.props.google}
                     onClick={(event, map, coord) => this.onMapClicked(coord)}
-                    initialCenter={{
-                        lat: this.props.forms_data[`form_${this.props.forms_count}`].latitude,
-                        lng: this.props.forms_data[`form_${this.props.forms_count}`].longitude,
-                    }}
-                    center={{
-                        lat: this.props.forms_data[`form_${this.props.forms_count}`].latitude,
-                        lng: this.props.forms_data[`form_${this.props.forms_count}`].longitude
-                    }}
+                    initialCenter={this.props.mapCenter}
+                    center={this.props.mapCenter}
                     zoom={12} style={{width: "80%", height: "500px"}}>
-                    {this.props.center &&
+                    {this.props.center.lat !== 0 && this.props.center.lng !== 0 &&
                     <Marker position={this.props.center} name={`Center: ${this.state.centerAddress}`} onClick={this.onMarkerClick}
                             icon={{
                                 url: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
