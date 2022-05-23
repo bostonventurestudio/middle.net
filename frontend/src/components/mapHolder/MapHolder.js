@@ -49,7 +49,7 @@ class MapHolder extends Component {
         } else {
             const forms_count = this.props.forms_count + 1;
             this.props.addNewForm();
-            await this.populateLocationData(coord, `form_${forms_count}`);
+            await this.populateLocationData(coord.lat, `form_${forms_count}`);
         }
     };
 
@@ -64,7 +64,7 @@ class MapHolder extends Component {
             const response = await getAddressFormLatLng(lat, lng);
             this.props.setAddress(response.results[0].formatted_address, form_key, false);
             this.props.setPlaceId(response.results[0].place_id, form_key);
-            this.props.setPosition({lat: lat, lng: lng}, form_key);
+            this.props.setPosition(lat, lng, form_key);
         } catch (e) {
             console.log(e);
         }
@@ -91,12 +91,12 @@ class MapHolder extends Component {
                     google={this.props.google}
                     onClick={(event, map, coord) => this.onMapClicked(coord)}
                     initialCenter={{
-                        lat: this.props.forms_data[`form_${this.props.forms_count}`].position.lat,
-                        lng: this.props.forms_data[`form_${this.props.forms_count}`].position.lng
+                        lat: this.props.forms_data[`form_${this.props.forms_count}`].latitude,
+                        lng: this.props.forms_data[`form_${this.props.forms_count}`].longitude,
                     }}
                     center={{
-                        lat: this.props.forms_data[`form_${this.props.forms_count}`].position.lat,
-                        lng: this.props.forms_data[`form_${this.props.forms_count}`].position.lng
+                        lat: this.props.forms_data[`form_${this.props.forms_count}`].latitude,
+                        lng: this.props.forms_data[`form_${this.props.forms_count}`].longitude
                     }}
                     zoom={12} style={{width: "80%", height: "500px"}}>
                     {this.props.center &&
@@ -109,8 +109,8 @@ class MapHolder extends Component {
                     {Object.keys(this.props.forms_data).map((form_key, index) => (
                         <Marker
                             position={{
-                                lat: this.props.forms_data[form_key].position.lat,
-                                lng: this.props.forms_data[form_key].position.lng
+                                lat: this.props.forms_data[form_key].latitude,
+                                lng: this.props.forms_data[form_key].longitude
                             }}
                             draggable={true}
                             name={this.props.forms_data[form_key].address}
@@ -118,10 +118,10 @@ class MapHolder extends Component {
                             onDragend={(event, map, coord) => this.onMarkerDragEnd(coord, form_key)}/>
                     ))}
 
-                    {this.props.locations.map((location, index) => {
+                     {this.props.nearbyPlaces.map((place, index) => {
                         return (
-                            <Marker key={index} position={{lat: location.latitude, lng: location.longitude}} name={location.address} onClick={this.onMarkerClick}/>
-                        )
+                            <Marker icon={{url: "https://cdn-icons-png.flaticon.com/512/45/45332.png", anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}
+                                    key={index} position={{lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}} name={`${place.name}: ${place.vicinity}`} onClick={this.onMarkerClick}/>)
                     })}
 
                     <InfoWindow

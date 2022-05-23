@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import {deleteLocation, getAddressFormLatLng, getLocations, saveLocation} from "../../utils";
+import {deleteLocation, getAddressFormLatLng, getCenterOfPolygonLatLngs, getLocations, saveLocation} from "../../utils";
 import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
 import {GoogleApiWrapper} from "google-maps-react";
 import Geocode from "react-geocode";
 import FormInputs from "../formInputs/FormInputs";
 import MapHolder from "../mapHolder/MapHolder";
-import Location from "../location/Location";
+import {FORM_INIT, RADIUS, TYPE} from "../../constants";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
 
 const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -18,15 +18,9 @@ class Middle extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            service: new window.google.maps.places.PlacesService(document.createElement('div')),
             forms_count: 1,
-            forms_data: {
-                form_1: {
-                    address: '',
-                    place_id: '',
-                    position: {lat: 0, lng: 0},
-                    isCorrectLocation: true,
-                },
-            },
+            forms_data: {},
             locations: [],
             nearbyPlaces: [],
             center: null,
@@ -44,26 +38,49 @@ class Middle extends Component {
         this.handleAddressSelect = this.handleAddressSelect.bind(this);
         this.addNewForm = this.addNewForm.bind(this);
         this.deleteForm = this.deleteForm.bind(this);
+        this.setCenterAndNearbyPlaces = this.setCenterAndNearbyPlaces.bind(this);
+        this.getNearbyPlaceDetail = this.getNearbyPlaceDetail.bind(this);
+        this.setNearbyPlaceDetail = this.setNearbyPlaceDetail.bind(this);
+        this.setNearbyPlaces = this.setNearbyPlaces.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.deleteLocationHandler = this.deleteLocationHandler.bind(this);
     }
 
-    async componentDidMount() {
+    async componentWillMount() {
         this.setState({canRender: false});
+        var forms_data = {};
+        var forms_count;
+        if (this.props.locations.length > 0) {
+            for (var i = 0, l = this.props.locations.length; i < l; i++) {
+                forms_data[`form_${i + 1}`] = this.props.locations[i];
+            }
+            forms_data[`form_${this.props.locations.length + 1}`] = FORM_INIT;
+            forms_count = this.props.locations.length + 1;
+
+        } else {
+            forms_data[`form_1`] = FORM_INIT;
+            forms_data[`form_2}`] = FORM_INIT;
+            forms_count = 2;
+        }
+        this.setState({
+            forms_count: forms_count,
+            forms_data: forms_data
+        });
         await navigator.geolocation.getCurrentPosition(async (position) => {
-            this.setPosition({lat: position.coords.latitude, lng: position.coords.longitude}, "form_1");
+            this.setPosition(position.coords.latitude, position.coords.longitude, `form_${this.props.locations.length + 1}`);
             try {
                 const response = await getAddressFormLatLng(position.coords.latitude, position.coords.longitude);
+                // forms_data[`form_${this.props.locations.length + 1}`].address = response.results[0].formatted_address;
+                // forms_data[`form_${this.props.locations.length + 1}`].google_place_id = response.results[0].place_id;
                 this.setState(state => {
-                    state.forms_data["form_1"].address = response.results[0].formatted_address;
-                    state.forms_data["form_1"].place_id = response.results[0].place_id;
+                    state.forms_data[`form_${this.props.locations.length + 1}`].address = response.results[0].formatted_address;
+                    state.forms_data[`form_${this.props.locations.length + 1}`].google_place_id = response.results[0].place_id;
                     return state;
-                });
+                }, await this.setCenterAndNearbyPlaces);
             } catch (e) {
                 console.log(e);
             }
         });
-
         this.setState({canRender: true});
     }
 
@@ -94,16 +111,18 @@ class Middle extends Component {
         this.setState(state => {
             state.forms_data[form_key].address = address;
             if (isInvalid) {
-                state.forms_data[form_key].position = {lat: 0, lng: 0};
-                state.forms_data[form_key].place_id = '';
+                state.forms_data[form_key].latitude = 0;
+                state.forms_data[form_key].longitude = 0;
+                state.forms_data[form_key].google_place_id = '';
             }
             return state;
         });
     }
 
-    setPosition(position, form_key) {
+    setPosition(lat, lng, form_key) {
         this.setState(state => {
-            state.forms_data[form_key].position = position;
+            state.forms_data[form_key].latitude = lat;
+            state.forms_data[form_key].longitude = lng;
             return state;
         });
     }
@@ -114,7 +133,7 @@ class Middle extends Component {
 
     setPlaceId(place_id, form_key) {
         this.setState(state => {
-            state.forms_data[form_key].place_id = place_id;
+            state.forms_data[form_key].google_place_id = place_id;
             return state;
         });
     }
@@ -124,11 +143,11 @@ class Middle extends Component {
         this.setIsCorrectLocation(true, form_key);
         geocodeByAddress(address)
             .then(results => {
-                this.setPlaceId(results[0].place_id, form_key);
+                this.setPlaceId(results[0].google_place_id, form_key);
                 return getLatLng(results[0]);
             })
             .then(position => {
-                this.setPosition(position, form_key);
+                this.setPosition(position.lat, position.lng, form_key);
             })
             .catch(error => console.error('Error', error));
 
@@ -141,12 +160,7 @@ class Middle extends Component {
         const forms_count = this.state.forms_count + 1;
         this.setState(state => {
             state.forms_count = forms_count;
-            state.forms_data[`form_${forms_count}`] = {
-                address: '',
-                place_id: '',
-                position: {lat: 0, lng: 0},
-                isCorrectLocation: true,
-            };
+            state.forms_data[`form_${forms_count}`] = FORM_INIT;
             return state;
         });
     }
@@ -154,8 +168,13 @@ class Middle extends Component {
     deleteForm(event, form_key) {
         event.preventDefault();
         const forms_count = this.state.forms_count - 1;
-        const forms_data = this.state.forms_data;
-        delete forms_data[form_key];
+        const form_data_list = Object.values(this.state.forms_data);
+        const forms_data = {};
+        for (var i = 0, l = form_data_list.length; i < l; i++) {
+            if (form_data_list[i].latitude === 0 && form_data_list[i].longitude === 0) {
+                forms_data[`form_${i+1}`] = form_data_list[i];
+            }
+        }
         this.setState(state => {
             state.forms_count = forms_count;
             state.forms_data = forms_data;
@@ -167,7 +186,7 @@ class Middle extends Component {
         event.preventDefault();
         var canSubmit = true;
         for (var form_key in this.state.forms_data) {
-            if (this.state.forms_data[form_key].position.lat === 0 && this.state.forms_data[form_key].position.lng === 0) {
+            if (this.state.forms_data[form_key].latitude === 0 && this.state.forms_data[form_key].longitude === 0) {
                 this.setIsCorrectLocation(false, form_key);
                 canSubmit = false;
             }
@@ -193,10 +212,10 @@ class Middle extends Component {
         }
         try {
             const response = await saveLocation(data);
-            const locations = response.data;
-            this.setState({locations: response.data,
-            forms_count: 1})
-            // window.location.href = `/${locations[0].slug}?redirected=True`;
+            this.setState({
+                locations: response.data,
+                forms_count: 1
+            });
         } catch (e) {
             console.log(e);
         }
@@ -230,6 +249,64 @@ class Middle extends Component {
         this.setState({canRenderMap: true});
     }
 
+    async getNearbyPlaceDetail(nearbyPlace, index) {
+        this.state.service.getDetails({placeId: nearbyPlace.place_id}, await this.setNearbyPlaceDetail);
+    }
+
+    async setNearbyPlaceDetail(nearbyPlace, status) {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+            var nearbyPlaces = this.state.nearbyPlaces;
+            nearbyPlaces.push(nearbyPlace);
+            this.setState({nearbyPlaces: nearbyPlaces});
+        } else {
+            console.log(nearbyPlace);
+        }
+    }
+
+    async setNearbyPlaces(result, status) {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+            result = result.slice(0, 5);
+            result.forEach(await this.getNearbyPlaceDetail);
+        } else {
+            console.log("e:", result);
+        }
+    }
+
+    async setCenterAndNearbyPlaces() {
+        this.setState({
+            canRender: false,
+        });
+        var lagLngs = [];
+        var locations = Object.values(this.state.forms_data);
+        for (var i = 0, l = locations.length; i < l; i++) {
+            if (locations[i].latitude !== 0 && locations[i].longitude !== 0) {
+                lagLngs.push([locations[i].latitude, locations[i].longitude]);
+            }
+        }
+
+        console.log("Lat: ", lagLngs);
+        console.log("Lat: ", lagLngs.length);
+        if (lagLngs.length < 2) {
+            this.setState({canRender: true});
+            return;
+        }
+        var center = getCenterOfPolygonLatLngs(lagLngs);
+        this.setState({
+            center: center,
+            nearbyPlaces: [],
+        });
+        try {
+            var request = {
+                location: center,
+                radius: RADIUS,
+                type: TYPE,
+            };
+            this.state.service.nearbySearch(request, await this.setNearbyPlaces);
+        } catch (e) {
+            console.log(e);
+        }
+        this.setState({canRender: true});
+    }
 
     render() {
         if (!this.state.canRender) {
@@ -242,11 +319,11 @@ class Middle extends Component {
                         Object.keys(this.state.forms_data).map((form_key, index) => (
                             <FormInputs key={index} form_key={form_key}
                                         isCorrectLocation={this.state.forms_data[form_key].isCorrectLocation}
-                                        position={this.state.forms_data[form_key].position}
+                                        position={{lat: this.state.forms_data[form_key].latitude, lng: this.state.forms_data[form_key].longitude}}
                                         address={this.state.forms_data[form_key].address}
                                         setAddress={this.setAddress}
                                         handleAddressSelect={this.handleAddressSelect}
-                                        canDelete={this.state.forms_count > 1 && index === this.state.forms_count - 1}
+                                        canDelete={this.state.forms_count > 2 && index === this.state.forms_count - 1}
                                         deleteForm={this.deleteForm}/>
                         ))
                     }
@@ -264,45 +341,25 @@ class Middle extends Component {
                             <div>{this.state.locations.length >= 2 ? "Top places in the middle" : "Enter two or more locations to find places to meet in the middle."}</div>
                         </div>
                         <div className="tab-links">
-                            <a href="#places-view" data-tab="places" className="b-nav-tab active" onClick={this.change}>Places</a>
-                            <a href="#locations-view" data-tab="locations" className="b-nav-tab" onClick={this.change}>Locations</a>
-                            <a href="#map-view" data-tab="map" className="b-nav-tab" onClick={this.change}>Map</a>
+                            <a href="#list-view" data-tab="places" className="b-nav-tab active" onClick={this.change}>List View</a>
+                            <a href="#map-view" data-tab="map" className="b-nav-tab" onClick={this.change}>Map View</a>
                         </div>
                     </div>
                     <div className="tabset">
                         <div id="places" className="b-tab active">
                             <div className="list-view-block">
-                                <NearbyPlace locations={this.state.locations} forms_count={this.state.forms_count} forms_data={this.state.forms_data} setCenter={this.setCenter}/>
-                                {/*{this.state.canRender && this.state.nearbyPlaces.length > 0 ? this.state.nearbyPlaces.map((place, index) => {*/}
-                                {/*    return <NearbyPlace place={place} index={index + 1} key={index}/>*/}
-                                {/*}) : <div className="instruction-places">*/}
-                                {/*    No places yet! Enter another location to generate places to meet in the middle.*/}
-                                {/*</div>}*/}
-                            </div>
-                        </div>
-                        <div id="locations" className="b-tab">
-                            <div className="list-view-block">
-                                {this.state.locations.length > 0 && this.state.locations.map((location, index) => {
-                                    return <Location canDelete={true} location={location} index={index + 1} key={index} deleteLocation={this.deleteLocationHandler}/>
-                                })}
-
-                                {this.state.forms_data['form_1'].place_id !== '' && Object.keys(this.state.forms_data).map((form_key, index) => (
-                                    <Location canDelete={false} location={this.state.forms_data[form_key]} index={this.state.locations.length + index + 1} key={index} deleteLocation={this.deleteLocationHandler}/>
-                                ))}
-                                {!(this.state.locations.length > 0 || this.state.forms_data['form_1'].place_id !== '') &&
-                                <div className="instruction-locations">
-                                    No Locations Available.
+                                {this.state.nearbyPlaces.length > 1 ? this.state.nearbyPlaces.map((place, index) => {
+                                    return <NearbyPlace place={place} index={index + 1} key={index}/>
+                                }) : <div className="instruction-places">
+                                    No places yet! Enter another location to generate places to meet in the middle.
                                 </div>}
                             </div>
                         </div>
                         <div id="map" className="b-tab">
-                            <MapHolder google={this.props.google} locations={this.state.locations}
-                                       forms_count={this.state.forms_count} center={this.state.center}
-                                       forms_data={this.state.forms_data}
-                                       setAddress={this.setAddress}
-                                       setPosition={this.setPosition}
-                                       setPlaceId={this.setPlaceId}
-                                       addNewForm={this.addNewForm}
+                            <MapHolder google={this.props.google} forms_count={this.state.forms_count}
+                                       center={this.state.center} forms_data={this.state.forms_data} nearbyPlaces={this.state.nearbyPlaces}
+                                       setAddress={this.setAddress} setPosition={this.setPosition}
+                                       setPlaceId={this.setPlaceId} addNewForm={this.addNewForm}
                             />
                         </div>
                     </div>

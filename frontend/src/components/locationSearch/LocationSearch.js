@@ -20,7 +20,7 @@ class LocationSearch extends Component {
                         <div>
                             <div className="input-holder">
                                 <input{...getInputProps({placeholder: "Enter your location", className: "location-search-input",})} required/>
-                                {!this.props.isCorrectLocation && <span className="error">ERROR: Invalid Location</span>}
+                                {this.props.isCorrectLocation !== undefined && this.props.isCorrectLocation === false && <span className="error">ERROR: Invalid Location</span>}
                             </div>
                             <div style={{position: "relative"}}>
                                 <div className="autocomplete-dropdown-container">

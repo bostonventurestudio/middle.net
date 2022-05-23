@@ -12,7 +12,7 @@ export class Home extends Component {
         };
     }
 
-    async UNSAFE_componentWillMount() {
+    async componentDidMount() {
         var url = window.location.pathname;
         var slug = url.substring(url.lastIndexOf('/') + 1);
         if (slug && slug !== "add-location") {
