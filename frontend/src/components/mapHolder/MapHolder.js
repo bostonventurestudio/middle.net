@@ -71,7 +71,6 @@ class MapHolder extends Component {
     }
 
     async componentDidMount() {
-        console.log(window.matchMedia("(min-width: 768px)").matches);
         if (this.props.center.lat !== 0 && this.props.center.lng !== 0) {
             try {
                 const response = await getLocationDetailFormLatLng(this.props.center.lat, this.props.center.lng);

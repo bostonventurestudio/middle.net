@@ -19,9 +19,9 @@ class Middle extends Component {
         super(props);
         this.state = {
             service: new window.google.maps.places.PlacesService(document.createElement('div')),
+            slug: '',
             forms_count: 1,
             forms_data: {},
-            locations: [],
             nearbyPlaces: [],
             center: {lat: 0, lng: 0},
             mapCenter: {lat: 0, lng: 0},
@@ -54,14 +54,7 @@ class Middle extends Component {
             for (var i = 0, l = locations.length; i < l; i++) {
                 forms_data[`form_${i + 1}`] = locations[i];
             }
-            forms_data[`form_${locations.length + 1}`] = {
-                address: '',
-                google_place_id: '',
-                latitude: 0,
-                longitude: 0,
-                isCorrectLocation: true,
-            };
-            forms_count = locations.length + 1;
+            this.setState({slug: locations[0].slug});
         } else {
             forms_data[`form_1`] = {
                 address: '',
@@ -235,20 +228,18 @@ class Middle extends Component {
             return;
         }
 
-        var url = window.location.pathname;
-        var slug = url.substring(url.lastIndexOf('/') + 1);
         var data = [];
         for (form_key in this.state.forms_data) {
             data.push({
                 google_place_id: this.state.forms_data[form_key].google_place_id,
                 address: this.state.forms_data[form_key].address,
-                latitude: this.state.forms_data[form_key].latitude.toFixed(5),
-                longitude: this.state.forms_data[form_key].longitude.toFixed(5),
-                slug: slug
+                latitude: parseFloat(this.state.forms_data[form_key].latitude).toFixed(5),
+                longitude: parseFloat(this.state.forms_data[form_key].longitude).toFixed(5),
+                slug: this.state.slug
             });
         }
         try {
-            const response = await saveLocation(data, slug);
+            const response = await saveLocation(data);
             this.populateFormsData(response.data);
         } catch (e) {
             console.log(e);
@@ -344,7 +335,7 @@ class Middle extends Component {
                             <span className="text">Add another location</span>
                         </button>
                     </div>}
-                    <button type="submit" className={this.state.forms_data["form_1"].google_place_id !== '' ? "btn-primary" : "btn-primary disabled"}>Share link <i className="icon-copy"/></button>
+                    <button type="submit" className={this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"].google_place_id !== '' ? "btn-primary" : "btn-primary disabled"}>Share link <i className="icon-copy"/></button>
                 </form>
                 <div className="search-results-block">
                     <div className="tab">
