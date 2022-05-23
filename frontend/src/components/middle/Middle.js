@@ -356,12 +356,12 @@ class Middle extends Component {
                                         deleteForm={this.deleteForm}/>
                         ))
                     }
-                    <div className="add-location">
+                    {this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"].google_place_id !== '' && <div className="add-location">
                         <button onClick={this.addNewForm}>
                             <span className="icon">+</span>
                             <span className="text">Add another location</span>
                         </button>
-                    </div>
+                    </div>}
                     <button type="submit" className="btn-primary">Share link <i className="icon-copy"/></button>
                 </form>
                 <div className="search-results-block">
