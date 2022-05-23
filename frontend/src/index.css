@@ -801,14 +801,39 @@ input[type=submit] {
 .form .target-location {
   position: absolute;
   top: 13px;
-  right: -55px;
+  right: -75px;
   font-size: 33px;
   line-height: 35px;
 }
 .form .target-location a {
   text-decoration: none;
   color: #5A9AE4;
+  cursor: pointer;
+
 }
+
+.form .target-location a:hover {
+  color: #448de0;
+}
+
+.form .location-delete {
+  position: absolute;
+  top: 13px;
+  right: -37px;
+  font-size: 33px;
+  line-height: 35px;
+}
+.form .location-delete a {
+  text-decoration: none;
+  color: red;
+  cursor: pointer;
+
+}
+
+.form .location-delete a:hover {
+  color: darkred;
+}
+
 .form p {
   margin-bottom: 20px;
 }

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {deleteLocation, getCenterOfPolygonLatLngs, getLocationDetailFormLatLng, getLocations, saveLocation} from "../../utils";
+import {getCenterOfPolygonLatLngs, getLocationDetailFormLatLng, saveLocation} from "../../utils";
 import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
 import {GoogleApiWrapper} from "google-maps-react";
 import Geocode from "react-geocode";
@@ -31,7 +31,7 @@ class Middle extends Component {
         };
         this.change = this.change.bind(this);
         this.clear = this.clear.bind(this);
-        this.setCenter = this.setCenter.bind(this);
+        this.setMapCenter = this.setMapCenter.bind(this);
         this.setAddress = this.setAddress.bind(this);
         this.setPosition = this.setPosition.bind(this);
         this.setPlaceId = this.setPlaceId.bind(this);
@@ -44,7 +44,6 @@ class Middle extends Component {
         this.setNearbyPlaceDetail = this.setNearbyPlaceDetail.bind(this);
         this.setNearbyPlaces = this.setNearbyPlaces.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.deleteLocationHandler = this.deleteLocationHandler.bind(this);
     }
 
     async componentWillMount() {
@@ -115,8 +114,11 @@ class Middle extends Component {
         document.getElementById(id).classList.add('active');
     }
 
-    setCenter(center) {
-        this.setState({center: center});
+    setMapCenter(event, form_key) {
+        if (event) {
+            event.preventDefault();
+        }
+        this.setState({mapCenter: {lat: this.state.forms_data[form_key].latitude, lng: this.state.forms_data[form_key].longitude}});
     }
 
     setIsCorrectLocation(isCorrectLocation, form_key) {
@@ -189,13 +191,16 @@ class Middle extends Component {
     deleteForm(event, form_key) {
         event.preventDefault();
         const forms_count = this.state.forms_count - 1;
-        const form_data_list = Object.values(this.state.forms_data);
         const forms_data = {};
-        for (var i = 0, l = form_data_list.length; i < l; i++) {
-            if (form_data_list[i].latitude === 0 && form_data_list[i].longitude === 0) {
-                forms_data[`form_${i + 1}`] = form_data_list[i];
+        var index = 1;
+        for (const [key, value] of Object.entries(this.state.forms_data)) {
+            if(key !== form_key){
+                forms_data[`form_${index}`] = value;
+                index = index + 1;
             }
         }
+        console.log(this.state.forms_data)
+        console.log(forms_data)
         this.setState(state => {
             state.forms_count = forms_count;
             state.forms_data = forms_data;
@@ -241,34 +246,6 @@ class Middle extends Component {
             console.log(e);
         }
     };
-
-    async deleteLocationHandler(id) {
-        this.setState({canRenderMap: false});
-        var url = window.location.pathname;
-        var slug = url.substring(url.lastIndexOf('/') + 1);
-        var response = null;
-        if (slug) {
-            try {
-                await deleteLocation(slug, id);
-                response = await getLocations(slug);
-                this.setState({locations: response.data});
-                if (response.data.length === 0) {
-                    window.location.href = "/not-found";
-                } else if (response.data.length === 1) {
-                    this.setState({
-                        center: null,
-                        nearbyPlaces: []
-                    });
-                    this.setState({canRenderMap: true});
-                    return;
-                }
-            } catch (e) {
-                console.log(e);
-                window.location.href = "/not-found";
-            }
-        }
-        this.setState({canRenderMap: true});
-    }
 
     async getNearbyPlaceDetail(nearbyPlace, index) {
         this.state.service.getDetails({placeId: nearbyPlace.place_id}, await this.setNearbyPlaceDetail);
@@ -352,8 +329,9 @@ class Middle extends Component {
                                         address={this.state.forms_data[form_key].address}
                                         setAddress={this.setAddress}
                                         handleAddressSelect={this.handleAddressSelect}
-                                        canDelete={this.state.forms_count > 2 && index === this.state.forms_count - 1}
-                                        deleteForm={this.deleteForm}/>
+                                        canDelete={this.state.forms_count > 2}
+                                        deleteForm={this.deleteForm}
+                                        setMapCenter={this.setMapCenter}/>
                         ))
                     }
                     {this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"].google_place_id !== '' && <div className="add-location">
@@ -367,7 +345,7 @@ class Middle extends Component {
                 <div className="search-results-block">
                     <div className="tab">
                         <div className="tab-title">
-                            <div>{this.state.locations.length >= 2 ? "Top places in the middle" : "Enter two or more locations to find places to meet in the middle."}</div>
+                            <div>{this.state.center.lat !== 0 && this.state.center.lng !== 0 ? "Top places in the middle:" : "Enter two or more locations to find places to meet in the middle."}</div>
                         </div>
                         <div className="tab-links">
                             <a href="#list-view" data-tab="places" className="b-nav-tab active" onClick={this.change}>List View</a>
@@ -377,7 +355,7 @@ class Middle extends Component {
                     <div className="tabset">
                         <div id="places" className="b-tab active">
                             <div className="list-view-block">
-                                {this.state.nearbyPlaces.length > 1 ? this.state.nearbyPlaces.map((place, index) => {
+                                {this.state.nearbyPlaces.length > 0 ? this.state.nearbyPlaces.map((place, index) => {
                                     return <NearbyPlace place={place} index={index + 1} key={index}/>
                                 }) : <div className="instruction-places">
                                     No places yet! Enter another location to generate places to meet in the middle.

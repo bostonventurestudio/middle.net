@@ -20,7 +20,8 @@ class LocationSearch extends Component {
                         <div>
                             <div className="input-holder">
                                 <input{...getInputProps({placeholder: "Enter your location", className: "location-search-input",})} required/>
-                                <span className="target-location"><a href="#"><i className="icon-target"/></a></span>
+                                {this.props.canDelete && <span className="location-delete"><a onClick={(event) => this.props.deleteForm(event, this.props.form_key)}><i className="fa fa-trash"/></a></span>}
+                                <span className="target-location"><a onClick={(event) => this.props.setMapCenter(event, this.props.form_key)}><i className="icon-target"/></a></span>
                                 {this.props.isCorrectLocation !== undefined && this.props.isCorrectLocation === false && <span className="error">ERROR: Invalid Location</span>}
                             </div>
                             <div style={{position: "relative"}}>
