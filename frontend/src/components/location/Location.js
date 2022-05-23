@@ -8,7 +8,6 @@ class Location extends Component {
                     <span className="num">{this.props.index}</span>
                     <div className="img-detail-block">
                         <div className="detail-block">
-                            <span className="title"><b>{this.props.location.name}</b></span>
                             <span className="detail">{this.props.location.address}</span>
                         </div>
                     </div>

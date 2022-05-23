@@ -8,10 +8,8 @@ export default function Routes() {
         <Router>
             <Header/>
             <Switch>
-                <Route path="/" element={<Navigate replace to="/add-location" />}/>
-                <Route path="/add-location" element={<Home/>}/>
-                <Route path="/add-location/:url" element={<Home/>}/>
-                <Route path="/:url" element={<TopLocations/>}/>
+                <Route path="/" element={<Home/>}/>
+                <Route path="/:url" element={<Home/>}/>
                 <Route path="/not-found" element={<NotFound/>}/>
             </Switch>
             <Footer/>

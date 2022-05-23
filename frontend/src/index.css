@@ -940,23 +940,60 @@ input[type=submit] {
 }
 
 .search-results-block {
-  margin-top: 40px;
+  margin-top: 15px;
 }
+
 @media (min-width: 768px) {
-  .search-results-block {
-    margin-top: 80px;
+   .search-results-block .tab {
+    display: flex;
+    margin-bottom: 25px;
   }
 }
-.search-results-block p {
-  margin-bottom: 20px;
+
+.search-results-block {
+  margin-top: 15px;
 }
+
+
 @media (min-width: 768px) {
-  .search-results-block p {
-    font-size: 20px;
-    line-height: 24px;
+  .search-results-block .tab-title {
+    float: left;
+    padding-right: 80px;
+    width: 344px;
   }
 }
+
+
+.search-results-block .instruction-places, .instruction-locations {
+  max-width: 600px;
+  height: 200px;
+  background: white;
+  margin-top: 25px;
+  padding: 80px 20px 0;
+}
+
+@media (min-width: 768px) {
+  .search-results-block .instruction-places {
+    max-width: 600px;
+    height: 200px;
+    padding: 80px 145px 0;
+   }
+}
+
+@media (min-width: 768px) {
+  .search-results-block .instruction-locations {
+    max-width: 600px;
+    height: 200px;
+    padding: 80px 200px 0;
+   }
+}
+
+.search-results-block .tab-links {
+  margin-top: 15px;
+}
+
 .search-results-block .tabset {
+  margin-top: 25px;
   margin-bottom: 30px;
 }
 .search-results-block .map-holder iframe {

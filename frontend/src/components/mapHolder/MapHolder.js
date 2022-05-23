@@ -99,6 +99,12 @@ class MapHolder extends Component {
                         ))
                     }
 
+                    {this.props.locations.map((location, index) => {
+                        return (
+                            <Marker key={index} position={{lat: location.latitude, lng: location.longitude}} name={location.address} onClick={this.onMarkerClick}/>
+                        )
+                    })}
+
                     <InfoWindow
                         marker={this.state.activeMarker}
                         onClose={this.onInfoWindowClose}

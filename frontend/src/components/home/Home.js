@@ -1,9 +1,16 @@
 import React, {Component} from 'react';
-import Form from "../form/Form";
 import {getLocations} from "../../utils";
+import Middle from "../middle/Middle";
 
 
 export class Home extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            locations: [],
+        };
+    }
 
     async UNSAFE_componentWillMount() {
         var url = window.location.pathname;
@@ -14,6 +21,7 @@ export class Home extends Component {
                 if (response.data.length === 0) {
                     window.location.href = "/not-found";
                 }
+                this.setState({locations: response.data});
             } catch (e) {
                 console.log(e);
                 window.location.href = "/not-found";
@@ -26,7 +34,7 @@ export class Home extends Component {
             <main id="main">
                 <div className="content-block">
                     <div className="container">
-                        <Form/>
+                        <Middle locations={this.state.locations}/>
                     </div>
                 </div>
             </main>
