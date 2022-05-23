@@ -1,20 +1,15 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 
-export const Footer = (props) => {
+export const Footer = () => {
     return (
         <footer id="footer">
             <div className="container">
-                <span>Meet in the Middle</span>
                 <div className="links">
                     <Link className="link" to="/">Home</Link>
-                    <Link className="link" to="/about">About</Link>
-                    <Link className="link" to="/team">Team</Link>
-                    <Link className="link" to="/term" >Term</Link>
-                    <Link className="link" to="/privacy">Privacy</Link>
-                    <Link className="link-last" to="/contact">Contact</Link>
+                    <a className="link" href="https://www.info.middle.net/about">About</a>
+                    <a className="link-last" href="https://www.info.middle.net/contact">Contact</a>
                 </div>
-                <span><a href='https://www.bvs.net/'> Boston Venture Studio project</a></span>
             </div>
         </footer>
     )
