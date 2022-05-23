@@ -805,14 +805,14 @@ input[type=submit] {
   font-size: 33px;
   line-height: 35px;
 }
-.form .target-location a {
+.form .target-location button {
   text-decoration: none;
   color: #5A9AE4;
-  cursor: pointer;
-
+  background: none;
+  border: none;
 }
 
-.form .target-location a:hover {
+.form .target-location button:hover {
   color: #448de0;
 }
 
@@ -823,14 +823,14 @@ input[type=submit] {
   font-size: 33px;
   line-height: 35px;
 }
-.form .location-delete a {
+.form .location-delete button {
   text-decoration: none;
   color: red;
-  cursor: pointer;
-
+  background: none;
+  border: none;
 }
 
-.form .location-delete a:hover {
+.form .location-delete button:hover {
   color: darkred;
 }
 
@@ -984,13 +984,13 @@ input[type=submit] {
   .search-results-block .tab-title {
     float: left;
     padding-right: 80px;
-    width: 344px;
+    width: 366px;
   }
 }
 
 
 .search-results-block .instruction-places, .instruction-locations {
-  max-width: 600px;
+  max-width: 572px;
   height: 200px;
   background: white;
   margin-top: 25px;
@@ -999,8 +999,6 @@ input[type=submit] {
 
 @media (min-width: 768px) {
   .search-results-block .instruction-places {
-    max-width: 600px;
-    height: 200px;
     padding: 80px 145px 0;
    }
 }
@@ -1238,6 +1236,10 @@ input[type=submit] {
   position: relative;
 }
 
+.map {
+  width: 50%;
+  height: 500px;
+}
 
 
 .not-found {

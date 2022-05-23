@@ -12,8 +12,8 @@ export function getLocations(slug) {
     return axios.get(LocationAPIURL + slug);
 }
 
-export function saveLocation(data) {
-    return axios.post(LocationAPIURL, data);
+export function saveLocation(data, slug) {
+    return axios.post(LocationAPIURL + slug, data);
 }
 
 export function deleteLocation(slug, id) {

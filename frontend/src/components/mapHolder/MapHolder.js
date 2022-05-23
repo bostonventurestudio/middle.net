@@ -7,6 +7,7 @@ class MapHolder extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isBigScreen: window.matchMedia("(min-width: 768px)").matches,
             activeMarker: {},
             selectedPlace: {},
             showingInfoWindow: false,
@@ -47,9 +48,8 @@ class MapHolder extends Component {
                 showingInfoWindow: false
             });
         } else {
-            const forms_count = this.props.forms_count + 1;
-            this.props.addNewForm();
-            await this.populateLocationData(coord, `form_${forms_count}`);
+            const form_key = this.props.addNewForm(null, true);
+            await this.populateLocationData(coord, form_key);
         }
     };
 
@@ -71,6 +71,7 @@ class MapHolder extends Component {
     }
 
     async componentDidMount() {
+        console.log(window.matchMedia("(min-width: 768px)").matches);
         if (this.props.center.lat !== 0 && this.props.center.lng !== 0) {
             try {
                 const response = await getLocationDetailFormLatLng(this.props.center.lat, this.props.center.lng);
@@ -81,10 +82,15 @@ class MapHolder extends Component {
                 console.log(e);
             }
         }
+        window.matchMedia("(min-width: 768px)").addEventListener('change', (event) => this.setState({isBigScreen: event.matches}));
     }
 
 
     render() {
+        const style = {
+            height: "500px",
+            width: this.state.isBigScreen ? "572px": "85%",
+        };
         return (
             <div className={this.state.isFullScreen ? "map-holder-full" : "map-holder"}>
                 <Map
@@ -92,7 +98,7 @@ class MapHolder extends Component {
                     onClick={(event, map, coord) => this.onMapClicked(coord)}
                     initialCenter={this.props.mapCenter}
                     center={this.props.mapCenter}
-                    zoom={12} style={{width: "80%", height: "500px"}}>
+                    zoom={12} style={style}>
                     {this.props.center.lat !== 0 && this.props.center.lng !== 0 &&
                     <Marker position={this.props.center} name={`Center: ${this.state.centerAddress}`} onClick={this.onMarkerClick}
                             icon={{

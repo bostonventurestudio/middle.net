@@ -16,7 +16,7 @@ class LocationView(APIView):
     def get(self, request, slug):
         return Response(LocationModelSerializer(Location.objects.filter(slug=slug), many=True).data)
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         serializer = LocationSerializer(data=populate_slug_for_multiple_locations(request.data), many=True)
         serializer.is_valid(raise_exception=True)
         locations = serializer.save()
