@@ -8,19 +8,15 @@ class Location extends Component {
                     <span className="num">{this.props.index}</span>
                     <div className="img-detail-block">
                         <div className="detail-block">
-                            <span className="detail">{this.props.location.address}</span>
+                            <span className="title">{this.props.location.address}</span>
                         </div>
                     </div>
                 </div>
                 <div className="right-block">
-                    <div className="rating-time-block">
-                    </div>
-                    <div>
-                        <button className="btn-primary" onClick={(event) => {
-                            event.preventDefault();
-                            this.props.deleteLocation(this.props.location.id);
-                        }}>Delete</button>
-                    </div>
+                    {this.props.canDelete && <button className="btn-primary" onClick={(event) => {
+                        event.preventDefault();
+                        this.props.deleteLocation(this.props.location.id);
+                    }}>Delete</button>}
                 </div>
             </div>
         );

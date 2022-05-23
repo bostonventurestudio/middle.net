@@ -995,6 +995,7 @@ input[type=submit] {
 .search-results-block .tabset {
   margin-top: 25px;
   margin-bottom: 30px;
+  min-height: 500px;
 }
 .search-results-block .map-holder iframe {
   width: 100%;
@@ -1055,6 +1056,7 @@ input[type=submit] {
   background: #5A9AE4;
   font-size: 12px;
   line-height: 10px;
+  height: 30px;
 }
 .search-results-block .list-holder .right-block .btn-primary:hover {
   background: #448de0;

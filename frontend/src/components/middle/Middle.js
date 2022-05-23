@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {deleteLocation, getAddressFormLatLng, getCenterOfPolygonLatLngs, getLocations, saveLocation} from "../../utils";
+import {deleteLocation, getAddressFormLatLng, getLocations, saveLocation} from "../../utils";
 import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
 import {GoogleApiWrapper} from "google-maps-react";
 import Geocode from "react-geocode";
@@ -7,7 +7,6 @@ import FormInputs from "../formInputs/FormInputs";
 import MapHolder from "../mapHolder/MapHolder";
 import Location from "../location/Location";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
-import {RADIUS, TYPE} from "../../constants";
 
 const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
 
@@ -28,8 +27,7 @@ class Middle extends Component {
                     isCorrectLocation: true,
                 },
             },
-            service: new window.google.maps.places.PlacesService(document.createElement('div')),
-            locations: this.props.locations,
+            locations: [],
             nearbyPlaces: [],
             center: null,
             canRender: false,
@@ -38,6 +36,7 @@ class Middle extends Component {
         };
         this.change = this.change.bind(this);
         this.clear = this.clear.bind(this);
+        this.setCenter = this.setCenter.bind(this);
         this.setAddress = this.setAddress.bind(this);
         this.setPosition = this.setPosition.bind(this);
         this.setPlaceId = this.setPlaceId.bind(this);
@@ -46,14 +45,11 @@ class Middle extends Component {
         this.addNewForm = this.addNewForm.bind(this);
         this.deleteForm = this.deleteForm.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.setCenterAndNearbyPlaces = this.setCenterAndNearbyPlaces.bind(this);
-        this.getNearbyPlaceDetail = this.getNearbyPlaceDetail.bind(this);
-        this.setNearbyPlaceDetail = this.setNearbyPlaceDetail.bind(this);
-        this.setNearbyPlaces = this.setNearbyPlaces.bind(this);
         this.deleteLocationHandler = this.deleteLocationHandler.bind(this);
     }
 
-    async componentWillMount() {
+    async componentDidMount() {
+        this.setState({canRender: false});
         await navigator.geolocation.getCurrentPosition(async (position) => {
             this.setPosition({lat: position.coords.latitude, lng: position.coords.longitude}, "form_1");
             try {
@@ -67,9 +63,8 @@ class Middle extends Component {
                 console.log(e);
             }
         });
-        if (this.state.locations.length >= 2) {
-            await this.setCenterAndNearbyPlaces(this.state.locations);
-        }
+
+        this.setState({canRender: true});
     }
 
     clear() {
@@ -100,6 +95,7 @@ class Middle extends Component {
             state.forms_data[form_key].address = address;
             if (isInvalid) {
                 state.forms_data[form_key].position = {lat: 0, lng: 0};
+                state.forms_data[form_key].place_id = '';
             }
             return state;
         });
@@ -110,6 +106,10 @@ class Middle extends Component {
             state.forms_data[form_key].position = position;
             return state;
         });
+    }
+
+    setCenter(center) {
+        this.setState({center: center});
     }
 
     setPlaceId(place_id, form_key) {
@@ -132,9 +132,6 @@ class Middle extends Component {
             })
             .catch(error => console.error('Error', error));
 
-        if (this.state.locations.length >= 2) {
-            await this.setCenterAndNearbyPlaces(this.state.locations);
-        }
     }
 
     addNewForm(event = null) {
@@ -197,50 +194,13 @@ class Middle extends Component {
         try {
             const response = await saveLocation(data);
             const locations = response.data;
-            window.location.href = `/${locations[0].slug}?redirected=True`;
+            this.setState({locations: response.data,
+            forms_count: 1})
+            // window.location.href = `/${locations[0].slug}?redirected=True`;
         } catch (e) {
             console.log(e);
         }
     };
-
-    async getNearbyPlaceDetail(nearbyPlace, index) {
-        this.state.service.getDetails({placeId: nearbyPlace.place_id}, await this.setNearbyPlaceDetail);
-    }
-
-    async setNearbyPlaceDetail(nearbyPlace, status) {
-        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            var nearbyPlaces = this.state.nearbyPlaces;
-            nearbyPlaces.push(nearbyPlace);
-            this.setState({nearbyPlaces: nearbyPlaces});
-        } else {
-            console.log(nearbyPlace);
-        }
-    }
-
-    async setNearbyPlaces(result, status) {
-        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            result = result.slice(0, 5);
-            result.forEach(await this.getNearbyPlaceDetail);
-        } else {
-            console.log("e:", result);
-        }
-    }
-
-    async setCenterAndNearbyPlaces(locations) {
-        var lagLngs = locations.map(location => [location.latitude, location.longitude]);
-        var center = getCenterOfPolygonLatLngs(lagLngs);
-        this.setState({center: center});
-        try {
-            var request = {
-                location: center,
-                radius: RADIUS,
-                type: TYPE,
-            };
-            this.state.service.nearbySearch(request, await this.setNearbyPlaces);
-        } catch (e) {
-            console.log(e);
-        }
-    }
 
     async deleteLocationHandler(id) {
         this.setState({canRenderMap: false});
@@ -267,14 +227,14 @@ class Middle extends Component {
                 window.location.href = "/not-found";
             }
         }
-        if (response) {
-            await this.setCenterAndNearbyPlaces(response);
-        }
         this.setState({canRenderMap: true});
     }
 
 
     render() {
+        if (!this.state.canRender) {
+            return null;
+        }
         return (
             <div>
                 <form className="form" onSubmit={this.handleSubmit}>
@@ -312,30 +272,38 @@ class Middle extends Component {
                     <div className="tabset">
                         <div id="places" className="b-tab active">
                             <div className="list-view-block">
-                                {this.state.nearbyPlaces.length > 0 ? this.state.nearbyPlaces.map((place, index) => {
-                                    return <NearbyPlace place={place} index={index + 1} key={index}/>
-                                }) : <div className="instruction-places">
-                                    No places yet! Enter another location to generate places to meet in the middle.
-                                </div>}
+                                <NearbyPlace locations={this.state.locations} forms_count={this.state.forms_count} forms_data={this.state.forms_data} setCenter={this.setCenter}/>
+                                {/*{this.state.canRender && this.state.nearbyPlaces.length > 0 ? this.state.nearbyPlaces.map((place, index) => {*/}
+                                {/*    return <NearbyPlace place={place} index={index + 1} key={index}/>*/}
+                                {/*}) : <div className="instruction-places">*/}
+                                {/*    No places yet! Enter another location to generate places to meet in the middle.*/}
+                                {/*</div>}*/}
                             </div>
                         </div>
                         <div id="locations" className="b-tab">
                             <div className="list-view-block">
-                                {this.state.locations.length > 0 ? this.state.locations.map((location, index) => {
-                                    return <Location location={location} index={index + 1} key={index} deleteLocation={this.deleteLocationHandler}/>
-                                }) : <div className="instruction-locations">
+                                {this.state.locations.length > 0 && this.state.locations.map((location, index) => {
+                                    return <Location canDelete={true} location={location} index={index + 1} key={index} deleteLocation={this.deleteLocationHandler}/>
+                                })}
+
+                                {this.state.forms_data['form_1'].place_id !== '' && Object.keys(this.state.forms_data).map((form_key, index) => (
+                                    <Location canDelete={false} location={this.state.forms_data[form_key]} index={this.state.locations.length + index + 1} key={index} deleteLocation={this.deleteLocationHandler}/>
+                                ))}
+                                {!(this.state.locations.length > 0 || this.state.forms_data['form_1'].place_id !== '') &&
+                                <div className="instruction-locations">
                                     No Locations Available.
                                 </div>}
                             </div>
                         </div>
                         <div id="map" className="b-tab">
-                            <MapHolder google={this.props.google} locations={this.state.locations} forms_count={this.state.forms_count} forms_data={this.state.forms_data}
+                            <MapHolder google={this.props.google} locations={this.state.locations}
+                                       forms_count={this.state.forms_count} center={this.state.center}
+                                       forms_data={this.state.forms_data}
                                        setAddress={this.setAddress}
                                        setPosition={this.setPosition}
                                        setPlaceId={this.setPlaceId}
                                        addNewForm={this.addNewForm}
                             />
-                            {/*{this.state.canRenderMap && <MapView center={this.state.center} locations={this.state.locations} nearbyPlaces={this.state.nearbyPlaces}/>}*/}
                         </div>
                     </div>
                 </div>

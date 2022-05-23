@@ -10,6 +10,7 @@ class MapHolder extends Component {
             activeMarker: {},
             selectedPlace: {},
             showingInfoWindow: false,
+            centerAddress: "",
             isFullScreen: false
         };
         this.onMapClicked = this.onMapClicked.bind(this);
@@ -69,6 +70,19 @@ class MapHolder extends Component {
         }
     }
 
+    async componentDidMount() {
+        if (this.props.center) {
+            try {
+                const response = await getAddressFormLatLng(this.props.center.lat, this.props.center.lng);
+                this.setState({
+                    centerAddress: response.results[0].formatted_address
+                });
+            } catch (e) {
+                console.log(e);
+            }
+        }
+    }
+
 
     render() {
         return (
@@ -85,19 +99,24 @@ class MapHolder extends Component {
                         lng: this.props.forms_data[`form_${this.props.forms_count}`].position.lng
                     }}
                     zoom={12} style={{width: "80%", height: "500px"}}>
-                    {
-                        Object.keys(this.props.forms_data).map((form_key, index) => (
-                            <Marker
-                                position={{
-                                    lat: this.props.forms_data[form_key].position.lat,
-                                    lng: this.props.forms_data[form_key].position.lng
-                                }}
-                                draggable={true}
-                                name={this.props.forms_data[form_key].address}
-                                onClick={this.onMarkerClick}
-                                onDragend={(event, map, coord) => this.onMarkerDragEnd(coord, form_key)}/>
-                        ))
-                    }
+                    {this.props.center &&
+                    <Marker position={this.props.center} name={`Center: ${this.state.centerAddress}`} onClick={this.onMarkerClick}
+                            icon={{
+                                url: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
+                                anchor: new this.props.google.maps.Point(16, 16),
+                                scaledSize: new this.props.google.maps.Size(32, 32)
+                            }}/>}
+                    {Object.keys(this.props.forms_data).map((form_key, index) => (
+                        <Marker
+                            position={{
+                                lat: this.props.forms_data[form_key].position.lat,
+                                lng: this.props.forms_data[form_key].position.lng
+                            }}
+                            draggable={true}
+                            name={this.props.forms_data[form_key].address}
+                            onClick={this.onMarkerClick}
+                            onDragend={(event, map, coord) => this.onMarkerDragEnd(coord, form_key)}/>
+                    ))}
 
                     {this.props.locations.map((location, index) => {
                         return (
