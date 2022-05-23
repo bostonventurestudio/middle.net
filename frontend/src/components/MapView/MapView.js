@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {GoogleApiWrapper, InfoWindow, Map, Marker} from "google-maps-react";
-import {getAddressFormLatLng} from "../../utils";
+import {getLocationDetailFormLatLng} from "../../utils";
 
 const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
 
@@ -50,7 +50,7 @@ export class MapView extends Component {
     async componentDidMount() {
         if (this.props.center) {
             try {
-                const response = await getAddressFormLatLng(this.props.center.lat, this.props.center.lng);
+                const response = await getLocationDetailFormLatLng(this.props.center.lat, this.props.center.lng);
                 this.setState({
                     centerAddress: response.results[0].formatted_address
                 });

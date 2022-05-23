@@ -20,6 +20,7 @@ class LocationSearch extends Component {
                         <div>
                             <div className="input-holder">
                                 <input{...getInputProps({placeholder: "Enter your location", className: "location-search-input",})} required/>
+                                <span className="target-location"><a href="#"><i className="icon-target"/></a></span>
                                 {this.props.isCorrectLocation !== undefined && this.props.isCorrectLocation === false && <span className="error">ERROR: Invalid Location</span>}
                             </div>
                             <div style={{position: "relative"}}>

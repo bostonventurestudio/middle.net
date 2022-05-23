@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {InfoWindow, Map, Marker} from "google-maps-react";
-import {getAddressFormLatLng} from "../../utils";
+import {getLocationDetailFormLatLng} from "../../utils";
 
 class MapHolder extends Component {
 
@@ -49,7 +49,7 @@ class MapHolder extends Component {
         } else {
             const forms_count = this.props.forms_count + 1;
             this.props.addNewForm();
-            await this.populateLocationData(coord.lat, `form_${forms_count}`);
+            await this.populateLocationData(coord, `form_${forms_count}`);
         }
     };
 
@@ -61,7 +61,7 @@ class MapHolder extends Component {
         const lat = coord.latLng.lat();
         const lng = coord.latLng.lng();
         try {
-            const response = await getAddressFormLatLng(lat, lng);
+            const response = await getLocationDetailFormLatLng(lat, lng);
             this.props.setAddress(response.results[0].formatted_address, form_key, false);
             this.props.setPlaceId(response.results[0].place_id, form_key);
             this.props.setPosition(lat, lng, form_key);
@@ -73,7 +73,7 @@ class MapHolder extends Component {
     async componentDidMount() {
         if (this.props.center) {
             try {
-                const response = await getAddressFormLatLng(this.props.center.lat, this.props.center.lng);
+                const response = await getLocationDetailFormLatLng(this.props.center.lat, this.props.center.lng);
                 this.setState({
                     centerAddress: response.results[0].formatted_address
                 });
@@ -118,7 +118,7 @@ class MapHolder extends Component {
                             onDragend={(event, map, coord) => this.onMarkerDragEnd(coord, form_key)}/>
                     ))}
 
-                     {this.props.nearbyPlaces.map((place, index) => {
+                    {this.props.nearbyPlaces.map((place, index) => {
                         return (
                             <Marker icon={{url: "https://cdn-icons-png.flaticon.com/512/45/45332.png", anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}
                                     key={index} position={{lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}} name={`${place.name}: ${place.vicinity}`} onClick={this.onMarkerClick}/>)

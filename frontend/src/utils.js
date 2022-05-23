@@ -50,7 +50,7 @@ export function get12HourTime(opening_hours, open_or_close) {
     return '';
 }
 
-export function getAddressFormLatLng(lat, lng) {
+export function getLocationDetailFormLatLng(lat, lng) {
     return Geocode.fromLatLng(lat, lng);
 }
 
