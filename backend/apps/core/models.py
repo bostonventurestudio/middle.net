@@ -6,7 +6,6 @@ from django.dispatch import receiver
 
 
 class Location(models.Model):
-    name = models.CharField(max_length=200, null=False, blank=False, db_index=True)
     latitude = models.DecimalField(max_digits=8, decimal_places=5, db_index=True)
     longitude = models.DecimalField(max_digits=8, decimal_places=5, db_index=True)
     google_place_id = models.CharField(max_length=200, null=True, blank=True)
