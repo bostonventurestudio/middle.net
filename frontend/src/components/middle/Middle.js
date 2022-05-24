@@ -222,7 +222,7 @@ class Middle extends Component {
             state.forms_count = forms_count;
             state.forms_data = forms_data;
             return state;
-        });
+        }, this.setCenterAndNearbyPlaces);
     }
 
     async handleSubmit(event) {
