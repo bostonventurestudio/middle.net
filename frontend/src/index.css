@@ -818,20 +818,21 @@ input[type=submit] {
 
 .form .location-delete {
   position: absolute;
-  top: 13px;
-  right: -37px;
+  top: 0;
+  right: -28px;
   font-size: 33px;
-  line-height: 35px;
 }
 .form .location-delete button {
   text-decoration: none;
-  color: red;
-  background: none;
+  background: #5A9AE4;
   border: none;
+  height: 62px;
+  color: white;
+  width: 30px;
 }
 
 .form .location-delete button:hover {
-  color: darkred;
+  background: #448de0;
 }
 
 .form p {
