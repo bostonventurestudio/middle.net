@@ -47,22 +47,28 @@ class Middle extends Component {
         this.populateFormsData = this.populateFormsData.bind(this);
     }
 
-    populateFormsData(locations) {
+    populateFormsData(locations, extra_form=false) {
         var forms_data = {};
         var forms_count;
+        var key;
         if (locations.length > 0) {
             for (var i = 0, l = locations.length; i < l; i++) {
                 forms_data[`form_${i + 1}`] = locations[i];
             }
-            forms_data[`form_${locations.length + 1}`] = {
-                address: '',
-                google_place_id: '',
-                latitude: 0,
-                longitude: 0,
-                isCorrectLocation: true,
-            };
-            forms_count = locations.length + 1;
+            if(extra_form) {
+                forms_data[`form_${locations.length + 1}`] = {
+                    address: '',
+                    google_place_id: '',
+                    latitude: 0,
+                    longitude: 0,
+                    isCorrectLocation: true,
+                };
+                forms_count = locations.length + 1;
+            }else {
+                forms_count = locations.length;
+            }
             this.setState({slug: locations[0].slug});
+            key = `form_${forms_count}`;
         } else {
             forms_data[`form_1`] = {
                 address: '',
@@ -79,18 +85,17 @@ class Middle extends Component {
                 isCorrectLocation: true,
             };
             forms_count = 2;
+            key =`form_${1}`;
         }
         this.setState({
             forms_count: forms_count,
             forms_data: forms_data
         });
+        return key;
     }
 
     async componentWillMount() {
-        this.populateFormsData(this.props.locations);
-        console.log(this.props.locations);
-        const form_key = `form_${this.props.locations.length + 1}`;
-        console.log(form_key)
+        const form_key = this.populateFormsData(this.props.locations, true);
         await navigator.geolocation.getCurrentPosition(async (position) => {
             this.setPosition(position.coords.latitude, position.coords.longitude, form_key);
             try {

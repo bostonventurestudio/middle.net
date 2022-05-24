@@ -15,7 +15,7 @@ export class Home extends Component {
     async componentDidMount() {
         var url = window.location.pathname;
         var slug = url.substring(url.lastIndexOf('/') + 1);
-        if (slug && slug !== "add-location") {
+        if (slug) {
             try {
                 const response = await getLocations(slug);
                 if (response.data.length === 0) {
