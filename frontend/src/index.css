@@ -941,6 +941,19 @@ input[type=submit] {
   display: flex;
   align-items: center;
 }
+
+.form .copied {
+  background: white;
+  height: 60px;
+  padding: 15px 25px;
+  width: 200px;
+  text-align: center;
+  font-size: 14px;
+  color: #5A9AE4;
+  margin-left: 30px;
+  display: none;
+}
+
 @media (min-width: 768px) {
   .form .add-location {
     max-width: 526px;
@@ -962,6 +975,10 @@ input[type=submit] {
   color: #5A9AE4;
   display: inline-block;
   margin: -3px 12px 0 0;
+}
+
+form .share-btn-row {
+  display: flex;
 }
 
 .search-results-block {

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {getCenterOfPolygonLatLngs, getLocationDetailFormLatLng, saveLocation} from "../../utils";
+import {copyToClipboard, getCenterOfPolygonLatLngs, getLocationDetailFormLatLng, saveLocation} from "../../utils";
 import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
 import {GoogleApiWrapper} from "google-maps-react";
 import Geocode from "react-geocode";
@@ -138,6 +138,7 @@ class Middle extends Component {
             return state;
         });
         this.setPlaceId('', form_key);
+        document.getElementById("copied").style.display = "none";
     }
 
     setPosition(lat, lng, form_key) {
@@ -241,6 +242,7 @@ class Middle extends Component {
         try {
             const response = await saveLocation(data);
             this.populateFormsData(response.data);
+            copyToClipboard(`${window.location.origin}/${response.data[0].slug}`, "copied");
         } catch (e) {
             console.log(e);
         }
@@ -335,7 +337,12 @@ class Middle extends Component {
                             <span className="text">Add another location</span>
                         </button>
                     </div>}
-                    <button type="submit" className={this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"].google_place_id !== '' ? "btn-primary" : "btn-primary disabled"}>Share link <i className="icon-copy"/></button>
+                    <div className="share-btn-row">
+                        <button type="submit" className={this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"].google_place_id !== '' ? "btn-primary" : "btn-primary disabled"}>Share link <i className="icon-copy"/></button>
+                        <div className="copied" id="copied">
+                            link has been copied to clipboard!
+                        </div>
+                    </div>
                 </form>
                 <div className="search-results-block">
                     <div className="tab">
