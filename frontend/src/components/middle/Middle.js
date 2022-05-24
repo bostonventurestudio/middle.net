@@ -146,7 +146,9 @@ class Middle extends Component {
             }
             return state;
         });
-        this.setPlaceId('', form_key);
+        if (this.state.forms_data[form_key].google_place_id !== '') {
+            this.setPlaceId('', form_key);
+        }
         document.getElementById("copied").style.display = "none";
     }
 
