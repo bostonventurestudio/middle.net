@@ -54,6 +54,14 @@ class Middle extends Component {
             for (var i = 0, l = locations.length; i < l; i++) {
                 forms_data[`form_${i + 1}`] = locations[i];
             }
+            forms_data[`form_${locations.length + 1}`] = {
+                address: '',
+                google_place_id: '',
+                latitude: 0,
+                longitude: 0,
+                isCorrectLocation: true,
+            };
+            forms_count = locations.length + 1;
             this.setState({slug: locations[0].slug});
         } else {
             forms_data[`form_1`] = {
@@ -82,6 +90,7 @@ class Middle extends Component {
         this.populateFormsData(this.props.locations);
         console.log(this.props.locations);
         const form_key = `form_${this.props.locations.length + 1}`;
+        console.log(form_key)
         await navigator.geolocation.getCurrentPosition(async (position) => {
             this.setPosition(position.coords.latitude, position.coords.longitude, form_key);
             try {
