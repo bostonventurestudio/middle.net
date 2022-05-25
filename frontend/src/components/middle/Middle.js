@@ -47,6 +47,23 @@ class Middle extends Component {
         this.populateFormsData = this.populateFormsData.bind(this);
     }
 
+     async componentWillMount() {
+        const form_key = this.populateFormsData(this.props.locations, true);
+        await navigator.geolocation.getCurrentPosition(async (position) => {
+            this.setPosition(position.coords.latitude, position.coords.longitude, form_key);
+            try {
+                const response = await getLocationDetailFormLatLng(position.coords.latitude, position.coords.longitude);
+                this.setState(state => {
+                    state.forms_data[form_key].address = response.results[0].formatted_address;
+                    state.forms_data[form_key].google_place_id = response.results[0].place_id;
+                    return state;
+                }, await this.setCenterAndNearbyPlaces);
+            } catch (e) {
+                console.log(e);
+            }
+        });
+    }
+
     populateFormsData(locations, extra_form = false) {
         var forms_data = {};
         var forms_count;
@@ -92,23 +109,6 @@ class Middle extends Component {
             forms_data: forms_data
         });
         return key;
-    }
-
-    async componentWillMount() {
-        const form_key = this.populateFormsData(this.props.locations, true);
-        await navigator.geolocation.getCurrentPosition(async (position) => {
-            this.setPosition(position.coords.latitude, position.coords.longitude, form_key);
-            try {
-                const response = await getLocationDetailFormLatLng(position.coords.latitude, position.coords.longitude);
-                this.setState(state => {
-                    state.forms_data[form_key].address = response.results[0].formatted_address;
-                    state.forms_data[form_key].google_place_id = response.results[0].place_id;
-                    return state;
-                }, await this.setCenterAndNearbyPlaces);
-            } catch (e) {
-                console.log(e);
-            }
-        });
     }
 
     clear() {
@@ -320,8 +320,6 @@ class Middle extends Component {
             console.log(e);
         }
         this.setState({
-            center: center,
-            mapCenter: center,
             canRenderMap: true
         });
     }
