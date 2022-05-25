@@ -3,6 +3,7 @@ import {get12HourTime} from "../../utils";
 import {CLOSE, OPEN} from "../../constants";
 import image from "../../images/img-1.jpg";
 import {Rating} from "react-simple-star-rating";
+import {GoogleMapDirectionLink} from "../../config";
 
 class NearbyPlace extends Component {
 
@@ -36,7 +37,7 @@ class NearbyPlace extends Component {
                         </div>
                     </div>
                     <div className="directions-block">
-                        <a href={this.props.place.url}>
+                        <a href={GoogleMapDirectionLink + `?api=1&destination=${this.props.place.geometry.location.lat()},${this.props.place.geometry.location.lng()}`}>
                             <div className="icon-holder">
                                 <i className="icon-directions"/>
                             </div>
