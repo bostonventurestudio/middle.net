@@ -1,14 +1,13 @@
 import React from 'react';
-import {Link} from "react-router-dom";
 
 export const Footer = () => {
     return (
         <footer id="footer">
             <div className="container">
                 <div className="links">
-                    <a className="link" href="/">Home</a>
-                    <a className="link" href="https://www.info.middle.net/about">About</a>
-                    <a className="link-last" href="https://www.info.middle.net/contact">Contact</a>
+                    <a className="link" href="/">home</a>
+                    <a className="link" href="https://www.info.middle.net/about">about</a>
+                    <a className="link-last" href="https://www.info.middle.net/contact">contact</a>
                 </div>
             </div>
         </footer>

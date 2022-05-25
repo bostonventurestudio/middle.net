@@ -363,7 +363,7 @@ class Middle extends Component {
                 <div className="search-results-block">
                     <div className="tab">
                         <div className="tab-title">
-                            <div>{this.state.center.lat !== 0 && this.state.center.lng !== 0 ? "Top places in the middle:" : "Enter two or more locations to find places to meet in the middle."}</div>
+                            <span>{this.state.center.lat !== 0 && this.state.center.lng !== 0 ? "Places in the middle:" : "Enter two or more locations to find places to meet in the middle."}</span>
                         </div>
                         <div className="tab-links">
                             <a href="#list-view" data-tab="places" className="b-nav-tab active" onClick={this.change}>List View</a>

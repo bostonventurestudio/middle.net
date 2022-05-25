@@ -738,7 +738,7 @@ input[type=submit] {
 }
 
 .content-block {
-  padding: 50px 0;
+  padding: 40px 0 10px;
 }
 
 .form p {
@@ -849,17 +849,18 @@ input[type=submit] {
   outline: none;
   color: #797979;
   height: 62px;
+  font-size: 14px;
 }
 .form .btn-primary {
   display: block;
   border-radius: 30px;
   border: none;
   width: fit-content;
-  padding: 15px 40px;
+  padding: 10px 30px;
   color: #fff;
   background: #5A9AE4;
-  font-size: 20px;
-  line-height: 24px;
+  font-size: 18px;
+  height: 50px;
   text-decoration: none;
 }
 .form .btn-primary:hover {
@@ -945,8 +946,8 @@ input[type=submit] {
 
 .form .copied {
   background: white;
-  height: 60px;
-  padding: 15px 25px;
+  height: 50px;
+  padding: 8px 0;
   width: 200px;
   text-align: center;
   font-size: 14px;
@@ -1001,8 +1002,17 @@ form .share-btn-row {
 @media (min-width: 768px) {
   .search-results-block .tab-title {
     float: left;
-    padding-right: 80px;
-    width: 366px;
+    height: 40px;
+    width: 376px;
+    position: relative;
+  }
+}
+
+@media (min-width: 768px) {
+  .search-results-block .tab-title span {
+    position: absolute;
+    bottom: 0;
+    width: 260px;
   }
 }
 
@@ -1043,12 +1053,11 @@ form .share-btn-row {
   max-width: 569px;
 }
 .search-results-block .tab-links a {
-  display: flex-inline;
-  padding: 10px 20px;
+  padding: 8px 18px;
   text-decoration: none;
   color: #CECECE;
   background: #fff;
-  border-top: 2px solid transparent;
+  border-bottom: 2px solid transparent;
   font-size: 14px;
   line-height: 17px;
 }
@@ -1288,10 +1297,12 @@ form .share-btn-row {
 }
 
 .container .links .link {
+  font-size: 18px;
   padding: 0 10px;
   border-right: 1px solid black;
 }
 
 .container .links .link-last {
+  font-size: 18px;
   padding: 0 10px;
 }
