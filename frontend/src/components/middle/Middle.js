@@ -22,7 +22,7 @@ class Middle extends Component {
             slug: '',
             forms_count: 1,
             forms_data: {},
-            nearbyPlaces: [],
+            nearbyPlaces: new Array(5),
             center: {lat: 0, lng: 0},
             mapCenter: {lat: 0, lng: 0},
             canRender: false,
@@ -125,7 +125,6 @@ class Middle extends Component {
         event.target.classList.add('active');
         var id = event.currentTarget.getAttribute('data-tab');
         document.getElementById(id).classList.add('active');
-        console.log(this.state);
     }
 
     setMapCenter(event, form_key) {
@@ -265,29 +264,22 @@ class Middle extends Component {
     };
 
     async getNearbyPlaceDetail(nearbyPlace, index) {
-        this.state.service.getDetails({placeId: nearbyPlace.place_id}, await this.setNearbyPlaceDetail);
+        await this.state.service.getDetails({placeId: nearbyPlace.place_id}, (nearbyPlace, status) => {
+            this.setNearbyPlaceDetail(nearbyPlace, status, index);
+        });
     }
 
-    async setNearbyPlaceDetail(nearbyPlace, status) {
+    setNearbyPlaceDetail(nearbyPlace, status, index) {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
             var nearbyPlaces = this.state.nearbyPlaces;
-            var found = false;
-            for (var i = 0; i < nearbyPlaces.length; i++) {
-                if (nearbyPlaces[i].place_id === nearbyPlace.place_id) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                nearbyPlaces.push(nearbyPlace);
-                this.setState({nearbyPlaces: nearbyPlaces});
-            }
+            nearbyPlaces[index] = nearbyPlace;
+            this.setState({nearbyPlaces: nearbyPlaces});
         }
     }
 
     async setNearbyPlaces(result, status) {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            result = result.slice(0, 5);
+            result = result.slice(0, 3);
             result.forEach(await this.getNearbyPlaceDetail);
         }
     }
@@ -295,7 +287,7 @@ class Middle extends Component {
     async setCenterAndNearbyPlaces() {
         this.setState({
             canRenderMap: false,
-            nearbyPlaces: [],
+            nearbyPlaces: new Array(5),
         });
         var lagLngs = [];
         var locations = Object.values(this.state.forms_data);
@@ -373,7 +365,7 @@ class Middle extends Component {
                     <div className="tabset">
                         <div id="places" className="b-tab active">
                             <div className="list-view-block">
-                                {this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"].google_place_id !== '' ? this.state.nearbyPlaces.length > 0 ? this.state.nearbyPlaces.map((place, index) => {
+                                {this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"].google_place_id !== '' ? this.state.nearbyPlaces[0] ? this.state.nearbyPlaces.map((place, index) => {
                                     return <NearbyPlace place={place} index={index + 1} key={index}/>
                                 }) : <div className="instruction-places">
                                     No place available to meet in the middle.

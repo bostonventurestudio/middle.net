@@ -8,6 +8,9 @@ import {GoogleMapDirectionLink} from "../../config";
 class NearbyPlace extends Component {
 
     render() {
+        if(!this.props.place){
+            return null;
+        }
         return (
             <div className="list-holder" key={this.props.index}>
                 <div className="left-block">
