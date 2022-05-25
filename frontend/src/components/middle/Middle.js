@@ -167,6 +167,7 @@ class Middle extends Component {
 
     setPlaceId(place_id, form_key) {
         this.setState(state => {
+            state.forms_data[form_key].isCorrectLocation = true;
             state.forms_data[form_key].google_place_id = place_id;
             return state;
         }, this.setCenterAndNearbyPlaces);
@@ -201,7 +202,6 @@ class Middle extends Component {
 
     async handleAddressSelect(address, form_key) {
         this.setAddress(address, form_key);
-        this.setIsCorrectLocation(true, form_key);
         geocodeByAddress(address)
             .then(results => {
                 this.setPlaceId(results[0].place_id, form_key);
