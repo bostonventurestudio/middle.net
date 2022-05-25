@@ -176,13 +176,13 @@ class Middle extends Component {
         }, this.setCenterAndNearbyPlaces);
     }
 
-    addNewForm(event = null, form_map = false) {
+    addNewForm(event = null, from_map = false) {
         if (event) {
             event.preventDefault();
         }
         for (var form_key in this.state.forms_data) {
             if (this.state.forms_data[form_key].google_place_id === '') {
-                if (!form_map) {
+                if (!from_map) {
                     this.setIsCorrectLocation(false, form_key);
                 }
                 return form_key;
@@ -239,7 +239,7 @@ class Middle extends Component {
         event.preventDefault();
         var canSubmit = true;
         for (var form_key in this.state.forms_data) {
-            if (this.state.forms_data[form_key].latitude === 0 && this.state.forms_data[form_key].longitude === 0) {
+            if (this.state.forms_data[form_key].google_place_id === '') {
                 this.setIsCorrectLocation(false, form_key);
                 canSubmit = false;
             }
@@ -384,7 +384,7 @@ class Middle extends Component {
                             {this.state.canRenderMap && <MapHolder google={this.props.google} forms_count={this.state.forms_count}
                                                                    center={this.state.center} forms_data={this.state.forms_data} nearbyPlaces={this.state.nearbyPlaces}
                                                                    setAddress={this.setAddress} setPosition={this.setPosition} mapCenter={this.state.mapCenter}
-                                                                   setPlaceId={this.setPlaceId} addNewForm={this.addNewForm} setCenterAndNearbyPlaces={this.setCenterAndNearbyPlaces}
+                                                                   setPlaceId={this.setPlaceId} addNewForm={this.addNewForm}
                             />}
                         </div>
                     </div>
