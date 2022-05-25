@@ -47,7 +47,7 @@ class Middle extends Component {
         this.populateFormsData = this.populateFormsData.bind(this);
     }
 
-    populateFormsData(locations, extra_form=false) {
+    populateFormsData(locations, extra_form = false) {
         var forms_data = {};
         var forms_count;
         var key;
@@ -55,7 +55,7 @@ class Middle extends Component {
             for (var i = 0, l = locations.length; i < l; i++) {
                 forms_data[`form_${i + 1}`] = locations[i];
             }
-            if(extra_form) {
+            if (extra_form) {
                 forms_data[`form_${locations.length + 1}`] = {
                     address: '',
                     google_place_id: '',
@@ -64,7 +64,7 @@ class Middle extends Component {
                     isCorrectLocation: true,
                 };
                 forms_count = locations.length + 1;
-            }else {
+            } else {
                 forms_count = locations.length;
             }
             this.setState({slug: locations[0].slug});
@@ -85,7 +85,7 @@ class Middle extends Component {
                 isCorrectLocation: true,
             };
             forms_count = 2;
-            key =`form_${1}`;
+            key = `form_${1}`;
         }
         this.setState({
             forms_count: forms_count,
@@ -373,9 +373,11 @@ class Middle extends Component {
                     <div className="tabset">
                         <div id="places" className="b-tab active">
                             <div className="list-view-block">
-                                {this.state.nearbyPlaces.length > 0 ? this.state.nearbyPlaces.map((place, index) => {
+                                {this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"].google_place_id !== '' ? this.state.nearbyPlaces.length > 0 ? this.state.nearbyPlaces.map((place, index) => {
                                     return <NearbyPlace place={place} index={index + 1} key={index}/>
                                 }) : <div className="instruction-places">
+                                    No place available to meet in the middle.
+                                </div> : <div className="instruction-places">
                                     No places yet! Enter another location to generate places to meet in the middle.
                                 </div>}
                             </div>
