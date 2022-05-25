@@ -279,7 +279,7 @@ class Middle extends Component {
 
     async setNearbyPlaces(result, status) {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            result = result.slice(0, 3);
+            result = result.slice(0, 5);
             result.forEach(await this.getNearbyPlaceDetail);
         }
     }
