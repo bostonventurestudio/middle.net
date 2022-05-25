@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {copyToClipboard, getCenterOfPolygonLatLngs, getLocationDetailFormLatLng, saveLocation} from "../../utils";
+import {copyToClipboard, getCenterOfPolygonLatLngs, getLocationDetailFormLatLng, saveLocation, sortPlacesBasedOnDistanceFromCenter} from "../../utils";
 import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
 import {GoogleApiWrapper} from "google-maps-react";
 import Geocode from "react-geocode";
@@ -277,10 +277,10 @@ class Middle extends Component {
         }
     }
 
-    async setNearbyPlaces(result, status) {
+    async setNearbyPlaces(results, status) {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            result = result.slice(0, 5);
-            result.forEach(await this.getNearbyPlaceDetail);
+            var places = sortPlacesBasedOnDistanceFromCenter(results.slice(0, 5), this.state.center);
+            places.forEach(await this.getNearbyPlaceDetail);
         }
     }
 
@@ -305,6 +305,10 @@ class Middle extends Component {
             return;
         }
         var center = getCenterOfPolygonLatLngs(lagLngs);
+        this.setState({
+            center: center,
+            mapCenter: center,
+        });
         try {
             var request = {
                 location: center,

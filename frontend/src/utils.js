@@ -67,3 +67,21 @@ export function getWelcomeMessage(locations) {
     }
     return prefix + str;
 }
+
+export function sortPlacesBasedOnDistanceFromCenter(places, center) {
+    places.map(place => {
+        console.log(place.name, place.geometry.location.lat(), place.geometry.location.lng())
+    });
+    const distance = (place, center) => {
+        const x = center.lat - place.geometry.location.lat();
+        const y = center.lng - place.geometry.location.lng();
+        return Math.sqrt((x * x) + (y * y));
+    };
+    // const sorter = place => distance(place.geometry.location.lat(), center) - distance(place.geometry.location.lat(), center);
+    const sorter = (placeA, placeB) => distance(placeA, center) - distance(placeB, center);
+    places.sort(sorter);
+    places.map(place => {
+        console.log(place.name, place.geometry.location.lat(), place.geometry.location.lng())
+    });
+    return places;
+}
