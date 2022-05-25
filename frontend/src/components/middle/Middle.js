@@ -47,7 +47,7 @@ class Middle extends Component {
         this.populateFormsData = this.populateFormsData.bind(this);
     }
 
-     async componentWillMount() {
+    async componentWillMount() {
         const form_key = this.populateFormsData(this.props.locations, true);
         await navigator.geolocation.getCurrentPosition(async (position) => {
             this.setPosition(position.coords.latitude, position.coords.longitude, form_key);
@@ -58,9 +58,13 @@ class Middle extends Component {
                     state.forms_data[form_key].google_place_id = response.results[0].place_id;
                     return state;
                 }, await this.setCenterAndNearbyPlaces);
-            } catch (e) {
-                console.log(e);
+            } catch (error) {
+                console.log(error);
+                await this.setCenterAndNearbyPlaces();
             }
+        }, async (error) => {
+            console.log(error);
+            await this.setCenterAndNearbyPlaces();
         });
     }
 
