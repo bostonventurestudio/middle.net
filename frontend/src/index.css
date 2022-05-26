@@ -480,6 +480,7 @@ th {
 
 /* '' */
 .icon-copy:before {
+  font-size: 22px;
   content: "";
 }
 
@@ -735,7 +736,7 @@ input[type=submit] {
 }
 
 .content-block {
-  padding: 40px 0 10px;
+  padding: 30px 0 10px;
 }
 
 .form p {
@@ -748,7 +749,7 @@ input[type=submit] {
   }
 }
 .form .input-holder {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   max-width: 80%;
   position: relative;
 }
@@ -952,21 +953,23 @@ input[type=submit] {
   align-items: center;
 }
 
-.form .copied {
-  background: white;
-  height: 50px;
-  padding: 8px 0;
-  max-width: 150px;
-  text-align: center;
-  font-size: 14px;
-  color: #5A9AE4;
-  display: none;
+@media (min-width: 768px) {
+  .form .copied {
+    margin: 5px 0;
+    padding: 15px 10px;
+    font-size: 14px;
+   }
 }
 
-@media (min-width: 768px) {
-  form .copied {
-    max-width: 200px;
-   }
+.form .copied {
+  background: white;
+  height: fit-content;
+  padding: 10px 10px;
+  width: fit-content;
+  text-align: center;
+  font-size: 12px;
+  color: #5A9AE4;
+  display: none;
 }
 
 
