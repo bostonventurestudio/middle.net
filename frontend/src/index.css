@@ -732,9 +732,9 @@ input[type=submit] {
 }
 
 #main {
-  min-height: calc(100vh - 219px);
-  background: url(./images/bg-1.png) no-repeat;
-  background-size: cover;
+  min-height: calc(100vh - 120px);
+  background: url(./images/bg-1.png) repeat;
+  background-size: auto;
 }
 
 .content-block {

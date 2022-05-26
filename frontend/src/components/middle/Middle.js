@@ -279,7 +279,6 @@ class Middle extends Component {
 
 
     copyToClipboard() {
-        console.log('here: ');
         if (this.state.slug === "") {
             setTimeout(this.copyToClipboard, 100);
         } else {
