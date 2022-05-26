@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {copyToClipboard, getCenterOfPolygonLatLngs, getLocationDetailFormLatLng, saveLocation, sortPlacesBasedOnDistanceFromCenter} from "../../utils";
+import {getCenterOfPolygonLatLngs, getLocationDetailFormLatLng, saveLocation, sortPlacesBasedOnDistanceFromCenter} from "../../utils";
 import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
 import {GoogleApiWrapper} from "google-maps-react";
 import Geocode from "react-geocode";
@@ -19,7 +19,7 @@ class Middle extends Component {
         super(props);
         this.state = {
             service: new window.google.maps.places.PlacesService(document.createElement('div')),
-            slug: '',
+            slug: this.props.slug,
             forms_count: 1,
             forms_data: {},
             nearbyPlaces: new Array(5),
@@ -37,6 +37,7 @@ class Middle extends Component {
         this.setPlaceId = this.setPlaceId.bind(this);
         this.setIsCorrectLocation = this.setIsCorrectLocation.bind(this);
         this.handleAddressSelect = this.handleAddressSelect.bind(this);
+        this.copyToClipboard = this.copyToClipboard.bind(this);
         this.addNewForm = this.addNewForm.bind(this);
         this.deleteForm = this.deleteForm.bind(this);
         this.setCenterAndNearbyPlaces = this.setCenterAndNearbyPlaces.bind(this);
@@ -88,7 +89,6 @@ class Middle extends Component {
             } else {
                 forms_count = locations.length;
             }
-            this.setState({slug: locations[0].slug});
             key = `form_${forms_count}`;
         } else {
             forms_data[`form_1`] = {
@@ -249,23 +249,51 @@ class Middle extends Component {
         }
 
         var data = [];
+        const slug = this.state.slug === "no-slug" ? '' : this.state.slug;
         for (form_key in this.state.forms_data) {
             data.push({
                 google_place_id: this.state.forms_data[form_key].google_place_id,
                 address: this.state.forms_data[form_key].address,
                 latitude: parseFloat(this.state.forms_data[form_key].latitude).toFixed(5),
                 longitude: parseFloat(this.state.forms_data[form_key].longitude).toFixed(5),
-                slug: this.state.slug
+                slug: slug
             });
         }
-        try {
-            const response = await saveLocation(data);
-            this.populateFormsData(response.data);
-            copyToClipboard(`${window.location.origin}/${response.data[0].slug}`, "copied");
-        } catch (e) {
-            console.log(e);
-        }
+        saveLocation(data).then((response) => {
+            if (response.data.length === 0) {
+                alert("ERROR: Unable to save locations")
+            } else {
+                this.populateFormsData(response.data);
+                if (this.state.slug === "") {
+                    this.setState({slug: response.data[0].slug})
+                }
+            }
+        }).catch((error) => {
+            if (this.state.slug === "") {
+                this.setState({slug: "no-slug"})
+            }
+            alert("ERROR: Unable to save lsocations")
+        })
+        this.copyToClipboard();
     };
+
+
+    copyToClipboard() {
+        console.log('here: ');
+        if (this.state.slug === "") {
+            setTimeout(this.copyToClipboard, 100);
+        } else {
+            var textToCopy = `${window.location.origin}/${this.state.slug}`;
+            navigator.clipboard.writeText(textToCopy)
+                .then(() => {
+                    console.log("Link Copied to Clipboard")
+                }, () => {
+                    prompt(`Press ⌘+C or CTRL+C to copy`, textToCopy);
+                });
+            document.getElementById("copied").style.display = "block";
+            clearTimeout(this.copyToClipboard);
+        }
+    }
 
     async getNearbyPlaceDetail(nearbyPlace, index) {
         await this.state.service.getDetails({placeId: nearbyPlace.place_id}, (nearbyPlace, status) => {

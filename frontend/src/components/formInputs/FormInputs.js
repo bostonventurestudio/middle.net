@@ -13,14 +13,6 @@ class FormInputs extends Component {
                                 setMapCenter={this.props.setMapCenter}
                                 canDelete={this.props.canDelete}
                                 deleteForm={this.props.deleteForm}/>
-                {/*{this.props.canDelete &&*/}
-                {/*<div className="delete-btn-holder">*/}
-                {/*    <button className="btn-danger" onClick={(event) => {*/}
-                {/*        this.props.deleteForm(event, this.props.form_key)*/}
-                {/*    }}>*/}
-                {/*        Delete*/}
-                {/*    </button>*/}
-                {/*</div>}*/}
             </div>
         );
     }

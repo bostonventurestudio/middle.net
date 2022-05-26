@@ -9,6 +9,7 @@ export class Home extends Component {
         super(props);
         this.state = {
             loading: true,
+            slug: '',
             locations: [],
         };
     }
@@ -23,6 +24,7 @@ export class Home extends Component {
                 }
                 this.setState({
                     locations: response.data,
+                    slug: slug,
                     loading: false
                 });
             }).catch((error) => {
@@ -39,7 +41,7 @@ export class Home extends Component {
             <main id="main">
                 <div className="content-block">
                     <div className="container">
-                        {!this.state.loading && <Middle locations={this.state.locations}/>}
+                        {!this.state.loading && <Middle locations={this.state.locations} slug={this.state.slug}/>}
                     </div>
                 </div>
             </main>

@@ -20,11 +20,6 @@ export function deleteLocation(slug, id) {
     return axios.delete(`${LocationAPIURL}${slug}?id=${id}`);
 }
 
-export function copyToClipboard(textToCopy, element_id) {
-    document.getElementById(element_id).style.display = "block";
-    navigator.clipboard.writeText(textToCopy);
-}
-
 export function getCenterOfPolygonLatLngs(arr) {
     var x = arr.map(xy => xy[0]);
     var y = arr.map(xy => xy[1]);
