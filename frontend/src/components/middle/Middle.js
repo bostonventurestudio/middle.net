@@ -362,7 +362,7 @@ class Middle extends Component {
                                         address={this.state.forms_data[form_key].address}
                                         setAddress={this.setAddress}
                                         handleAddressSelect={this.handleAddressSelect}
-                                        canDelete={this.state.forms_count > 2}
+                                        canDelete={this.state.forms_count > 1}
                                         deleteForm={this.deleteForm}
                                         setMapCenter={this.setMapCenter}/>
                         ))
