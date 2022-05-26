@@ -674,19 +674,16 @@ input[type=submit] {
 }
 #header .sub-text {
   display: block;
-  font-size: 10px;
-  line-height: 12px;
+  font-size: 14px;
 }
 @media (min-width: 768px) {
   #header .sub-text {
-    font-size: 14px;
-    line-height: 18px;
+    font-size: 18px;
   }
 }
 @media (min-width: 1300px) {
   #header .sub-text {
-    font-size: 20px;
-    line-height: 24px;
+    font-size: 22px;
   }
 }
 #header .container {
@@ -703,18 +700,18 @@ input[type=submit] {
   max-width: 100%;
 }
 #header .logo {
-  width: 35px;
+  width: 45px;
 }
 
 @media (min-width: 768px) {
   #header .logo {
-    width: 45px;
+    width: 60px;
     margin-bottom: 0;
   }
 }
 @media (min-width: 1300px) {
   #header .logo {
-    width: 70px;
+    width: 75px;
     margin-bottom: 0;
   }
 }
