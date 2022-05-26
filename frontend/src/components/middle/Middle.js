@@ -98,14 +98,7 @@ class Middle extends Component {
                 longitude: 0,
                 isCorrectLocation: true,
             };
-            forms_data[`form_2`] = {
-                address: '',
-                google_place_id: '',
-                latitude: 0,
-                longitude: 0,
-                isCorrectLocation: true,
-            };
-            forms_count = 2;
+            forms_count = 1;
             key = `form_${1}`;
         }
         this.setState({
@@ -281,6 +274,8 @@ class Middle extends Component {
     copyToClipboard() {
         if (this.state.slug === "") {
             setTimeout(this.copyToClipboard, 100);
+        } else if (this.state.slug === "no-slug") {
+            clearTimeout(this.copyToClipboard);
         } else {
             var textToCopy = `${window.location.origin}/${this.state.slug}`;
             navigator.clipboard.writeText(textToCopy)
@@ -372,14 +367,14 @@ class Middle extends Component {
                                         setMapCenter={this.setMapCenter}/>
                         ))
                     }
-                    {this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"].google_place_id !== '' && <div className="add-location">
+                    {this.state.forms_data["form_1"].google_place_id !== '' && <div className="add-location">
                         <button onClick={this.addNewForm}>
                             <span className="icon">+</span>
                             <span className="text">Add another location</span>
                         </button>
                     </div>}
                     <div className="share-btn-row">
-                        <button type="submit" className={this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"].google_place_id !== '' ? "btn-primary" : "btn-primary disabled"}>Share link <i className="icon-copy"/></button>
+                        <button type="submit" className={this.state.forms_data["form_1"].google_place_id !== '' ? "btn-primary" : "btn-primary disabled"}>Share link <i className="icon-copy"/></button>
                         <div className="copied" id="copied">
                             link has been copied to clipboard!
                         </div>
@@ -398,7 +393,7 @@ class Middle extends Component {
                     <div className="tabset">
                         <div id="places" className="b-tab active">
                             <div className="list-view-block">
-                                {this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"].google_place_id !== '' ? this.state.nearbyPlaces[0] ? this.state.nearbyPlaces.map((place, index) => {
+                                {this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"] && this.state.forms_data["form_2"].google_place_id !== '' ? this.state.nearbyPlaces[0] ? this.state.nearbyPlaces.map((place, index) => {
                                     return <NearbyPlace place={place} index={index + 1} key={index}/>
                                 }) : <div className="instruction-places">
                                     No place available to meet in the middle.
