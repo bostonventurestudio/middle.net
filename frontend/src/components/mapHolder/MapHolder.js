@@ -81,8 +81,6 @@ class MapHolder extends Component {
             });
         }
         var heatMapData = this.props.heatMapData.map(place => {return {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}})
-        console.log(heatMapData)
-        console.log(this.state.loading)
         this.setState({
             heatMapData: heatMapData,
             loading: false

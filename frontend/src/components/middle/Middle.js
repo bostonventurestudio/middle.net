@@ -293,7 +293,6 @@ class Middle extends Component {
 
     setNearbyPlaceDetail(nearbyPlace, status, index) {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            console.log("1")
             var nearbyPlaces = this.state.nearbyPlaces;
             nearbyPlaces[index] = nearbyPlace;
             this.setState({nearbyPlaces: nearbyPlaces});
@@ -302,9 +301,14 @@ class Middle extends Component {
 
     setNearbyPlaces(results, status) {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            this.setState({heatMapData: results});
+            this.setState({
+                heatMapData: results,
+                canRenderMap: true
+            });
             var places = sortPlacesBasedOnDistanceFromCenter(results.slice(0, 5), this.state.center);
             places.forEach(this.getNearbyPlaceDetail);
+        } else {
+            this.setState({canRenderMap: true});
         }
     }
 
@@ -344,10 +348,6 @@ class Middle extends Component {
         } catch (e) {
             console.log(e);
         }
-        console.log("2");
-        this.setState({
-            canRenderMap: true
-        });
     }
 
     render() {
