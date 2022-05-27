@@ -107,7 +107,7 @@ class MapHolder extends Component {
                     center={this.props.mapCenter}
                     zoom={12} style={style}>
                     <button className="heatmap-toggle-btn" title="Toggle HeatMap" onClick={this.toggleHeatMap}>{this.state.showHeatMap ? "Hide HeatMap" : "Show HeatMap"}</button>
-                    {this.state.showHeatMap && <HeatMap gradient={gradient} positions={this.state.heatMapData} opacity={0.8} radius={20}/>}
+                    {this.props.heatMapData.length > 0 && this.state.showHeatMap && <HeatMap gradient={gradient} positions={this.state.heatMapData} opacity={0.8} radius={20}/>}
                     {this.props.center.lat !== 0 && this.props.center.lng !== 0 &&
                     <Marker position={this.props.center} name={`Center: ${this.state.centerAddress}`} onClick={this.onMarkerClick}
                             icon={{

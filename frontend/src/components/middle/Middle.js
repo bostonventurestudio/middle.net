@@ -317,6 +317,7 @@ class Middle extends Component {
         this.setState({
             canRenderMap: false,
             nearbyPlaces: new Array(5),
+            heatMapData: []
         });
         var lagLngs = [];
         var locations = Object.values(this.state.forms_data);
