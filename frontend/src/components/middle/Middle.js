@@ -338,16 +338,12 @@ class Middle extends Component {
             center: center,
             mapCenter: center,
         });
-        try {
-            var request = {
-                location: center,
-                radius: RADIUS,
-                type: TYPE,
-            };
-            this.state.service.nearbySearch(request, this.setNearbyPlaces);
-        } catch (error) {
-            console.log(error);
-        }
+        var request = {
+            location: center,
+            radius: RADIUS,
+            type: TYPE,
+        };
+        this.state.service.nearbySearch(request, this.setNearbyPlaces);
     }
 
     render() {
@@ -404,9 +400,9 @@ class Middle extends Component {
                         </div>
                         <div id="map" className="b-tab">
                             {this.state.canRenderMap ? <MapHolder google={this.props.google} forms_count={this.state.forms_count}
-                                                                   center={this.state.center} forms_data={this.state.forms_data} nearbyPlaces={this.state.nearbyPlaces}
-                                                                   setAddress={this.setAddress} setPosition={this.setPosition} mapCenter={this.state.mapCenter}
-                                                                   setPlaceId={this.setPlaceId} addNewForm={this.addNewForm} heatMapData={this.state.heatMapData}
+                                                                  center={this.state.center} forms_data={this.state.forms_data} nearbyPlaces={this.state.nearbyPlaces}
+                                                                  setAddress={this.setAddress} setPosition={this.setPosition} mapCenter={this.state.mapCenter}
+                                                                  setPlaceId={this.setPlaceId} addNewForm={this.addNewForm} heatMapData={this.state.heatMapData}
                             /> : "Loading..."}
                         </div>
                     </div>

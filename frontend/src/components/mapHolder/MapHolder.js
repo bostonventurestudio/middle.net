@@ -64,14 +64,13 @@ class MapHolder extends Component {
     async populateLocationData(coord, form_key) {
         const lat = coord.latLng.lat();
         const lng = coord.latLng.lng();
-        try {
-            const response = await getLocationDetailFormLatLng(lat, lng);
+        getLocationDetailFormLatLng(lat, lng).then((response) => {
             this.props.setAddress(response.results[0].formatted_address, form_key, false);
-            this.props.setPlaceId(response.results[0].place_id, form_key);
+            this.props.setPlaceId(response.results[0].place_id, form_key, true);
             this.props.setPosition(lat, lng, form_key);
-        } catch (error) {
+        }).catch((error) => {
             console.log(error);
-        }
+        });
     }
 
     componentWillMount() {
