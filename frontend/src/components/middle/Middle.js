@@ -29,6 +29,7 @@ class Middle extends Component {
             canRender: false,
             canRenderMap: true,
             showMessage: true,
+            heatMapData: []
         };
         this.change = this.change.bind(this);
         this.clear = this.clear.bind(this);
@@ -49,24 +50,23 @@ class Middle extends Component {
         this.populateFormsData = this.populateFormsData.bind(this);
     }
 
-    async componentWillMount() {
+    componentWillMount() {
         const form_key = this.populateFormsData(this.props.locations, true);
-        await navigator.geolocation.getCurrentPosition(async (position) => {
+        navigator.geolocation.getCurrentPosition((position) => {
             this.setPosition(position.coords.latitude, position.coords.longitude, form_key);
-            try {
-                const response = await getLocationDetailFormLatLng(position.coords.latitude, position.coords.longitude);
+            getLocationDetailFormLatLng(position.coords.latitude, position.coords.longitude).then((response) => {
                 this.setState(state => {
                     state.forms_data[form_key].address = response.results[0].formatted_address;
                     state.forms_data[form_key].google_place_id = response.results[0].place_id;
                     return state;
-                }, await this.setCenterAndNearbyPlaces);
-            } catch (error) {
+                }, this.setCenterAndNearbyPlaces);
+            }).catch((error) => {
                 console.log(error);
-                await this.setCenterAndNearbyPlaces();
-            }
-        }, async (error) => {
+                this.setCenterAndNearbyPlaces();
+            });
+        }, (error) => {
             console.log(error);
-            await this.setCenterAndNearbyPlaces();
+            this.setCenterAndNearbyPlaces();
         });
     }
 
@@ -278,35 +278,38 @@ class Middle extends Component {
         } else if (this.state.slug === "no-slug") {
             clearTimeout(this.copyToClipboard);
         } else {
-            if(copy(`${window.location.origin}/${this.state.slug}`)){
+            if (copy(`${window.location.origin}/${this.state.slug}`)) {
                 document.getElementById("copied").style.display = "block";
             }
             clearTimeout(this.copyToClipboard);
         }
     }
 
-    async getNearbyPlaceDetail(nearbyPlace, index) {
-        await this.state.service.getDetails({placeId: nearbyPlace.place_id}, (nearbyPlace, status) => {
+    getNearbyPlaceDetail(nearbyPlace, index) {
+        this.state.service.getDetails({placeId: nearbyPlace.place_id}, (nearbyPlace, status) => {
             this.setNearbyPlaceDetail(nearbyPlace, status, index);
         });
     }
 
     setNearbyPlaceDetail(nearbyPlace, status, index) {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+            console.log("1")
             var nearbyPlaces = this.state.nearbyPlaces;
             nearbyPlaces[index] = nearbyPlace;
             this.setState({nearbyPlaces: nearbyPlaces});
         }
     }
 
-    async setNearbyPlaces(results, status) {
+    setNearbyPlaces(results, status) {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+            this.setState({heatMapData: results});
             var places = sortPlacesBasedOnDistanceFromCenter(results.slice(0, 5), this.state.center);
-            places.forEach(await this.getNearbyPlaceDetail);
+            places.forEach(this.getNearbyPlaceDetail);
         }
     }
 
-    async setCenterAndNearbyPlaces() {
+
+    setCenterAndNearbyPlaces() {
         this.setState({
             canRenderMap: false,
             nearbyPlaces: new Array(5),
@@ -337,10 +340,11 @@ class Middle extends Component {
                 radius: RADIUS,
                 type: TYPE,
             };
-            this.state.service.nearbySearch(request, await this.setNearbyPlaces);
+            this.state.service.nearbySearch(request, this.setNearbyPlaces);
         } catch (e) {
             console.log(e);
         }
+        console.log("2");
         this.setState({
             canRenderMap: true
         });
@@ -402,7 +406,7 @@ class Middle extends Component {
                             {this.state.canRenderMap && <MapHolder google={this.props.google} forms_count={this.state.forms_count}
                                                                    center={this.state.center} forms_data={this.state.forms_data} nearbyPlaces={this.state.nearbyPlaces}
                                                                    setAddress={this.setAddress} setPosition={this.setPosition} mapCenter={this.state.mapCenter}
-                                                                   setPlaceId={this.setPlaceId} addNewForm={this.addNewForm}
+                                                                   setPlaceId={this.setPlaceId} addNewForm={this.addNewForm} heatMapData={this.state.heatMapData}
                             />}
                         </div>
                     </div>
@@ -414,5 +418,5 @@ class Middle extends Component {
 
 export default GoogleApiWrapper({
     apiKey: (GoogleAPIKey),
-    libraries: ["places"],
+    libraries: ["places", "visualization"],
 })(Middle)

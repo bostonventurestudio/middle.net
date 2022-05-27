@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {InfoWindow, Map, Marker} from "google-maps-react";
+import {HeatMap, InfoWindow, Map, Marker} from "google-maps-react";
 import {getLocationDetailFormLatLng} from "../../utils";
+import {gradient} from "../../constants";
 
 class MapHolder extends Component {
 
@@ -12,7 +13,9 @@ class MapHolder extends Component {
             selectedPlace: {},
             showingInfoWindow: false,
             centerAddress: "",
-            isFullScreen: false
+            isFullScreen: false,
+            heatMapData: [],
+            loading: true
         };
         this.onMapClicked = this.onMapClicked.bind(this);
         this.onMarkerClick = this.onMarkerClick.bind(this);
@@ -20,7 +23,6 @@ class MapHolder extends Component {
         this.onFullScreenToggle = this.onFullScreenToggle.bind(this);
         this.onMarkerDragEnd = this.onMarkerDragEnd.bind(this);
         document.addEventListener('fullscreenchange', this.onFullScreenToggle);
-
     }
 
 
@@ -70,17 +72,21 @@ class MapHolder extends Component {
         }
     }
 
-    async componentDidMount() {
+    componentWillMount() {
         if (this.props.center.lat !== 0 && this.props.center.lng !== 0) {
-            try {
-                const response = await getLocationDetailFormLatLng(this.props.center.lat, this.props.center.lng);
-                this.setState({
-                    centerAddress: response.results[0].formatted_address
-                });
-            } catch (e) {
-                console.log(e);
-            }
+            getLocationDetailFormLatLng(this.props.center.lat, this.props.center.lng).then((response) => {
+                this.setState({centerAddress: response.results[0].formatted_address});
+            }).catch((error) => {
+                console.log(error);
+            });
         }
+        var heatMapData = this.props.heatMapData.map(place => {return {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}})
+        console.log(heatMapData)
+        console.log(this.state.loading)
+        this.setState({
+            heatMapData: heatMapData,
+            loading: false
+        })
         window.matchMedia("(min-width: 768px)").addEventListener('change', (event) => this.setState({isBigScreen: event.matches}));
     }
 
@@ -88,8 +94,11 @@ class MapHolder extends Component {
     render() {
         const style = {
             height: "500px",
-            width: this.state.isBigScreen ? "572px": "85%",
+            width: this.state.isBigScreen ? "572px" : "85%",
         };
+        if(this.state.loading){
+            return null;
+        }
         return (
             <div className={this.state.isFullScreen ? "map-holder-full" : "map-holder"}>
                 <Map
@@ -98,6 +107,12 @@ class MapHolder extends Component {
                     initialCenter={this.props.mapCenter}
                     center={this.props.mapCenter}
                     zoom={12} style={style}>
+                    <HeatMap
+                        gradient={gradient}
+                        positions={this.state.heatMapData}
+                        opacity={1}
+                        radius={20}
+                    />
                     {this.props.center.lat !== 0 && this.props.center.lng !== 0 &&
                     <Marker position={this.props.center} name={`Center: ${this.state.centerAddress}`} onClick={this.onMarkerClick}
                             icon={{

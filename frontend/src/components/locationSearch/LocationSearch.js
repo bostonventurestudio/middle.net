@@ -3,11 +3,6 @@ import PlacesAutocomplete from 'react-places-autocomplete';
 
 class LocationSearch extends Component {
 
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-
     render() {
         return (
             <div id='googleMaps'>
