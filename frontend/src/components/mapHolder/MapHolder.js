@@ -14,7 +14,7 @@ class MapHolder extends Component {
             showingInfoWindow: false,
             centerAddress: "",
             isFullScreen: false,
-            showHeatMap: true,
+            showHeatMap: false,
             heatMapData: [],
             loading: true
         };
