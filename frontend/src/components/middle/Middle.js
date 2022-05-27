@@ -7,6 +7,7 @@ import FormInputs from "../formInputs/FormInputs";
 import MapHolder from "../mapHolder/MapHolder";
 import {RADIUS, TYPE} from "../../constants";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
+import copy from "copy-to-clipboard";
 
 const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
 
@@ -228,7 +229,7 @@ class Middle extends Component {
         }, this.setCenterAndNearbyPlaces);
     }
 
-    async handleSubmit(event) {
+    handleSubmit(event) {
         event.preventDefault();
         var canSubmit = true;
         for (var form_key in this.state.forms_data) {
@@ -277,14 +278,9 @@ class Middle extends Component {
         } else if (this.state.slug === "no-slug") {
             clearTimeout(this.copyToClipboard);
         } else {
-            var textToCopy = `${window.location.origin}/${this.state.slug}`;
-            navigator.clipboard.writeText(textToCopy)
-                .then(() => {
-                    console.log("Link Copied to Clipboard")
-                }, () => {
-                    prompt(`Press ⌘+C or CTRL+C to copy`, textToCopy);
-                });
-            document.getElementById("copied").style.display = "block";
+            if(copy(`${window.location.origin}/${this.state.slug}`)){
+                document.getElementById("copied").style.display = "block";
+            }
             clearTimeout(this.copyToClipboard);
         }
     }
