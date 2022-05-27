@@ -148,7 +148,7 @@ class Middle extends Component {
             }
             return state;
         });
-        if (isInvalidAddress) {
+        if (isInvalidAddress && this.state.forms_data[form_key].google_place_id !== '') {
             this.setPlaceId('', form_key);
         }
         document.getElementById("copied").style.display = "none";
