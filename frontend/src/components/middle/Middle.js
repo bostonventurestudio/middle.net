@@ -139,16 +139,16 @@ class Middle extends Component {
         });
     }
 
-    setAddress(address, form_key, isInvalid = true) {
+    setAddress(address, form_key, isInvalidAddress = false) {
         this.setState(state => {
             state.forms_data[form_key].address = address;
-            if (isInvalid) {
+            if (isInvalidAddress) {
                 state.forms_data[form_key].latitude = 0;
                 state.forms_data[form_key].longitude = 0;
             }
             return state;
         });
-        if (this.state.forms_data[form_key].google_place_id !== '') {
+        if (isInvalidAddress) {
             this.setPlaceId('', form_key);
         }
         document.getElementById("copied").style.display = "none";
@@ -197,7 +197,7 @@ class Middle extends Component {
         return `form_${forms_count}`;
     }
 
-    async handleAddressSelect(address, form_key) {
+    handleAddressSelect(address, form_key) {
         this.setAddress(address, form_key);
         geocodeByAddress(address)
             .then(results => {

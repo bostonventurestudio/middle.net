@@ -7,7 +7,7 @@ class LocationSearch extends Component {
         return (
             <div id='googleMaps'>
                 <PlacesAutocomplete value={this.props.address} onChange={(address) => {
-                    this.props.setAddress(address, this.props.form_key)
+                    this.props.setAddress(address, this.props.form_key, true)
                 }} onSelect={(address) => {
                     this.props.handleAddressSelect(address, this.props.form_key)
                 }}>

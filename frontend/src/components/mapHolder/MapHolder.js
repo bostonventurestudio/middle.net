@@ -45,7 +45,7 @@ class MapHolder extends Component {
             showingInfoWindow: false
         });
 
-    async onMapClicked(coord) {
+    onMapClicked(coord) {
         if (this.state.showingInfoWindow) {
             this.setState({
                 activeMarker: null,
@@ -53,19 +53,19 @@ class MapHolder extends Component {
             });
         } else {
             const form_key = this.props.addNewForm(null, true);
-            await this.populateLocationData(coord, form_key);
+            this.populateLocationData(coord, form_key);
         }
     };
 
-    async onMarkerDragEnd(coord, form_key) {
-        await this.populateLocationData(coord, form_key);
+    onMarkerDragEnd(coord, form_key) {
+        this.populateLocationData(coord, form_key);
     };
 
-    async populateLocationData(coord, form_key) {
+    populateLocationData(coord, form_key) {
         const lat = coord.latLng.lat();
         const lng = coord.latLng.lng();
         getLocationDetailFormLatLng(lat, lng).then((response) => {
-            this.props.setAddress(response.results[0].formatted_address, form_key, false);
+            this.props.setAddress(response.results[0].formatted_address, form_key);
             this.props.setPlaceId(response.results[0].place_id, form_key, true);
             this.props.setPosition(lat, lng, form_key);
         }).catch((error) => {
