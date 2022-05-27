@@ -39,7 +39,7 @@ class Middle extends Component {
         this.setPlaceId = this.setPlaceId.bind(this);
         this.setIsCorrectLocation = this.setIsCorrectLocation.bind(this);
         this.handleAddressSelect = this.handleAddressSelect.bind(this);
-        this.copyToClipboard = this.copyToClipboard.bind(this);
+        this.copyLinkToClipboard = this.copyLinkToClipboard.bind(this);
         this.addNewForm = this.addNewForm.bind(this);
         this.deleteForm = this.deleteForm.bind(this);
         this.setCenterAndNearbyPlaces = this.setCenterAndNearbyPlaces.bind(this);
@@ -268,20 +268,20 @@ class Middle extends Component {
             }
             alert("ERROR: Unable to save lsocations")
         })
-        this.copyToClipboard();
+        this.copyLinkToClipboard();
     };
 
 
-    copyToClipboard() {
+    copyLinkToClipboard() {
         if (this.state.slug === "") {
-            setTimeout(this.copyToClipboard, 100);
+            setTimeout(this.copyLinkToClipboard, 100);
         } else if (this.state.slug === "no-slug") {
-            clearTimeout(this.copyToClipboard);
+            clearTimeout(this.copyLinkToClipboard);
         } else {
             if (copy(`${window.location.origin}/${this.state.slug}`)) {
                 document.getElementById("copied").style.display = "block";
             }
-            clearTimeout(this.copyToClipboard);
+            clearTimeout(this.copyLinkToClipboard);
         }
     }
 
@@ -345,8 +345,8 @@ class Middle extends Component {
                 type: TYPE,
             };
             this.state.service.nearbySearch(request, this.setNearbyPlaces);
-        } catch (e) {
-            console.log(e);
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -403,11 +403,11 @@ class Middle extends Component {
                             </div>
                         </div>
                         <div id="map" className="b-tab">
-                            {this.state.canRenderMap && <MapHolder google={this.props.google} forms_count={this.state.forms_count}
+                            {this.state.canRenderMap ? <MapHolder google={this.props.google} forms_count={this.state.forms_count}
                                                                    center={this.state.center} forms_data={this.state.forms_data} nearbyPlaces={this.state.nearbyPlaces}
                                                                    setAddress={this.setAddress} setPosition={this.setPosition} mapCenter={this.state.mapCenter}
                                                                    setPlaceId={this.setPlaceId} addNewForm={this.addNewForm} heatMapData={this.state.heatMapData}
-                            />}
+                            /> : "Loading..."}
                         </div>
                     </div>
                 </div>
