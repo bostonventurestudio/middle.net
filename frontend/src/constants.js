@@ -5,6 +5,7 @@ export const RANK_BY = "distance";
 export const OPEN = 0;
 export const CLOSE = 1;
 export const OPEN_24_HOURS = "Open 24 hours";
+export const CLOSED = "Closed";
 export const FORM_INIT = {
     address: '',
     google_place_id: '',

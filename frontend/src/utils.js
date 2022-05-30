@@ -1,6 +1,6 @@
 import axios from "axios";
 import {LocationAPIURL} from "./config";
-import {OPEN, OPEN_24_HOURS} from "./constants";
+import {CLOSED, OPEN, OPEN_24_HOURS} from "./constants";
 import Geocode from "react-geocode";
 
 const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -33,7 +33,7 @@ export function get12HourTime(opening_hours, open_or_close) {
     if (opening_hours && opening_hours.weekday_text && opening_hours.weekday_text.length >= day && opening_hours.weekday_text[day]) {
         var time_str = opening_hours.weekday_text[day].split(": ");
         if (time_str.length >= 1) {
-            if (time_str[1] === OPEN_24_HOURS) {
+            if (time_str[1] === OPEN_24_HOURS || time_str[1] === CLOSED) {
                 return time_str[1];
             } else {
                 time_str = time_str[1].split(" – ");
