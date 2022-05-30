@@ -25,7 +25,7 @@ export function getCenterOfPolygonLatLngs(arr) {
     var y = arr.map(xy => xy[1]);
     var cx = (Math.min(...x) + Math.max(...x)) / 2;
     var cy = (Math.min(...y) + Math.max(...y)) / 2;
-    return {lat: cx, lng: cy};
+    return {lat: Number((cx).toFixed(5)), lng: Number((cy).toFixed(5))};
 }
 
 export function get12HourTime(opening_hours, open_or_close) {
