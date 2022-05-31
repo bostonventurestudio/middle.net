@@ -5,7 +5,7 @@ import {GoogleApiWrapper} from "google-maps-react";
 import Geocode from "react-geocode";
 import FormInputs from "../formInputs/FormInputs";
 import MapHolder from "../mapHolder/MapHolder";
-import {RADIUS, TYPE} from "../../constants";
+import {HEATMAP_RADIUS, RADIUS, TYPE} from "../../constants";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
 import copy from "copy-to-clipboard";
 
@@ -46,6 +46,7 @@ class Middle extends Component {
         this.getNearbyPlaceDetail = this.getNearbyPlaceDetail.bind(this);
         this.setNearbyPlaceDetail = this.setNearbyPlaceDetail.bind(this);
         this.setNearbyPlaces = this.setNearbyPlaces.bind(this);
+        this.setHeatMapData = this.setHeatMapData.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.populateFormsData = this.populateFormsData.bind(this);
     }
@@ -301,12 +302,21 @@ class Middle extends Component {
 
     setNearbyPlaces(results, status) {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            this.setState({
-                heatMapData: results,
-                canRenderMap: true
-            });
             var places = sortPlacesBasedOnDistanceFromCenter(results.slice(0, 5), this.state.center);
             places.forEach(this.getNearbyPlaceDetail);
+        }
+    }
+
+    setHeatMapData(results, status, pagination) {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+            this.setState({
+                heatMapData: this.state.heatMapData.concat(results),
+            });
+            if (pagination && pagination.hasNextPage) {
+                pagination.nextPage();
+            }else {
+                this.setState({canRenderMap: true});
+            }
         } else {
             this.setState({canRenderMap: true});
         }
@@ -339,12 +349,18 @@ class Middle extends Component {
             center: center,
             mapCenter: center,
         });
-        var request = {
+        var nearbyPlacesRequest = {
             location: center,
             radius: RADIUS,
             type: TYPE,
         };
-        this.state.service.nearbySearch(request, this.setNearbyPlaces);
+        this.state.service.nearbySearch(nearbyPlacesRequest, this.setNearbyPlaces);
+        var heatMapDataRequest = {
+            location: center,
+            radius: HEATMAP_RADIUS,
+            type: TYPE,
+        };
+        this.state.service.nearbySearch(heatMapDataRequest, this.setHeatMapData);
     }
 
     render() {

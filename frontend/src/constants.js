@@ -1,4 +1,5 @@
 export const RADIUS = 2000;
+export const HEATMAP_RADIUS = 300;
 export const TYPE = ["restaurant"];
 export const KEYWORD = "cafe";
 export const RANK_BY = "distance";
