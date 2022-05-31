@@ -214,6 +214,7 @@ class Middle extends Component {
 
     deleteForm(event, form_key) {
         event.preventDefault();
+        const place_id = this.state.forms_data[form_key].google_place_id;
         const forms_count = this.state.forms_count - 1;
         const forms_data = {};
         var index = 1;
@@ -223,11 +224,19 @@ class Middle extends Component {
                 index = index + 1;
             }
         }
-        this.setState(state => {
-            state.forms_count = forms_count;
-            state.forms_data = forms_data;
-            return state;
-        }, this.setCenterAndNearbyPlaces);
+        if (place_id !== '') {
+            this.setState(state => {
+                state.forms_count = forms_count;
+                state.forms_data = forms_data;
+                return state;
+            }, this.setCenterAndNearbyPlaces);
+        }else {
+            this.setState(state => {
+                state.forms_count = forms_count;
+                state.forms_data = forms_data;
+                return state;
+            });
+        }
     }
 
     handleSubmit(event) {
@@ -314,7 +323,7 @@ class Middle extends Component {
             });
             if (pagination && pagination.hasNextPage) {
                 pagination.nextPage();
-            }else {
+            } else {
                 this.setState({canRenderMap: true});
             }
         } else {
@@ -375,7 +384,7 @@ class Middle extends Component {
                                         address={this.state.forms_data[form_key].address}
                                         setAddress={this.setAddress}
                                         handleAddressSelect={this.handleAddressSelect}
-                                        canDelete={this.state.forms_count > 1}
+                                        canDelete={this.state.forms_count > 1 && this.state.canRenderMap}
                                         deleteForm={this.deleteForm}
                                         setMapCenter={this.setMapCenter}/>
                         ))
