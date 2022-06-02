@@ -74,25 +74,26 @@ export function sortPlacesBasedOnDistanceFromCenter(places, center) {
     return places;
 }
 
-export function distanceBetweenTwoLocations(loc1, loc2) {
-    if (loc1.lat === loc2.lat && loc1.lng === loc2.lng) {
-        return 0;
-    } else {
-        var radlat1 = Math.PI * loc1.lat / 180;
-        var radlat2 = Math.PI * loc2.lat / 180;
-        var theta = loc1.lng - loc2.lng;
-        var radtheta = Math.PI * theta / 180;
-        var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-        if (dist > 1) {
-            dist = 1;
+export function distanceBetweenTwoLocations(location, center) {
+    var p = 0.017453292519943295;    // Math.PI / 180
+    var c = Math.cos;
+    var a = 0.5 - c((center.lat - location[0]) * p) / 2 +
+        c(location[0] * p) * c(center.lat * p) *
+        (1 - c((center.lng - location[1]) * p)) / 2;
+    return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
+}
+
+export function getDistanceToFarthestLocationFromCenter(locations, center) {
+    var farthest = 0;
+    locations.forEach(location => {
+        var distance = distanceBetweenTwoLocations(location, center);
+        if (distance > farthest) {
+            farthest = distance;
         }
-        dist = Math.acos(dist);
-        dist = dist * 180 / Math.PI;
-        dist = dist * 60 * 1.1515;
-        return dist * 1609.34;
-    }
+    });
+    return Number((farthest * 1000).toFixed(0));
 }
 
 export function delay(time) {
-  return new Promise(resolve => setTimeout(resolve, time));
+    return new Promise(resolve => setTimeout(resolve, time));
 }

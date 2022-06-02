@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {delay, getCenterOfPolygonLatLngs, getLocationDetailFormLatLng, saveLocation, sortPlacesBasedOnDistanceFromCenter} from "../../utils";
+import {delay, getCenterOfPolygonLatLngs, getDistanceToFarthestLocationFromCenter, getLocationDetailFormLatLng, saveLocation, sortPlacesBasedOnDistanceFromCenter} from "../../utils";
 import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
 import {GoogleApiWrapper} from "google-maps-react";
 import Geocode from "react-geocode";
@@ -29,6 +29,7 @@ class Middle extends Component {
             canRenderMap: true,
             heatMapData: [],
             searchRadius: MIN_RADIUS,
+            maxRadius: MAX_RADIUS,
         };
         this.change = this.change.bind(this);
         this.clear = this.clear.bind(this);
@@ -329,11 +330,10 @@ class Middle extends Component {
     }
 
     setNearbyPlaces(results, status) {
-        console.log(results, status, this.state.searchRadius);
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
             if (results.length < 5) {
-                if (this.state.searchRadius === MAX_RADIUS) return;
-                let radius = this.state.searchRadius * 2 > MAX_RADIUS ? MAX_RADIUS : this.state.searchRadius * 2;
+                if (this.state.searchRadius === this.state.maxRadius) return;
+                let radius = this.state.searchRadius * 2 > this.state.maxRadius ? this.state.maxRadius : this.state.searchRadius * 2;
                 this.setState({searchRadius: radius}, () => {
                     this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
                 });
@@ -342,8 +342,8 @@ class Middle extends Component {
                 places.forEach(this.getNearbyPlaceDetail);
             }
         } else if (status === window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-            if (this.state.searchRadius === MAX_RADIUS) return;
-            let radius = this.state.searchRadius * 2 > MAX_RADIUS ? MAX_RADIUS : this.state.searchRadius * 2;
+            if (this.state.searchRadius === this.state.maxRadius) return;
+            let radius = this.state.searchRadius * 2 > this.state.maxRadius ? this.state.maxRadius : this.state.searchRadius * 2;
             this.setState({searchRadius: radius}, () => {
                 this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
             });
@@ -377,10 +377,12 @@ class Middle extends Component {
             return;
         }
         var center = getCenterOfPolygonLatLngs(lagLngs);
+        var farthestPoint = getDistanceToFarthestLocationFromCenter(lagLngs, center);
         this.setState({
             center: center,
             mapCenter: center,
             searchRadius: MIN_RADIUS,
+            maxRadius: farthestPoint > MAX_RADIUS ? MAX_RADIUS : farthestPoint
         }, () => {
             this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
             this.sendNearbyPlacesAPIRequest(HEATMAP_RADIUS, this.setHeatMapData);
