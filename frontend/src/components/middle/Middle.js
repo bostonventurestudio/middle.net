@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import {getCenterOfPolygonLatLngs, getLocationDetailFormLatLng, saveLocation, sortPlacesBasedOnDistanceFromCenter} from "../../utils";
+import {delay, getCenterOfPolygonLatLngs, getLocationDetailFormLatLng, saveLocation, sortPlacesBasedOnDistanceFromCenter} from "../../utils";
 import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
 import {GoogleApiWrapper} from "google-maps-react";
 import Geocode from "react-geocode";
 import FormInputs from "../formInputs/FormInputs";
 import MapHolder from "../mapHolder/MapHolder";
-import {HEATMAP_RADIUS, RADIUS, TYPE} from "../../constants";
+import {HEATMAP_RADIUS, MAX_RADIUS, MIN_RADIUS, TYPE} from "../../constants";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
 import copy from "copy-to-clipboard";
 
@@ -26,10 +26,9 @@ class Middle extends Component {
             nearbyPlaces: new Array(5),
             center: {lat: 0, lng: 0},
             mapCenter: {lat: 0, lng: 0},
-            canRender: false,
             canRenderMap: true,
-            showMessage: true,
-            heatMapData: []
+            heatMapData: [],
+            searchRadius: MIN_RADIUS,
         };
         this.change = this.change.bind(this);
         this.clear = this.clear.bind(this);
@@ -47,6 +46,7 @@ class Middle extends Component {
         this.setNearbyPlaceDetail = this.setNearbyPlaceDetail.bind(this);
         this.setNearbyPlaces = this.setNearbyPlaces.bind(this);
         this.setHeatMapData = this.setHeatMapData.bind(this);
+        this.sendNearbyPlacesAPIRequest = this.sendNearbyPlacesAPIRequest.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.populateFormsData = this.populateFormsData.bind(this);
     }
@@ -230,7 +230,7 @@ class Middle extends Component {
                 state.forms_data = forms_data;
                 return state;
             }, this.setCenterAndNearbyPlaces);
-        }else {
+        } else {
             this.setState(state => {
                 state.forms_count = forms_count;
                 state.forms_data = forms_data;
@@ -295,27 +295,6 @@ class Middle extends Component {
         }
     }
 
-    getNearbyPlaceDetail(nearbyPlace, index) {
-        this.state.service.getDetails({placeId: nearbyPlace.place_id}, (nearbyPlace, status) => {
-            this.setNearbyPlaceDetail(nearbyPlace, status, index);
-        });
-    }
-
-    setNearbyPlaceDetail(nearbyPlace, status, index) {
-        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            var nearbyPlaces = this.state.nearbyPlaces;
-            nearbyPlaces[index] = nearbyPlace;
-            this.setState({nearbyPlaces: nearbyPlaces});
-        }
-    }
-
-    setNearbyPlaces(results, status) {
-        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-            var places = sortPlacesBasedOnDistanceFromCenter(results.slice(0, 5), this.state.center);
-            places.forEach(this.getNearbyPlaceDetail);
-        }
-    }
-
     setHeatMapData(results, status, pagination) {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
             this.setState({
@@ -328,6 +307,50 @@ class Middle extends Component {
             }
         } else {
             this.setState({canRenderMap: true});
+        }
+    }
+
+    getNearbyPlaceDetail(nearbyPlace, index) {
+        this.state.service.getDetails({placeId: nearbyPlace.place_id}, (nearbyPlaceDetail, status) => {
+            this.setNearbyPlaceDetail(nearbyPlace, nearbyPlaceDetail, status, index);
+        });
+    }
+
+    setNearbyPlaceDetail(nearbyPlace, nearbyPlaceDetail, status, index) {
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+            var nearbyPlaces = this.state.nearbyPlaces;
+            nearbyPlaces[index] = nearbyPlaceDetail;
+            this.setState({nearbyPlaces: nearbyPlaces});
+        } else if (status === window.google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
+            delay(1000).then(() => {
+                this.getNearbyPlaceDetail(nearbyPlace, index);
+            });
+        }
+    }
+
+    setNearbyPlaces(results, status) {
+        console.log(results, status, this.state.searchRadius);
+        if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+            if (results.length < 5) {
+                if (this.state.searchRadius === MAX_RADIUS) return;
+                let radius = this.state.searchRadius * 2 > MAX_RADIUS ? MAX_RADIUS : this.state.searchRadius * 2;
+                this.setState({searchRadius: radius}, () => {
+                    this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
+                });
+            } else {
+                const places = sortPlacesBasedOnDistanceFromCenter(results.slice(0, 5), this.state.center);
+                places.forEach(this.getNearbyPlaceDetail);
+            }
+        } else if (status === window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
+            if (this.state.searchRadius === MAX_RADIUS) return;
+            let radius = this.state.searchRadius * 2 > MAX_RADIUS ? MAX_RADIUS : this.state.searchRadius * 2;
+            this.setState({searchRadius: radius}, () => {
+                this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
+            });
+        } else if (status === window.google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
+            delay(1000).then(() => {
+                this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
+            });
         }
     }
 
@@ -357,19 +380,20 @@ class Middle extends Component {
         this.setState({
             center: center,
             mapCenter: center,
+            searchRadius: MIN_RADIUS,
+        }, () => {
+            this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
+            this.sendNearbyPlacesAPIRequest(HEATMAP_RADIUS, this.setHeatMapData);
         });
+    }
+
+    sendNearbyPlacesAPIRequest(radius, callback) {
         var nearbyPlacesRequest = {
-            location: center,
-            radius: RADIUS,
+            location: this.state.center,
+            radius: radius,
             type: TYPE,
         };
-        this.state.service.nearbySearch(nearbyPlacesRequest, this.setNearbyPlaces);
-        var heatMapDataRequest = {
-            location: center,
-            radius: HEATMAP_RADIUS,
-            type: TYPE,
-        };
-        this.state.service.nearbySearch(heatMapDataRequest, this.setHeatMapData);
+        this.state.service.nearbySearch(nearbyPlacesRequest, callback);
     }
 
     render() {

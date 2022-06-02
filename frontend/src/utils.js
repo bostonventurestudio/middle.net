@@ -69,8 +69,30 @@ export function sortPlacesBasedOnDistanceFromCenter(places, center) {
         const y = center.lng - place.geometry.location.lng();
         return Math.sqrt((x * x) + (y * y));
     };
-    // const sorter = place => distance(place.geometry.location.lat(), center) - distance(place.geometry.location.lat(), center);
     const sorter = (placeA, placeB) => distance(placeA, center) - distance(placeB, center);
     places.sort(sorter);
     return places;
+}
+
+export function distanceBetweenTwoLocations(loc1, loc2) {
+    if (loc1.lat === loc2.lat && loc1.lng === loc2.lng) {
+        return 0;
+    } else {
+        var radlat1 = Math.PI * loc1.lat / 180;
+        var radlat2 = Math.PI * loc2.lat / 180;
+        var theta = loc1.lng - loc2.lng;
+        var radtheta = Math.PI * theta / 180;
+        var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+        if (dist > 1) {
+            dist = 1;
+        }
+        dist = Math.acos(dist);
+        dist = dist * 180 / Math.PI;
+        dist = dist * 60 * 1.1515;
+        return dist * 1609.34;
+    }
+}
+
+export function delay(time) {
+  return new Promise(resolve => setTimeout(resolve, time));
 }

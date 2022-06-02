@@ -1,4 +1,5 @@
-export const RADIUS = 2000;
+export const MIN_RADIUS = 2000;
+export const MAX_RADIUS = 50000;
 export const HEATMAP_RADIUS = 300;
 export const TYPE = ["restaurant"];
 export const KEYWORD = "cafe";
@@ -7,13 +8,6 @@ export const OPEN = 0;
 export const CLOSE = 1;
 export const OPEN_24_HOURS = "Open 24 hours";
 export const CLOSED = "Closed";
-export const FORM_INIT = {
-    address: '',
-    google_place_id: '',
-    latitude: 0,
-    longitude: 0,
-    isCorrectLocation: true,
-};
 export const gradient = [
     "rgba(0, 255, 255, 0)",
     "rgba(0, 255, 255, 1)",
