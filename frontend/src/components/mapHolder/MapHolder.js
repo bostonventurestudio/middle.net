@@ -81,7 +81,9 @@ class MapHolder extends Component {
                 console.log(error);
             });
         }
-        var heatMapData = this.props.heatMapData.map(place => {return {lat: place.geometry.location.lat(), lng: place.geometry.location.lng(), weight: 1}})
+        var heatMapData = this.props.heatMapData.map(place => {
+            return {lat: place.geometry.location.lat(), lng: place.geometry.location.lng(), weight: 1}
+        })
         this.setState({
             heatMapData: heatMapData,
             loading: false
@@ -114,13 +116,14 @@ class MapHolder extends Component {
                                 url: "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
                                 anchor: new this.props.google.maps.Point(16, 16),
                                 scaledSize: new this.props.google.maps.Size(32, 32)
-                            }}/>}
-                    {Object.keys(this.props.forms_data).map((form_key, index) => (
-                        <Marker draggable={true} onClick={this.onMarkerClick} name={this.props.forms_data[form_key].address}
-                                position={{lat: this.props.forms_data[form_key].latitude, lng: this.props.forms_data[form_key].longitude}}
-                                onDragend={(event, map, coord) => this.onMarkerDragEnd(coord, form_key)}/>
-                    ))}
-
+                            }}/>
+                    }
+                    {Object.keys(this.props.forms_data).map((form_key, index) => {
+                        return this.props.forms_data[form_key].latitude && this.props.forms_data[form_key].longitude &&
+                            <Marker draggable={true} onClick={this.onMarkerClick} name={this.props.forms_data[form_key].address}
+                                    position={{lat: this.props.forms_data[form_key].latitude, lng: this.props.forms_data[form_key].longitude}}
+                                    onDragend={(event, map, coord) => this.onMarkerDragEnd(coord, form_key)}/>
+                    })}
                     {this.props.nearbyPlaces.map((place, index) => {
                         return (<Marker icon={{url: "https://cdn-icons-png.flaticon.com/512/45/45332.png", anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}
                                         key={index} position={{lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}} name={`${place.name}: ${place.vicinity}`} onClick={this.onMarkerClick}/>)
