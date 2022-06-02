@@ -332,11 +332,15 @@ class Middle extends Component {
     setNearbyPlaces(results, status) {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
             if (results.length < 5) {
-                if (this.state.searchRadius === this.state.maxRadius) return;
-                let radius = this.state.searchRadius * 2 > this.state.maxRadius ? this.state.maxRadius : this.state.searchRadius * 2;
-                this.setState({searchRadius: radius}, () => {
-                    this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
-                });
+                if (this.state.searchRadius === this.state.maxRadius) {
+                    const places = sortPlacesBasedOnDistanceFromCenter(results.slice(0, 5), this.state.center);
+                    places.forEach(this.getNearbyPlaceDetail);
+                }else {
+                    let radius = this.state.searchRadius * 2 > this.state.maxRadius ? this.state.maxRadius : this.state.searchRadius * 2;
+                    this.setState({searchRadius: radius}, () => {
+                        this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
+                    });
+                }
             } else {
                 const places = sortPlacesBasedOnDistanceFromCenter(results.slice(0, 5), this.state.center);
                 places.forEach(this.getNearbyPlaceDetail);
