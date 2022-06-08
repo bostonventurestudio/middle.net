@@ -1,3 +1,7 @@
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#  Copyright (c) 2022, Boston Venture Studio, Inc - https://www.bvs.net/
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 from django.conf import settings
 from django.core.cache import cache
 

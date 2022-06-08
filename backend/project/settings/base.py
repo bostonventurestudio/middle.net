@@ -10,6 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#  Copyright (c) 2022, Boston Venture Studio, Inc - https://www.bvs.net/
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 import os
 from pathlib import Path
 

@@ -1,3 +1,7 @@
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#  Copyright (c) 2022, Boston Venture Studio, Inc - https://www.bvs.net/
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 from apps.core.models import Location
 from apps.core.serializers import LocationModelSerializer, LocationSerializer
 from apps.core.utils import populate_slug_for_multiple_locations
