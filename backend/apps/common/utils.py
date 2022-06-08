@@ -1,3 +1,7 @@
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#  Copyright (c) 2022, Boston Venture Studio, Inc - https://www.bvs.net/
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 from email.mime.image import MIMEImage
 import logging
 import mimetypes

@@ -1,3 +1,7 @@
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ + Copyright (c) 2022-2022, Boston Venture Studio, Inc - https://www.bvs.net/
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
 export const MIN_RADIUS = 2000;
 export const MAX_RADIUS = 50000;
 export const HEATMAP_RADIUS = 300;

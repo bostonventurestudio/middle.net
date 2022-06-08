@@ -1,3 +1,7 @@
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ + Copyright (c) 2022-2022, Boston Venture Studio, Inc - https://www.bvs.net/
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
 import axios from "axios";
 import {LocationAPIURL} from "./config";
 import {CLOSED, OPEN, OPEN_24_HOURS} from "./constants";

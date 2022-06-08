@@ -1,5 +1,9 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#  Copyright (c) 2022, Boston Venture Studio, Inc - https://www.bvs.net/
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 import os
 import sys
 

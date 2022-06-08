@@ -1,3 +1,7 @@
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ + Copyright (c) 2022-2022, Boston Venture Studio, Inc - https://www.bvs.net/
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
 import React from "react";
 import {BrowserRouter as Router, Route, Routes as Switch} from "react-router-dom";
 import {Footer, Header, Home, NotFound} from './components';

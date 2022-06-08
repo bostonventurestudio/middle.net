@@ -1,3 +1,7 @@
+/*+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ + Copyright (c) 2022-2022, Boston Venture Studio, Inc - https://www.bvs.net/
+ ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
+
 import React, {Component} from 'react';
 import {HeatMap, InfoWindow, Map, Marker} from "google-maps-react";
 import {getLocationDetailFormLatLng} from "../../utils";
