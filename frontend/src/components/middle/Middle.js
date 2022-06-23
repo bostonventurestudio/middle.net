@@ -407,6 +407,13 @@ class Middle extends Component {
     }
 
     render() {
+        let canAddLocation = true;
+        for (var form_key in this.state.forms_data) {
+            if (this.state.forms_data[form_key].google_place_id === '') {
+                canAddLocation = false;
+                break;
+            }
+        }
         return (
             <div>
                 <form className="form" onSubmit={this.handleSubmit}>
@@ -423,7 +430,7 @@ class Middle extends Component {
                                         setMapCenter={this.setMapCenter}/>
                         ))
                     }
-                    {this.state.forms_data["form_1"].google_place_id !== '' && <div className="add-location">
+                    {canAddLocation && <div className="add-location">
                         <button onClick={this.addNewForm}>
                             <span className="icon">+</span>
                             <span className="text">Add another location</span>
