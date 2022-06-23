@@ -1099,6 +1099,11 @@ form .share-btn-row {
   line-height: 13px;
   margin-bottom: 15px;
 }
+
+.search-results-block .pop-up {
+  padding: 0 !important;
+}
+
 @media (min-width: 768px) {
   .search-results-block .list-holder {
     display: flex;
@@ -1113,13 +1118,12 @@ form .share-btn-row {
 }
 @media (min-width: 768px) {
   .search-results-block .list-holder .left-block {
-    max-width: 70%;
+    max-width: 64%;
     margin-bottom: 0;
   }
 }
 .search-results-block .list-holder .right-block {
   display: flex;
-  flex-flow: row wrap;
   justify-content: space-between;
 }
 

@@ -6,6 +6,7 @@ import React, {Component} from 'react';
 import {HeatMap, InfoWindow, Map, Marker} from "google-maps-react";
 import {getLocationDetailFormLatLng} from "../../utils";
 import {gradient} from "../../constants";
+import NearbyPlace from "../nearbyPlace/NearbyPlace";
 
 class MapHolder extends Component {
 
@@ -13,8 +14,8 @@ class MapHolder extends Component {
         super(props);
         this.state = {
             isBigScreen: window.matchMedia("(min-width: 768px)").matches,
+            nearbyPlaces: props.nearbyPlaces,
             activeMarker: {},
-            selectedPlace: {},
             showingInfoWindow: false,
             centerAddress: "",
             isFullScreen: false,
@@ -39,7 +40,6 @@ class MapHolder extends Component {
     onMarkerClick = (props, marker) =>
         this.setState({
             activeMarker: marker,
-            selectedPlace: props,
             showingInfoWindow: true
         });
 
@@ -128,16 +128,21 @@ class MapHolder extends Component {
                                     position={{lat: this.props.forms_data[form_key].latitude, lng: this.props.forms_data[form_key].longitude}}
                                     onDragend={(event, map, coord) => this.onMarkerDragEnd(coord, form_key)}/>
                     })}
-                    {this.props.nearbyPlaces.map((place, index) => {
-                        return (<Marker icon={{url: "https://cdn-icons-png.flaticon.com/512/45/45332.png", anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}
+                    {this.state.nearbyPlaces.map((place, index) => {
+                        return (<Marker location={place} icon={{url: "https://cdn-icons-png.flaticon.com/512/45/45332.png", anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}
                                         key={index} position={{lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}} name={`${place.name}: ${place.vicinity}`} onClick={this.onMarkerClick}/>)
 
                     })}
 
                     <InfoWindow marker={this.state.activeMarker} onClose={this.onInfoWindowClose} visible={this.state.showingInfoWindow}>
-                        <div>
-                            <h4>{this.state.selectedPlace.name}</h4>
-                        </div>
+                        {this.state.activeMarker && (this.state.activeMarker.location ?
+                                <div className="search-results-block">
+                                    <NearbyPlace place={this.state.activeMarker.location} popUp={true}/>
+                                </div> :
+                                <div>
+                                    <h4>{this.state.activeMarker.name}</h4>
+                                </div>
+                        )}
                     </InfoWindow>
                 </Map>}
             </div>

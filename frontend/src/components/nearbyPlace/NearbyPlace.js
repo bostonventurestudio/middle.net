@@ -16,7 +16,7 @@ class NearbyPlace extends Component {
             return null;
         }
         return (
-            <div className="list-holder" key={this.props.index}>
+            <div className={this.props.popUp ? "list-holder pop-up": "list-holder"} key={this.props.index}>
                 <div className="left-block">
                     <span className="num">{this.props.index}</span>
                     <div className="img-detail-block">

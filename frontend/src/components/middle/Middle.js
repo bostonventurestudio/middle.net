@@ -457,7 +457,7 @@ class Middle extends Component {
                         <div id="places" className="b-tab active">
                             <div className="list-view-block">
                                 {this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"] && this.state.forms_data["form_2"].google_place_id !== '' ? this.state.nearbyPlaces[0] ? this.state.nearbyPlaces.map((place, index) => {
-                                    return <NearbyPlace place={place} index={index + 1} key={index}/>
+                                    return <NearbyPlace place={place} index={index + 1} key={index} popUp={false}/>
                                 }) : <div className="instruction-places">
                                     No place available to meet in the middle.
                                 </div> : <div className="instruction-places">
