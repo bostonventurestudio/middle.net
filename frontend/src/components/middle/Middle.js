@@ -12,6 +12,8 @@ import MapHolder from "../mapHolder/MapHolder";
 import {HEATMAP_RADIUS, MAX_RADIUS, MIN_RADIUS, TYPE} from "../../constants";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
 import copy from "copy-to-clipboard";
+import icon_copy from "../../images/iconCopy.png";
+
 
 const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
 
@@ -339,7 +341,7 @@ class Middle extends Component {
                 if (this.state.searchRadius === this.state.maxRadius) {
                     const places = sortPlacesBasedOnDistanceFromCenter(results.slice(0, 5), this.state.center);
                     places.forEach(this.getNearbyPlaceDetail);
-                }else {
+                } else {
                     let radius = this.state.searchRadius * 2 > this.state.maxRadius ? this.state.maxRadius : this.state.searchRadius * 2;
                     this.setState({searchRadius: radius}, () => {
                         this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
@@ -437,7 +439,7 @@ class Middle extends Component {
                         </button>
                     </div>}
                     <div className="share-btn-row">
-                        <button type="submit" className={this.state.forms_data["form_1"].google_place_id !== '' ? "btn-primary" : "btn-primary disabled"}>Share link <i className="icon-copy"/></button>
+                        <button type="submit" className={this.state.forms_data["form_1"].google_place_id !== '' ? "btn-primary" : "btn-primary disabled"}>Share link <img src={icon_copy} alt=""/></button>
                         <div className="copied" id="copied">
                             link has been copied to clipboard!
                         </div>
