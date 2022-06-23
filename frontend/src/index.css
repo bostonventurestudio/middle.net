@@ -1118,6 +1118,17 @@ form .share-btn-row {
   justify-content: space-between;
 }
 
+.search-results-block .list-holder .right-block .rating-time-block {
+  position: relative;
+}
+
+.search-results-block .list-holder .right-block .rating-time-block .timing-info {
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}
+
 .search-results-block .list-holder .right-block .btn-primary {
   display: block;
   border-radius: 30px;
@@ -1141,14 +1152,9 @@ form .share-btn-row {
   }
 }
 .search-results-block .list-holder .rating-list {
-  margin: 0 0 10px;
+  margin: 0;
   padding: 0;
   list-style: none;
-}
-@media (min-width: 768px) {
-  .search-results-block .list-holder .rating-list {
-    margin: 0 0 17px;
-  }
 }
 .search-results-block .list-holder .rating-list li {
   display: inline-block;
@@ -1159,14 +1165,15 @@ form .share-btn-row {
   color: #FFD541;
 }
 
-.search-results-block .list-holder .rating-list .time{
+.search-results-block .list-holder .timing-info .time{
   color: black;
+  white-space: nowrap;
 }
 
 .search-results-block .list-holder .directions-block {
   text-align: center;
   max-width: 48px;
-  margin-left: 15px;
+  margin: auto 0 auto 15px;
 }
 .search-results-block .list-holder .directions-block a {
   text-decoration: none;
@@ -1198,7 +1205,7 @@ form .share-btn-row {
   line-height: 18px;
 }
 .search-results-block .list-holder .img-holder {
-  margin-right: 10px;
+  margin: auto 10px auto 0;
   flex-shrink: 0;
   width: 70px;
   height: 70px;
@@ -1223,15 +1230,16 @@ form .share-btn-row {
 
 .search-results-block .list-holder .phone_number {
   display: block;
-  margin-top: 5px;
 }
 
 .search-results-block .list-holder .detail {
   display: block;
+  margin-bottom: 3px;
 }
-.search-results-block .list-holder .open {
+.search-results-block .list-holder .timing-info .open {
   display: block;
   color: #5A9AE4;
+  margin-bottom: 3px;
 }
 
 .b-tab {
