@@ -735,8 +735,8 @@ input[type=submit] {
 
 #main {
   min-height: calc(100vh - 120px);
-  background: url(./images/bg-1.png) repeat;
-  background-size: auto;
+  background-image: url(./images/bg.png);
+  background-size: cover;
 }
 
 .content-block {
