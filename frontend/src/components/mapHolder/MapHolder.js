@@ -102,7 +102,7 @@ class MapHolder extends Component {
     render() {
         const style = {
             height: "500px",
-            width: this.state.isBigScreen ? "572px" : "85%",
+            width: this.state.isBigScreen ? "572px" : "90%",
         };
         return (
             <div className={this.state.isFullScreen ? "map-holder-full" : "map-holder"}>
