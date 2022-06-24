@@ -735,7 +735,7 @@ input[type=submit] {
 
 #main {
   min-height: calc(100vh - 120px);
-  background-image: url(./images/bg.png);
+  background: url(./images/bg.png) fixed;
   background-size: cover;
 }
 
@@ -1103,7 +1103,7 @@ form .share-btn-row {
 .search-results-block .list-holder {
   background: #fff;
   padding: 10px 20px;
-  max-width: 571px;
+  max-width: 572px;
   font-size: 12px;
   line-height: 13px;
   margin-bottom: 15px;
