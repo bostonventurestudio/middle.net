@@ -14,7 +14,6 @@ class MapHolder extends Component {
         super(props);
         this.state = {
             isBigScreen: window.matchMedia("(min-width: 768px)").matches,
-            nearbyPlaces: props.nearbyPlaces,
             activeMarker: {},
             showingInfoWindow: false,
             centerAddress: "",
@@ -128,7 +127,7 @@ class MapHolder extends Component {
                                     position={{lat: this.props.forms_data[form_key].latitude, lng: this.props.forms_data[form_key].longitude}}
                                     onDragend={(event, map, coord) => this.onMarkerDragEnd(coord, form_key)}/>
                     })}
-                    {this.state.nearbyPlaces.map((place, index) => {
+                    {this.props.nearbyPlaces.map((place, index) => {
                         return (<Marker location={place} icon={{url: "https://cdn-icons-png.flaticon.com/512/45/45332.png", anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}
                                         key={index} position={{lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}} name={`${place.name}: ${place.vicinity}`} onClick={this.onMarkerClick}/>)
 
