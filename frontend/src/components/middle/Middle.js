@@ -448,7 +448,7 @@ class Middle extends Component {
                 <div className="search-results-block">
                     <div className="tab">
                         <div className="tab-title">
-                            <span>Places in the middle:</span>
+                            <span>Top places in the middle:</span>
                         </div>
                         <div className="tab-links">
                             <a href="#list-view" data-tab="places" className="b-nav-tab active" onClick={this.change}>List View</a>
