@@ -735,8 +735,8 @@ input[type=submit] {
 
 #main {
   min-height: calc(100vh - 120px);
-  background: url(./images/bg-1.png) repeat;
-  background-size: auto;
+  background: url(./images/bg.png) fixed;
+  background-size: cover;
 }
 
 .content-block {
@@ -803,7 +803,7 @@ input[type=submit] {
 .form .target-location {
   position: absolute;
   top: 13px;
-  right: -75px;
+  right: -55px;
   font-size: 33px;
   line-height: 35px;
 }
@@ -821,20 +821,25 @@ input[type=submit] {
 .form .location-delete {
   position: absolute;
   top: 0;
-  right: -28px;
+  right: 0;
   font-size: 33px;
 }
 .form .location-delete button {
   text-decoration: none;
-  background: #5A9AE4;
+  background: white;
   border: none;
   height: 62px;
-  color: white;
-  width: 30px;
+  color: #5A9AE4;
+  width: 40px;
+  -webkit-text-stroke: 2px white;
+}
+
+.form .location-delete button i {
+  -webkit-text-stroke: 4px white;
 }
 
 .form .location-delete button:hover {
-  background: #448de0;
+  color: #448de0;
 }
 
 .form p {
@@ -860,12 +865,17 @@ input[type=submit] {
   border: none;
   width: fit-content;
   color: #fff;
-  padding: 5px 10px;
+  padding: 7px 10px;
   background: #5A9AE4;
   font-size: 14px;
   height: fit-content;
   text-decoration: none;
   margin-right: 5px;
+}
+
+.form .btn-primary img {
+  height: 15px;
+  margin: 0 0 -3px 5px;
 }
 
 @media (min-width: 768px) {
@@ -874,6 +884,10 @@ input[type=submit] {
     margin-right: 30px;
     font-size: 18px;
    }
+
+  .form .btn-primary img {
+    height: 20px;
+  }
 }
 
 .form .btn-primary:hover {
@@ -1089,11 +1103,16 @@ form .share-btn-row {
 .search-results-block .list-holder {
   background: #fff;
   padding: 10px 20px;
-  max-width: 571px;
+  max-width: 572px;
   font-size: 12px;
   line-height: 13px;
   margin-bottom: 15px;
 }
+
+.search-results-block .pop-up {
+  padding: 0 !important;
+}
+
 @media (min-width: 768px) {
   .search-results-block .list-holder {
     display: flex;
@@ -1108,14 +1127,24 @@ form .share-btn-row {
 }
 @media (min-width: 768px) {
   .search-results-block .list-holder .left-block {
-    max-width: 70%;
+    max-width: 64%;
     margin-bottom: 0;
   }
 }
 .search-results-block .list-holder .right-block {
   display: flex;
-  flex-flow: row wrap;
   justify-content: space-between;
+}
+
+.search-results-block .list-holder .right-block .rating-time-block {
+  position: relative;
+}
+
+.search-results-block .list-holder .right-block .rating-time-block .timing-info {
+  text-align: right;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 
 .search-results-block .list-holder .right-block .btn-primary {
@@ -1141,14 +1170,9 @@ form .share-btn-row {
   }
 }
 .search-results-block .list-holder .rating-list {
-  margin: 0 0 10px;
+  margin: 0;
   padding: 0;
   list-style: none;
-}
-@media (min-width: 768px) {
-  .search-results-block .list-holder .rating-list {
-    margin: 0 0 17px;
-  }
 }
 .search-results-block .list-holder .rating-list li {
   display: inline-block;
@@ -1159,14 +1183,15 @@ form .share-btn-row {
   color: #FFD541;
 }
 
-.search-results-block .list-holder .rating-list .time{
+.search-results-block .list-holder .timing-info .time{
   color: black;
+  white-space: nowrap;
 }
 
 .search-results-block .list-holder .directions-block {
   text-align: center;
   max-width: 48px;
-  margin-left: 15px;
+  margin: auto 0 auto 15px;
 }
 .search-results-block .list-holder .directions-block a {
   text-decoration: none;
@@ -1198,7 +1223,7 @@ form .share-btn-row {
   line-height: 18px;
 }
 .search-results-block .list-holder .img-holder {
-  margin-right: 10px;
+  margin: auto 10px auto 0;
   flex-shrink: 0;
   width: 70px;
   height: 70px;
@@ -1223,15 +1248,16 @@ form .share-btn-row {
 
 .search-results-block .list-holder .phone_number {
   display: block;
-  margin-top: 5px;
 }
 
 .search-results-block .list-holder .detail {
   display: block;
+  margin-bottom: 3px;
 }
-.search-results-block .list-holder .open {
+.search-results-block .list-holder .timing-info .open {
   display: block;
   color: #5A9AE4;
+  margin-bottom: 3px;
 }
 
 .b-tab {
