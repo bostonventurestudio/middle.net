@@ -735,7 +735,7 @@ input[type=submit] {
 
 #main {
   min-height: calc(100vh - 120px);
-  background: url(./images/bg.png) fixed;
+  background: linear-gradient(rgba(255,255,255,0.2), rgba(255,255,255,0.2)),  url(./images/bg.png) fixed;
   background-size: cover;
 }
 
