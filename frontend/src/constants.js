@@ -28,3 +28,7 @@ export const gradient = [
     "rgba(191, 0, 31, 1)",
     "rgba(255, 0, 0, 1)"
 ];
+
+export const centerIconURL = "https://cdn-icons-png.flaticon.com/512/1828/1828884.png";
+export const locationIconURL = "https://cdn-icons-png.flaticon.com/512/565/565949.png";
+export const nearbyLocationIconURL = "https://cdn-icons-png.flaticon.com/512/45/45332.png";
