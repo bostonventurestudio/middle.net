@@ -29,6 +29,8 @@ class Middle extends Component {
             slug: this.props.slug,
             forms_count: 1,
             forms_data: {},
+            totalNearbyPlaces: [],
+            nearbyPlacesIndex: 0,
             nearbyPlaces: new Array(5),
             center: {lat: 0, lng: 0},
             mapCenter: {lat: 0, lng: 0},
@@ -56,6 +58,7 @@ class Middle extends Component {
         this.sendNearbyPlacesAPIRequest = this.sendNearbyPlacesAPIRequest.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.populateFormsData = this.populateFormsData.bind(this);
+        this.suggestOtherNearbyPlaces = this.suggestOtherNearbyPlaces.bind(this);
     }
 
     componentWillMount() {
@@ -339,6 +342,7 @@ class Middle extends Component {
         if (status === window.google.maps.places.PlacesServiceStatus.OK) {
             if (results.length < 5) {
                 if (this.state.searchRadius === this.state.maxRadius) {
+                    this.setState({totalNearbyPlaces: results});
                     const places = sortPlacesBasedOnDistanceFromCenter(results.slice(0, 5), this.state.center);
                     places.forEach(this.getNearbyPlaceDetail);
                 } else {
@@ -348,6 +352,7 @@ class Middle extends Component {
                     });
                 }
             } else {
+                this.setState({totalNearbyPlaces: results});
                 const places = sortPlacesBasedOnDistanceFromCenter(results.slice(0, 5), this.state.center);
                 places.forEach(this.getNearbyPlaceDetail);
             }
@@ -368,6 +373,8 @@ class Middle extends Component {
     setCenterAndNearbyPlaces() {
         this.setState({
             canRenderMap: false,
+            totalNearbyPlaces: [],
+            nearbyPlacesIndex: 0,
             nearbyPlaces: new Array(5),
             heatMapData: []
         });
@@ -406,6 +413,27 @@ class Middle extends Component {
             type: TYPE,
         };
         this.state.service.nearbySearch(nearbyPlacesRequest, callback);
+    }
+
+    suggestOtherNearbyPlaces(event) {
+        event.preventDefault();
+        let nearbyPlaces = [];
+        const nearbyPlacesIndex = this.state.nearbyPlacesIndex + 5;
+        if (this.state.totalNearbyPlaces.length > nearbyPlacesIndex) {
+            nearbyPlaces = this.state.totalNearbyPlaces.slice(nearbyPlacesIndex, nearbyPlacesIndex + 5);
+            this.setState({nearbyPlacesIndex: nearbyPlacesIndex});
+        } else {
+            if (this.state.nearbyPlacesIndex !== 0) {
+                nearbyPlaces = this.state.totalNearbyPlaces.slice(0, 5);
+                this.setState({nearbyPlacesIndex: 0});
+            }
+        }
+        if (nearbyPlaces.length > 0) {
+            this.setState({nearbyPlaces: new Array(5)}, () => {
+                const places = sortPlacesBasedOnDistanceFromCenter(nearbyPlaces, this.state.center);
+                places.forEach(this.getNearbyPlaceDetail);
+            });
+        }
     }
 
     render() {
@@ -454,6 +482,9 @@ class Middle extends Component {
                             <a href="#list-view" data-tab="places" className="b-nav-tab active" onClick={this.change}>List View</a>
                             <a href="#map-view" data-tab="map" className="b-nav-tab" onClick={this.change}>Map View</a>
                         </div>
+                    </div>
+                    <div className="other">
+                        <button className={this.state.nearbyPlaces[0] ? "btn-primary" : "btn-primary disabled"} onClick={this.suggestOtherNearbyPlaces}>Other top locations</button>
                     </div>
                     <div className="tabset">
                         <div id="places" className="b-tab active">
