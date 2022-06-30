@@ -101,3 +101,7 @@ export function getDistanceToFarthestLocationFromCenter(locations, center) {
 export function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
 }
+
+export function getIcon(types) {
+    return types.includes("bar") ? require("./images/bar.png") : types.includes("cafe") ? require("./images/coffee.png") : require("./images/restaurant.png");
+}
