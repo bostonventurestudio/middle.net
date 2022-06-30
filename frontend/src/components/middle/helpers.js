@@ -5,7 +5,7 @@
 import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
 import {delay, getCenterOfPolygonLatLngs, getDistanceToFarthestLocationFromCenter, saveLocation, sortPlacesBasedOnDistanceFromCenter} from "../../utils";
 import copy from "copy-to-clipboard";
-import {HEATMAP_RADIUS, MAX_RADIUS, MIN_RADIUS, TYPE} from "../../constants";
+import {MAX_RADIUS, MIN_RADIUS, TYPE} from "../../constants";
 
 export function populateFormsData(locations, extra_form=false) {
     var forms_data = {};
@@ -258,14 +258,15 @@ export function setCenterAndNearbyPlaces() {
     }
     var center = getCenterOfPolygonLatLngs(lagLngs);
     var farthestPoint = getDistanceToFarthestLocationFromCenter(lagLngs, center);
+    const maxRadius = farthestPoint > MAX_RADIUS ? MAX_RADIUS : farthestPoint;
     this.setState({
         center: center,
         mapCenter: center,
         searchRadius: MIN_RADIUS,
-        maxRadius: farthestPoint > MAX_RADIUS ? MAX_RADIUS : farthestPoint
+        maxRadius: maxRadius
     }, () => {
         this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
-        this.sendNearbyPlacesAPIRequest(HEATMAP_RADIUS, this.setHeatMapData);
+        this.sendNearbyPlacesAPIRequest(maxRadius, this.setHeatMapData);
     });
 }
 
