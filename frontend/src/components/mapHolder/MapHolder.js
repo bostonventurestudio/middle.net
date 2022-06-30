@@ -4,7 +4,7 @@
 
 import React, {Component} from 'react';
 import {HeatMap, InfoWindow, Map, Marker} from "google-maps-react";
-import {getLocationDetailFormLatLng} from "../../utils";
+import {getLocationDetailFormLatLng, getIcon} from "../../utils";
 import {centerIconURL, gradient, locationIconURL, nearbyLocationIconURL} from "../../constants";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
 
@@ -125,7 +125,7 @@ class MapHolder extends Component {
                                     icon={{url: locationIconURL, anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}/>
                     })}
                     {this.props.nearbyPlaces.map((place, index) => {
-                        return (<Marker location={place} icon={{url: nearbyLocationIconURL, anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}
+                        return (<Marker location={place} icon={{url: getIcon(place.types), anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}
                                         key={index} position={{lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}} name={`${place.name}: ${place.vicinity}`} onClick={this.onMarkerClick}/>)
 
                     })}
