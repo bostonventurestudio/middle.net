@@ -5,7 +5,7 @@
 import React, {Component} from 'react';
 import {HeatMap, InfoWindow, Map, Marker} from "google-maps-react";
 import {getLocationDetailFormLatLng, getIcon} from "../../utils";
-import {centerIconURL, gradient, locationIconURL, nearbyLocationIconURL} from "../../constants";
+import {gradient} from "../../constants";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
 
 class MapHolder extends Component {
@@ -115,14 +115,14 @@ class MapHolder extends Component {
                     {this.props.heatMapData.length > 0 && this.state.showHeatMap && <HeatMap gradient={gradient} positions={this.state.heatMapData} opacity={0.8} radius={20}/>}
                     {this.props.center.lat !== 0 && this.props.center.lng !== 0 &&
                     <Marker position={this.props.center} name={`Center: ${this.state.centerAddress}`} onClick={this.onMarkerClick}
-                            icon={{url: centerIconURL, anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}/>
+                            icon={{url: require("../../images/star.png"), anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}/>
                     }
                     {Object.keys(this.props.forms_data).map((form_key, index) => {
                         return this.props.forms_data[form_key].latitude && this.props.forms_data[form_key].longitude &&
                             <Marker draggable={true} onClick={this.onMarkerClick} name={this.props.forms_data[form_key].address}
                                     position={{lat: this.props.forms_data[form_key].latitude, lng: this.props.forms_data[form_key].longitude}}
                                     onDragend={(event, map, coord) => this.onMarkerDragEnd(coord, form_key)}
-                                    icon={{url: locationIconURL, anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}/>
+                                    icon={{url: require("../../images/target.png"), anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}/>
                     })}
                     {this.props.nearbyPlaces.map((place, index) => {
                         return (<Marker location={place} icon={{url: getIcon(place.types), anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}
