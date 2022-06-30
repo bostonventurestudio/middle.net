@@ -189,7 +189,7 @@ class Middle extends Component {
                         </div>
                     </div>
                     <div className="other">
-                        <button className={this.state.nearbyPlaces[0] ? "btn-primary" : "btn-primary disabled"} onClick={this.suggestOtherNearbyPlaces}>Other top locations</button>
+                        <button className={this.state.nearbyPlaces[0] ? "btn-primary" : "btn-primary disabled"} onClick={this.suggestOtherNearbyPlaces}>Other top Places</button>
                     </div>
                     <div className="tabset">
                         <div id="places" className="b-tab active">
