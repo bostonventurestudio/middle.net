@@ -162,7 +162,7 @@ export function copyLinkToClipboard() {
     } else if (this.state.slug === "no-slug") {
         clearTimeout(this.copyLinkToClipboard);
     } else {
-        if (copy(`${window.location.origin}${window.location.pathname}/${this.state.slug}`)) {
+        if (copy(`${window.location.origin}/solution-2/${this.state.slug}`)) {
             document.getElementById("copied").style.display = "block";
         }
         clearTimeout(this.copyLinkToClipboard);
