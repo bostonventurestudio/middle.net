@@ -4,10 +4,10 @@
 
 import React, {Component} from 'react';
 import {getLocations} from "../../utils";
-import Middle1 from "../middle1/Middle1";
+import Middle2 from "../middle2/Middle2";
 
 
-export class Home1 extends Component {
+export class Home2 extends Component {
 
     constructor(props) {
         super(props);
@@ -21,7 +21,7 @@ export class Home1 extends Component {
     componentWillMount() {
         var url = window.location.pathname;
         var slug = url.substring(url.lastIndexOf('/') + 1);
-        if (slug && slug !== "solution-1") {
+        if (slug && slug !== "solution-2") {
             getLocations(slug).then((response) => {
                 if (response.data.length === 0) {
                     window.location.href = "/not-found";
@@ -45,7 +45,7 @@ export class Home1 extends Component {
             <main id="main">
                 <div className="content-block">
                     <div className="container">
-                        {!this.state.loading && <Middle1 locations={this.state.locations} slug={this.state.slug}/>}
+                        {!this.state.loading && <Middle2 locations={this.state.locations} slug={this.state.slug}/>}
                     </div>
                 </div>
             </main>
