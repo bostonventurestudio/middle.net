@@ -1024,7 +1024,6 @@ form .share-btn-row {
 @media (min-width: 768px) {
    .search-results-block .tab {
     display: flex;
-    margin-bottom: 25px;
   }
 }
 
@@ -1032,13 +1031,58 @@ form .share-btn-row {
   margin-top: 15px;
 }
 
+.search-results-block .filter {
+  text-align: left;
+}
+
+.search-results-block .filter .btn-primary {
+  border-radius: 30px;
+  border: none;
+  color: #fff;
+  background: #5A9AE4;
+  font-size: 14px;
+  line-height: 10px;
+  height: 30px;
+  width: 110px;
+}
+
+.search-results-block .filter .btn-primary img {
+  width: 25px;
+  margin-left: 10px;
+}
+
+.search-results-block .filter .btn-primary > * {
+  vertical-align: middle;
+}
+
+.search-results-block .filter .btn-primary:hover {
+  background: #448de0;
+}
+
+.search-results-block .filter .btn-primary.disabled {
+  background: #CECECE;
+  pointer-events: none;
+}
+
+.search-results-block .tab-title {
+    margin-top: 15px;
+  }
 
 @media (min-width: 768px) {
   .search-results-block .tab-title {
     float: left;
     height: 40px;
-    width: 376px;
+    width: 390px;
     position: relative;
+    margin-top: 5px;
+  }
+
+  .search-results-block .filter {
+    height: 40px;
+    width: 376px;
+    margin-top: 10px;
+    text-align: right;
+    padding-right: 20px;
   }
 }
 
@@ -1247,13 +1291,13 @@ form .share-btn-row {
 .search-results-block .other {
   text-align: left;
   max-width: 574px;
-  margin-top: 35px;
+  margin-top: 10px;
 }
 
 .search-results-block .other .btn-primary {
   border-radius: 30px;
   border: none;
-  padding: 10px 20px;
+  padding: 10px 28px;
   color: #fff;
   background: #5A9AE4;
   font-size: 14px;
@@ -1272,11 +1316,10 @@ form .share-btn-row {
 @media (min-width: 768px) {
   .search-results-block .other {
     text-align: right;
-    margin-top: 25px;
+    margin-top: 15px;
   }
   .search-results-block .other .btn-primary {
-    font-size: 18px;
-    height: 40px;
+    font-size: 16px;
    }
 }
 

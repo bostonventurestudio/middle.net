@@ -11,6 +11,7 @@ import MapHolder from "../mapHolder/MapHolder";
 import {MAX_RADIUS, MIN_RADIUS} from "../../constants";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
 import icon_copy from "../../images/iconCopy.png";
+import filter from "../../images/filter.svg";
 import {addNewForm, copyLinkToClipboard, deleteForm, getNearbyPlaceDetail, handleAddressSelect, handleSubmit, populateFormsData, sendNearbyPlacesAPIRequest, setCenterAndNearbyPlaces, setHeatMapData, setNearbyPlaceDetail, setNearbyPlaces, suggestOtherNearbyPlaces} from "./helpers";
 
 
@@ -172,7 +173,7 @@ class Middle extends Component {
                         </button>
                     </div>}
                     <div className="share-btn-row">
-                        <button type="submit" className={this.state.forms_data["form_1"].google_place_id !== '' ? "btn-primary" : "btn-primary disabled"}>Share link <img src={icon_copy} alt=""/></button>
+                        <button type="submit" className={this.state.forms_data["form_1"].google_place_id !== '' ? "btn-primary" : "btn-primary disabled"}><span>Share</span> link <img src={icon_copy} alt=""/></button>
                         <div className="copied" id="copied">
                             link has been copied to clipboard!
                         </div>
@@ -180,16 +181,21 @@ class Middle extends Component {
                 </form>
                 <div className="search-results-block">
                     <div className="tab">
-                        <div className="tab-title">
-                            <span>Top places in the middle:</span>
+                        <div className="filter">
+                            <button className={this.state.nearbyPlaces[0] ? "btn-primary" : "btn-primary disabled"} onClick={this.suggestOtherNearbyPlaces}><span>Filter</span> <img src={filter} alt=""/></button>
                         </div>
                         <div className="tab-links">
                             <a href="#list-view" data-tab="places" className="b-nav-tab active" onClick={this.change}>List View</a>
                             <a href="#map-view" data-tab="map" className="b-nav-tab" onClick={this.change}>Map View</a>
                         </div>
                     </div>
-                    <div className="other">
-                        <button className={this.state.nearbyPlaces[0] ? "btn-primary" : "btn-primary disabled"} onClick={this.suggestOtherNearbyPlaces}>Other top Places</button>
+                    <div className="tab">
+                        <div className="tab-title">
+                            <span>Top places in the middle:</span>
+                        </div>
+                        <div className="other">
+                            <button className={this.state.nearbyPlaces[0] ? "btn-primary" : "btn-primary disabled"} onClick={this.suggestOtherNearbyPlaces}>Other top Places</button>
+                        </div>
                     </div>
                     <div className="tabset">
                         <div id="places" className="b-tab active">
