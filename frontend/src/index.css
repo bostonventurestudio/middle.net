@@ -728,7 +728,7 @@ input[type=submit] {
 }
 
 .container {
-  max-width: 1400px;
+  max-width: 1550px;
   margin: 0 auto;
   padding: 0 20px;
 }
@@ -1316,25 +1316,22 @@ form .share-btn-row {
 }
 
 .map-holder, .map-holder-full {
-  height: 500px;
+  height: 600px;
   margin-bottom: 20px;
 }
 
 .map-holder div:first-child {
-  max-height: 500px !important;
-  position: relative;
+  max-height: 600px !important;
 }
 
 .map-holder-full div:first-child {
   max-height: 100% !important;
-  position: relative;
 }
 
-.map {
-  width: 50%;
-  height: 500px;
+.map-holder > div {
+  display: block;
+  position: relative !important;
 }
-
 
 .not-found {
   text-align: center;

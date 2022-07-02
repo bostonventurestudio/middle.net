@@ -13,7 +13,6 @@ class MapHolder extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isBigScreen: window.matchMedia("(min-width: 768px)").matches,
             activeMarker: {},
             showingInfoWindow: false,
             centerAddress: "",
@@ -91,7 +90,6 @@ class MapHolder extends Component {
             heatMapData: heatMapData,
             loading: false
         })
-        window.matchMedia("(min-width: 768px)").addEventListener('change', (event) => this.setState({isBigScreen: event.matches}));
     }
 
     toggleHeatMap() {
@@ -99,10 +97,6 @@ class MapHolder extends Component {
     }
 
     render() {
-        const style = {
-            height: "500px",
-            width: this.state.isBigScreen ? "572px" : "90%",
-        };
         return (
             <div className={this.state.isFullScreen ? "map-holder-full" : "map-holder"}>
                 {!this.state.loading && <Map
@@ -110,7 +104,7 @@ class MapHolder extends Component {
                     onClick={(event, map, coord) => this.onMapClicked(coord)}
                     initialCenter={this.props.mapCenter}
                     center={this.props.mapCenter}
-                    zoom={12} style={style}>
+                    zoom={12} style={{height: "600px"}}>
                     <button className="heatmap-toggle-btn" title="Toggle HeatMap" onClick={this.toggleHeatMap}>{this.state.showHeatMap ? "Hide HeatMap" : "Show HeatMap"}</button>
                     {this.props.heatMapData.length > 0 && this.state.showHeatMap && <HeatMap gradient={gradient} positions={this.state.heatMapData} opacity={0.8} radius={20}/>}
                     {this.props.center.lat !== 0 && this.props.center.lng !== 0 &&
