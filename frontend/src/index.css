@@ -1185,11 +1185,16 @@ form .share-btn-row {
 
 .search-results-block .list-holder .right-block .rating-time-block .timing-info {
   text-align: right;
-  position: absolute;
+  position: relative;
   bottom: 0;
   right: 0;
 }
 
+@media (min-width: 768px) {
+  .search-results-block .list-holder .right-block .rating-time-block .timing-info {
+    position: absolute;
+  }
+}
 
 @media (min-width: 768px) {
   .search-results-block .list-holder .right-block {
@@ -1211,8 +1216,7 @@ form .share-btn-row {
   color: #FFD541;
 }
 
-.search-results-block .list-holder .timing-info .time{
-  color: black;
+.search-results-block .list-holder .timing-info .distance, .time{
   white-space: nowrap;
 }
 
@@ -1282,6 +1286,7 @@ form .share-btn-row {
   display: block;
   margin-bottom: 3px;
 }
+
 .search-results-block .list-holder .timing-info .open {
   display: block;
   color: #5A9AE4;

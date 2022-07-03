@@ -39,6 +39,7 @@ class NearbyPlace extends Component {
                             <Rating ratingValue={this.props.place.rating ? this.props.place.rating * 20 : 0} readonly={true} size={15}/>
                         </ul>
                         <div className="timing-info">
+                            <span className="distance">{`${this.props.place.distanceFromCenter}km form center`}</span>
                             <span className="open">{this.props.place.opening_hours?.isOpen() ? "Open" : "Closed"}</span>
                             <span className="time">{this.props.place.opening_hours?.isOpen() ? get12HourTime(this.props.place.opening_hours, CLOSE) : get12HourTime(this.props.place.opening_hours, OPEN)}</span>
                         </div>

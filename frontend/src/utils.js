@@ -68,12 +68,10 @@ export function getWelcomeMessage(locations) {
 }
 
 export function sortPlacesBasedOnDistanceFromCenter(places, center) {
-    const distance = (place, center) => {
-        const x = center.lat - place.geometry.location.lat();
-        const y = center.lng - place.geometry.location.lng();
-        return Math.sqrt((x * x) + (y * y));
-    };
-    const sorter = (placeA, placeB) => distance(placeA, center) - distance(placeB, center);
+    places.forEach(place => {
+        place.distanceFromCenter = distanceBetweenTwoLocations([place.geometry.location.lat(), place.geometry.location.lng()], center);
+    });
+    const sorter = (placeA, placeB) => placeA.distanceFromCenter - placeB.distanceFromCenter;
     places.sort(sorter);
     return places;
 }

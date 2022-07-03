@@ -193,6 +193,7 @@ export function getNearbyPlaceDetail(nearbyPlace, index) {
 export function setNearbyPlaceDetail(nearbyPlace, nearbyPlaceDetail, status, index) {
     if (status === window.google.maps.places.PlacesServiceStatus.OK) {
         var nearbyPlaces = this.state.nearbyPlaces;
+        nearbyPlaceDetail.distanceFromCenter = nearbyPlace.distanceFromCenter.toFixed(2);
         nearbyPlaces[index] = nearbyPlaceDetail;
         this.setState({nearbyPlaces: nearbyPlaces});
     } else if (status === window.google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
