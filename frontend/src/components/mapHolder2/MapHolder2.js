@@ -125,8 +125,7 @@ class MapHolder2 extends Component {
                         return this.props.forms_data[form_key].latitude && this.props.forms_data[form_key].longitude &&
                             <Marker draggable={true} onClick={this.onMarkerClick} name={this.props.forms_data[form_key].address}
                                     position={{lat: this.props.forms_data[form_key].latitude, lng: this.props.forms_data[form_key].longitude}}
-                                    onDragend={(event, map, coord) => this.onMarkerDragEnd(coord, form_key)}
-                                    icon={{url: require("../../images/target.png"), anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}/>
+                                    onDragend={(event, map, coord) => this.onMarkerDragEnd(coord, form_key)}/>
                     })}
                     {this.props.nearbyPlaces.map((place, index) => {
                         return (<Marker location={place} icon={{url: getIcon(place.types), anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}
