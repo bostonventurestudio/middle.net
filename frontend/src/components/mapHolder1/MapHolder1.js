@@ -13,7 +13,6 @@ class MapHolder1 extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isBigScreen: window.matchMedia("(min-width: 768px)").matches,
             activeMarker: {},
             showingInfoWindow: false,
             centerAddress: "",
@@ -95,7 +94,6 @@ class MapHolder1 extends Component {
             heatMapData: heatMapData,
             loading: false
         })
-        window.matchMedia("(min-width: 768px)").addEventListener('change', (event) => this.setState({isBigScreen: event.matches}));
     }
 
     toggleHeatMap() {
@@ -104,8 +102,7 @@ class MapHolder1 extends Component {
 
     render() {
         const style = {
-            height: "500px",
-            width: this.state.isBigScreen ? "572px" : "90%",
+            height: "600px",
         };
         return (
             <div className={this.state.isFullScreen ? "map-holder-full" : "map-holder"}>
