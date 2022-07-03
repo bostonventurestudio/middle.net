@@ -11,8 +11,9 @@ export const Header = () => {
             <div className="container">
                 <div className="logo">
                     <a href="/"><img src={logo} alt="Middle"/></a>
+                    <span className="sub-text"> meet your friends</span>
                 </div>
-                <span className="sub-text">meet your friends</span>
+                <span className="site-link"><a href='https://www.bvs.net/'> Boston Venture Studio</a></span>
             </div>
         </header>
     )

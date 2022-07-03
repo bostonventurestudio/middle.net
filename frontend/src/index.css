@@ -677,45 +677,50 @@ input[type=submit] {
     padding: 20px 0;
   }
 }
-#header .sub-text {
+#header .sub-text, .site-link {
   display: block;
   font-size: 14px;
 }
 @media (min-width: 768px) {
-  #header .sub-text {
+  #header .sub-text, .site-link {
+    display: inline;
     font-size: 18px;
   }
 }
 @media (min-width: 1300px) {
-  #header .sub-text {
+  #header .sub-text, .site-link {
+     display: inline;
     font-size: 22px;
   }
 }
 #header .container {
   display: flex;
   align-items: flex-end;
+  justify-content: space-between;
 }
+
+#header .container a {
+  text-decoration: none;
+}
+
 #header .logo {
   margin-right: 10px;
   margin-bottom: -1px;
-  width: 100px;
-  flex-shrink: 0;
 }
-#header .logo img {
-  max-width: 100%;
-}
-#header .logo {
+
+#header .logo img{
   width: 45px;
 }
 
 @media (min-width: 768px) {
-  #header .logo {
+  #header .logo img{
     width: 60px;
     margin-bottom: 0;
   }
+
 }
 @media (min-width: 1300px) {
-  #header .logo {
+  #header .logo img{
     width: 75px;
     margin-bottom: 0;
   }
