@@ -817,6 +817,7 @@ input[type=submit] {
   color: #5A9AE4;
   background: none;
   border: none;
+  padding: 0;
 }
 
 .form .target-location button:hover {
@@ -837,6 +838,7 @@ input[type=submit] {
   color: #5A9AE4;
   width: 40px;
   -webkit-text-stroke: 2px white;
+  padding: 0;
 }
 
 .form .location-delete button i {
