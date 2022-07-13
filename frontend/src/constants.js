@@ -2,6 +2,9 @@
  + Copyright (c) 2022-2022, Boston Venture Studio, Inc - https://www.bvs.net/
  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
+export const HOME = "/";
+export const HOME_WITH_ID = "/:url";
+export const NOT_FOUND = "/not-found";
 export const MIN_RADIUS = 2000;
 export const MAX_RADIUS = 50000;
 export const TYPE = ["restaurant"];

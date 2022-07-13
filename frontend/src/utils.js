@@ -6,6 +6,7 @@ import axios from "axios";
 import {LocationAPIURL} from "./config";
 import {CLOSED, OPEN, OPEN_24_HOURS} from "./constants";
 import Geocode from "react-geocode";
+import {useNavigate, useParams} from "react-router-dom";
 
 const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
 
@@ -102,4 +103,19 @@ export function delay(time) {
 
 export function getIcon(types) {
     return types.includes("bar") ? require("./images/bar.png") : types.includes("cafe") ? require("./images/coffee.png") : require("./images/restaurant.png");
+}
+
+export function withRouter(Component) {
+    function ComponentWithRouterProp(props) {
+        let navigate = useNavigate();
+        let params = useParams();
+        return (
+            <Component
+                {...props}
+                router={{navigate, params}}
+            />
+        );
+    }
+
+    return ComponentWithRouterProp;
 }

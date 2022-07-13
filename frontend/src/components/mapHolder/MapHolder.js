@@ -7,6 +7,7 @@ import {HeatMap, InfoWindow, Map, Marker} from "google-maps-react";
 import {getLocationDetailFormLatLng, getIcon} from "../../utils";
 import {gradient} from "../../constants";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
+import {toast} from "react-toastify";
 
 class MapHolder extends Component {
 
@@ -71,7 +72,7 @@ class MapHolder extends Component {
             this.props.setPlaceId(response.results[0].place_id, form_key, true);
             this.props.setPosition(lat, lng, form_key);
         }).catch((error) => {
-            console.log(error);
+            toast.error(error.message ? error.message : error);
         });
     }
 
@@ -80,7 +81,7 @@ class MapHolder extends Component {
             getLocationDetailFormLatLng(this.props.center.lat, this.props.center.lng).then((response) => {
                 this.setState({centerAddress: response.results[0].formatted_address});
             }).catch((error) => {
-                console.log(error);
+                toast.error(error.message ? error.message : error);
             });
         }
         var heatMapData = this.props.heatMapData.map(place => {

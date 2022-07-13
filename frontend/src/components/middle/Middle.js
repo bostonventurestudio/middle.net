@@ -14,6 +14,7 @@ import icon_copy from "../../images/iconCopy.png";
 import filter from "../../images/filter.svg";
 import {addNewForm, copyLinkToClipboard, deleteForm, getNearbyPlaceDetail, handleAddressSelect, handleSubmit, populateFormsData, sendNearbyPlacesAPIRequest, setCenterAndNearbyPlaces, setHeatMapData, setNearbyPlaceDetail, setNearbyPlaces, suggestOtherNearbyPlaces} from "./helpers";
 import {ThreeDots} from "react-loader-spinner";
+import {toast} from "react-toastify";
 
 
 const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -73,11 +74,11 @@ class Middle extends Component {
                     return state;
                 }, this.setCenterAndNearbyPlaces);
             }).catch((error) => {
-                console.log(error);
+                toast.error(error.message ? error.message : error);
                 this.setCenterAndNearbyPlaces();
             });
         }, (error) => {
-            console.log(error);
+            toast.error(error.message ? error.message : error);
             this.setCenterAndNearbyPlaces();
         });
     }

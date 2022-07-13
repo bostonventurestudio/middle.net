@@ -6,6 +6,7 @@ import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
 import {delay, getCenterOfPolygonLatLngs, getDistanceToFarthestLocationFromCenter, saveLocation, sortPlacesBasedOnDistanceFromCenter} from "../../utils";
 import copy from "copy-to-clipboard";
 import {MAX_RADIUS, MIN_RADIUS, TYPE} from "../../constants";
+import {toast} from "react-toastify";
 
 export function populateFormsData(locations, extra_form=false) {
     var forms_data = {};
@@ -140,19 +141,19 @@ export function handleSubmit(event) {
     }
     saveLocation(data).then((response) => {
         if (response.data.length === 0) {
-            alert("ERROR: Unable to save locations")
+            toast.error("Unable to save locations");
         } else {
             this.populateFormsData(response.data);
             if (this.state.slug === "") {
-                this.setState({slug: response.data[0].slug})
+                this.setState({slug: response.data[0].slug});
             }
         }
     }).catch((error) => {
         if (this.state.slug === "") {
-            this.setState({slug: "no-slug"})
+            this.setState({slug: "no-slug"});
         }
-        alert("ERROR: Unable to save lsocations")
-    })
+        toast.error(error.message ? error.message : error);
+    });
     this.copyLinkToClipboard();
 }
 

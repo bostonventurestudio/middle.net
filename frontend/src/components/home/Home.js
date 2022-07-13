@@ -3,12 +3,14 @@
  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 import React, {Component} from 'react';
-import {getLocations} from "../../utils";
+import {getLocations, withRouter} from "../../utils";
 import Middle from "../middle/Middle";
 import {ThreeDots} from "react-loader-spinner";
+import {NOT_FOUND} from "../../constants";
+import {toast} from "react-toastify";
 
 
-export class Home extends Component {
+class Home extends Component {
 
     constructor(props) {
         super(props);
@@ -25,7 +27,8 @@ export class Home extends Component {
         if (slug) {
             getLocations(slug).then((response) => {
                 if (response.data.length === 0) {
-                    window.location.href = "/not-found";
+                    toast.error("Unable to get locations");
+                    this.props.router.navigate(NOT_FOUND);
                 }
                 this.setState({
                     locations: response.data,
@@ -33,8 +36,8 @@ export class Home extends Component {
                     loading: false
                 });
             }).catch((error) => {
-                console.log(error);
-                window.location.href = "/not-found";
+                toast.error(error.message ? error.message : error);
+                this.props.router.navigate(NOT_FOUND);
             });
         } else {
             this.setState({loading: false});
@@ -53,3 +56,5 @@ export class Home extends Component {
         )
     }
 }
+
+export default withRouter(Home);
