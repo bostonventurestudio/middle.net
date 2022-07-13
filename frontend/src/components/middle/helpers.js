@@ -147,6 +147,7 @@ export function handleSubmit(event) {
             if (this.state.slug === "") {
                 this.setState({slug: response.data[0].slug});
             }
+            toast.success("Locations saved successfully");
         }
     }).catch((error) => {
         if (this.state.slug === "") {
