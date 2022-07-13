@@ -5,6 +5,7 @@
 import React, {Component} from 'react';
 import {getLocations} from "../../utils";
 import Middle from "../middle/Middle";
+import {ThreeDots} from "react-loader-spinner";
 
 
 export class Home extends Component {
@@ -45,7 +46,7 @@ export class Home extends Component {
             <main id="main">
                 <div className="content-block">
                     <div className="container">
-                        {!this.state.loading && <Middle locations={this.state.locations} slug={this.state.slug}/>}
+                        {!this.state.loading ? <Middle locations={this.state.locations} slug={this.state.slug}/> : <ThreeDots color='grey'/>}
                     </div>
                 </div>
             </main>

@@ -4,6 +4,7 @@
 
 import React, {Component} from 'react';
 import PlacesAutocomplete from 'react-places-autocomplete';
+import {ThreeDots} from "react-loader-spinner";
 
 class LocationSearch extends Component {
 
@@ -25,7 +26,7 @@ class LocationSearch extends Component {
                             </div>
                             <div style={{position: "relative"}}>
                                 <div className="autocomplete-dropdown-container">
-                                    {loading && <div className="suggestion-item">Loading...</div>}
+                                    {loading && <div className="suggestion-item"><ThreeDots color='grey' height={50} width={50}/></div>}
                                     {suggestions.map(suggestion => {
                                         const className = suggestion.active ? "suggestion-item--active" : "suggestion-item";
                                         // inline style for demonstration purpose

@@ -13,6 +13,7 @@ import NearbyPlace from "../nearbyPlace/NearbyPlace";
 import icon_copy from "../../images/iconCopy.png";
 import filter from "../../images/filter.svg";
 import {addNewForm, copyLinkToClipboard, deleteForm, getNearbyPlaceDetail, handleAddressSelect, handleSubmit, populateFormsData, sendNearbyPlacesAPIRequest, setCenterAndNearbyPlaces, setHeatMapData, setNearbyPlaceDetail, setNearbyPlaces, suggestOtherNearbyPlaces} from "./helpers";
+import {ThreeDots} from "react-loader-spinner";
 
 
 const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -213,8 +214,8 @@ class Middle extends Component {
                             {this.state.canRenderMap ? <MapHolder google={this.props.google} forms_count={this.state.forms_count}
                                                                   center={this.state.center} forms_data={this.state.forms_data} nearbyPlaces={this.state.nearbyPlaces}
                                                                   setAddress={this.setAddress} setPosition={this.setPosition} mapCenter={this.state.mapCenter}
-                                                                  setPlaceId={this.setPlaceId} addNewForm={this.addNewForm} heatMapData={this.state.heatMapData}
-                            /> : "Loading..."}
+                                                                  setPlaceId={this.setPlaceId} addNewForm={this.addNewForm} heatMapData={this.state.heatMapData} centerOfMass={this.state.centerOfMass}
+                            /> : <ThreeDots color='grey'/>}
                         </div>
                     </div>
                 </div>

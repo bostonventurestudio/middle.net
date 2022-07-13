@@ -7,6 +7,8 @@ import {BrowserRouter as Router, Route, Routes as Switch} from "react-router-dom
 import {Footer, Header, Home, NotFound} from './components';
 import {Home1} from "./components/home1/Home1";
 import {Home2} from "./components/home2/Home2";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+
 
 export default function Routes() {
     return (
