@@ -84,7 +84,9 @@ export function handleAddressSelect(address, form_key) {
         .then(position => {
             this.setPosition(position.lat, position.lng, form_key);
         })
-        .catch(error => console.error('Error', error));
+        .catch(error => {
+            toast.error(error.message ? error.message : error);
+        });
 
 }
 
@@ -186,18 +188,25 @@ export function setHeatMapData(results, status, pagination) {
         isHeatMapDataCollected = true;
     }
     if (isHeatMapDataCollected) {
-        const heatMapData = this.state.heatMapData.map(place => {
-            return {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}
-        });
-        const centerOfGravityOfHeatMapData = getCenterOfGravityOfLatLngs(heatMapData);
-        this.setState({
-            center: centerOfGravityOfHeatMapData,
-            mapCenter: centerOfGravityOfHeatMapData,
-            heatMapData: heatMapData,
-            canRenderMap: true,
-        }, () => {
-            this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
-        });
+        if(this.state.heatMapData.length > 0) {
+            const heatMapData = this.state.heatMapData.map(place => {
+                return {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}
+            });
+            const centerOfGravityOfHeatMapData = getCenterOfGravityOfLatLngs(heatMapData);
+            this.setState({
+                center: centerOfGravityOfHeatMapData,
+                mapCenter: centerOfGravityOfHeatMapData,
+                heatMapData: heatMapData,
+                canRenderMap: true,
+            }, () => {
+                this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
+            });
+        }else{
+            this.setState({
+                canRenderPlaces: true,
+                canRenderMap: true,
+            });
+        }
     }
 }
 
@@ -241,11 +250,14 @@ export function setNearbyPlaces(results, status) {
             isNearbyPlacesCollected = true;
         }
     } else if (status === window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-        if (this.state.searchRadius === this.state.maxRadius) return;
-        let radius = this.state.searchRadius * 2 > this.state.maxRadius ? this.state.maxRadius : this.state.searchRadius * 2;
-        this.setState({searchRadius: radius}, () => {
-            this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
-        });
+        if (this.state.searchRadius === this.state.maxRadius) {
+            isNearbyPlacesCollected = true;
+        } else {
+            let radius = this.state.searchRadius * 2 > this.state.maxRadius ? this.state.maxRadius : this.state.searchRadius * 2;
+            this.setState({searchRadius: radius}, () => {
+                this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
+            });
+        }
     } else if (status === window.google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
         delay(1000).then(() => {
             this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
