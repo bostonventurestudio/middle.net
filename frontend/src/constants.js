@@ -30,3 +30,4 @@ export const gradient = [
     "rgba(191, 0, 31, 1)",
     "rgba(255, 0, 0, 1)"
 ];
+export const DEGREE_IN_RADIAN = 0.017453292519943295;    // Math.PI / 180

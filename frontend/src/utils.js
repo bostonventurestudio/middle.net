@@ -4,7 +4,7 @@
 
 import axios from "axios";
 import {LocationAPIURL} from "./config";
-import {CLOSED, OPEN, OPEN_24_HOURS} from "./constants";
+import {CLOSED, DEGREE_IN_RADIAN, OPEN, OPEN_24_HOURS} from "./constants";
 import Geocode from "react-geocode";
 import {useNavigate, useParams} from "react-router-dom";
 
@@ -32,6 +32,18 @@ export function getCenterOfPolygonLatLngs(arr) {
     var cy = (Math.min(...y) + Math.max(...y)) / 2;
     return {lat: Number((cx).toFixed(5)), lng: Number((cy).toFixed(5))};
 }
+
+
+export function getCenterOfGravityOfLatLngs(latLngs) {
+    let lat_sum = 0;
+    let lng_sum = 0;
+    for (let i = 0; i < latLngs.length; i++) {
+        lat_sum += latLngs[i].lat;
+        lng_sum += latLngs[i].lng;
+    }
+    return {lat: lat_sum / latLngs.length, lng: lng_sum / latLngs.length};
+}
+
 
 export function get12HourTime(opening_hours, open_or_close) {
     var day = ((new Date()).getDay() + 6) % 7;
@@ -70,7 +82,7 @@ export function getWelcomeMessage(locations) {
 
 export function sortPlacesBasedOnDistanceFromCenter(places, center) {
     places.forEach(place => {
-        place.distanceFromCenter = distanceBetweenTwoLocations([place.geometry.location.lat(), place.geometry.location.lng()], center);
+        place.distanceFromCenter = distanceBetweenTwoLocations({lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}, center);
     });
     const sorter = (placeA, placeB) => placeA.distanceFromCenter - placeB.distanceFromCenter;
     places.sort(sorter);
@@ -78,11 +90,9 @@ export function sortPlacesBasedOnDistanceFromCenter(places, center) {
 }
 
 export function distanceBetweenTwoLocations(location, center) {
-    var p = 0.017453292519943295;    // Math.PI / 180
-    var c = Math.cos;
-    var a = 0.5 - c((center.lat - location[0]) * p) / 2 +
-        c(location[0] * p) * c(center.lat * p) *
-        (1 - c((center.lng - location[1]) * p)) / 2;
+    var a = 0.5 - Math.cos((center.lat - location.lat) * DEGREE_IN_RADIAN) / 2 +
+        Math.cos(location.lat * DEGREE_IN_RADIAN) * Math.cos(center.lat * DEGREE_IN_RADIAN) *
+        (1 - Math.cos((center.lng - location.lng) * DEGREE_IN_RADIAN)) / 2;
     return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
 }
 

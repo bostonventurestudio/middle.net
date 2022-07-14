@@ -5,7 +5,6 @@
 import React from "react";
 import {BrowserRouter as Router, Route, Routes as Switch} from "react-router-dom";
 import {Footer, Header, NotFound} from './components';
-import {Home1} from "./components/home1/Home1";
 import {Home2} from "./components/home2/Home2";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import 'react-toastify/dist/ReactToastify.css';
@@ -21,8 +20,6 @@ export default function App() {
             <Switch>
                 <Route path={HOME} element={<Home/>}/>
                 <Route path={HOME_WITH_ID} element={<Home/>}/>
-                <Route path="/solution-1" element={<Home1/>}/>
-                <Route path="/solution-1/:url" element={<Home1/>}/>
                 <Route path="/solution-2" element={<Home2/>}/>
                 <Route path="/solution-2/:url" element={<Home2/>}/>
                 <Route path={NOT_FOUND} element={<NotFound/>}/>

@@ -4,7 +4,7 @@
 
 import React, {Component} from 'react';
 import {HeatMap, InfoWindow, Map, Marker} from "google-maps-react";
-import {getLocationDetailFormLatLng, getIcon} from "../../utils";
+import {getIcon, getLocationDetailFormLatLng} from "../../utils";
 import {gradient} from "../../constants";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
 import {toast} from "react-toastify";
@@ -19,8 +19,6 @@ class MapHolder extends Component {
             centerAddress: "",
             isFullScreen: false,
             showHeatMap: false,
-            heatMapData: [],
-            loading: true
         };
         this.onMapClicked = this.onMapClicked.bind(this);
         this.onMarkerClick = this.onMarkerClick.bind(this);
@@ -84,13 +82,6 @@ class MapHolder extends Component {
                 toast.error(error.message ? error.message : error);
             });
         }
-        var heatMapData = this.props.heatMapData.map(place => {
-            return {lat: place.geometry.location.lat(), lng: place.geometry.location.lng(), weight: 1}
-        })
-        this.setState({
-            heatMapData: heatMapData,
-            loading: false
-        })
     }
 
     toggleHeatMap() {
@@ -107,7 +98,7 @@ class MapHolder extends Component {
                     center={this.props.mapCenter}
                     zoom={12} style={{height: "600px"}}>
                     <button className="heatmap-toggle-btn" title="Toggle HeatMap" onClick={this.toggleHeatMap}>{this.state.showHeatMap ? "Hide HeatMap" : "Show HeatMap"}</button>
-                    {this.props.heatMapData.length > 0 && this.state.showHeatMap && <HeatMap gradient={gradient} positions={this.state.heatMapData} opacity={0.8} radius={20}/>}
+                    {this.props.heatMapData.length > 0 && this.state.showHeatMap && <HeatMap gradient={gradient} positions={this.props.heatMapData} opacity={0.8} radius={20}/>}
                     {this.props.center.lat !== 0 && this.props.center.lng !== 0 &&
                     <Marker position={this.props.center} name={`Center: ${this.state.centerAddress}`} onClick={this.onMarkerClick}
                             icon={{url: require("../../images/star.png"), anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}/>

@@ -3,12 +3,12 @@
  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
-import {delay, getCenterOfPolygonLatLngs, getDistanceToFarthestLocationFromCenter, saveLocation, sortPlacesBasedOnDistanceFromCenter} from "../../utils";
+import {delay, getCenterOfGravityOfLatLngs, getDistanceToFarthestLocationFromCenter, saveLocation, sortPlacesBasedOnDistanceFromCenter} from "../../utils";
 import copy from "copy-to-clipboard";
 import {MAX_RADIUS, MIN_RADIUS, TYPE} from "../../constants";
 import {toast} from "react-toastify";
 
-export function populateFormsData(locations, extra_form=false) {
+export function populateFormsData(locations, extra_form = false) {
     var forms_data = {};
     var forms_count;
     var key;
@@ -105,7 +105,7 @@ export function deleteForm(event, form_key) {
             state.forms_count = forms_count;
             state.forms_data = forms_data;
             return state;
-        }, this.setCenterAndNearbyPlaces);
+        }, this.setHeatMapDataAndNearbyPlaces);
     } else {
         this.setState(state => {
             state.forms_count = forms_count;
@@ -172,6 +172,7 @@ export function copyLinkToClipboard() {
 }
 
 export function setHeatMapData(results, status, pagination) {
+    let isHeatMapDataCollected = false;
     if (status === window.google.maps.places.PlacesServiceStatus.OK) {
         this.setState({
             heatMapData: this.state.heatMapData.concat(results),
@@ -179,10 +180,24 @@ export function setHeatMapData(results, status, pagination) {
         if (pagination && pagination.hasNextPage) {
             pagination.nextPage();
         } else {
-            this.setState({canRenderMap: true});
+            isHeatMapDataCollected = true;
         }
     } else {
-        this.setState({canRenderMap: true});
+        isHeatMapDataCollected = true;
+    }
+    if (isHeatMapDataCollected) {
+        const heatMapData = this.state.heatMapData.map(place => {
+            return {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}
+        });
+        const centerOfGravityOfHeatMapData = getCenterOfGravityOfLatLngs(heatMapData);
+        this.setState({
+            center: centerOfGravityOfHeatMapData,
+            mapCenter: centerOfGravityOfHeatMapData,
+            heatMapData: heatMapData,
+            canRenderMap: true,
+        }, () => {
+            this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
+        });
     }
 }
 
@@ -197,7 +212,12 @@ export function setNearbyPlaceDetail(nearbyPlace, nearbyPlaceDetail, status, ind
         var nearbyPlaces = this.state.nearbyPlaces;
         nearbyPlaceDetail.distanceFromCenter = nearbyPlace.distanceFromCenter.toFixed(2);
         nearbyPlaces[index] = nearbyPlaceDetail;
-        this.setState({nearbyPlaces: nearbyPlaces});
+        var totalNearbyPlaces = this.state.totalNearbyPlaces;
+        totalNearbyPlaces[index + this.state.nearbyPlacesIndex] = nearbyPlaceDetail;
+        this.setState({
+            nearbyPlaces: nearbyPlaces,
+            totalNearbyPlaces: totalNearbyPlaces
+        });
     } else if (status === window.google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
         delay(1000).then(() => {
             this.getNearbyPlaceDetail(nearbyPlace, index);
@@ -206,12 +226,11 @@ export function setNearbyPlaceDetail(nearbyPlace, nearbyPlaceDetail, status, ind
 }
 
 export function setNearbyPlaces(results, status) {
+    let isNearbyPlacesCollected = false;
     if (status === window.google.maps.places.PlacesServiceStatus.OK) {
         if (results.length < 5) {
             if (this.state.searchRadius === this.state.maxRadius) {
-                this.setState({totalNearbyPlaces: results});
-                const places = sortPlacesBasedOnDistanceFromCenter(results.slice(0, 5), this.state.center);
-                places.forEach(this.getNearbyPlaceDetail);
+                isNearbyPlacesCollected = true;
             } else {
                 let radius = this.state.searchRadius * 2 > this.state.maxRadius ? this.state.maxRadius : this.state.searchRadius * 2;
                 this.setState({searchRadius: radius}, () => {
@@ -219,9 +238,7 @@ export function setNearbyPlaces(results, status) {
                 });
             }
         } else {
-            this.setState({totalNearbyPlaces: results});
-            const places = sortPlacesBasedOnDistanceFromCenter(results.slice(0, 5), this.state.center);
-            places.forEach(this.getNearbyPlaceDetail);
+            isNearbyPlacesCollected = true;
         }
     } else if (status === window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
         if (this.state.searchRadius === this.state.maxRadius) return;
@@ -234,11 +251,22 @@ export function setNearbyPlaces(results, status) {
             this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
         });
     }
+    if (isNearbyPlacesCollected) {
+        const places = sortPlacesBasedOnDistanceFromCenter(results.slice(0, 5), this.state.center);
+        this.setState({
+            canRenderPlaces: true,
+            totalNearbyPlaces: results,
+            totalSortedNearbyPlaces: places.length,
+        }, () => {
+            places.forEach(this.getNearbyPlaceDetail);
+        });
+    }
 }
 
-export function setCenterAndNearbyPlaces() {
+export function setHeatMapDataAndNearbyPlaces() {
     this.setState({
         canRenderMap: false,
+        canRenderPlaces: false,
         totalNearbyPlaces: [],
         nearbyPlacesIndex: 0,
         nearbyPlaces: new Array(5),
@@ -248,27 +276,26 @@ export function setCenterAndNearbyPlaces() {
     var locations = Object.values(this.state.forms_data);
     for (var i = 0, l = locations.length; i < l; i++) {
         if (locations[i].latitude !== 0 && locations[i].longitude !== 0) {
-            lagLngs.push([locations[i].latitude, locations[i].longitude]);
+            lagLngs.push({lat: Number(locations[i].latitude), lng: Number(locations[i].longitude)});
         }
     }
     if (lagLngs.length < 2) {
         this.setState({
             canRenderMap: true,
             center: {lat: 0, lng: 0},
-            mapCenter: lagLngs.length === 1 ? {lat: lagLngs[0][0], lng: lagLngs[0][1]} : {lat: 0, lng: 0}
+            mapCenter: lagLngs.length === 1 ? lagLngs[0] : {lat: 0, lng: 0}
         });
         return;
     }
-    var center = getCenterOfPolygonLatLngs(lagLngs);
-    var farthestPoint = getDistanceToFarthestLocationFromCenter(lagLngs, center);
+    const centerOfGravity = getCenterOfGravityOfLatLngs(lagLngs);
+    const farthestPoint = getDistanceToFarthestLocationFromCenter(lagLngs, centerOfGravity);
     const maxRadius = farthestPoint > MAX_RADIUS ? MAX_RADIUS : farthestPoint;
     this.setState({
-        center: center,
-        mapCenter: center,
+        center: centerOfGravity,
+        mapCenter: centerOfGravity,
         searchRadius: MIN_RADIUS,
         maxRadius: maxRadius
     }, () => {
-        this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
         this.sendNearbyPlacesAPIRequest(maxRadius, this.setHeatMapData);
     });
 }
@@ -284,19 +311,22 @@ export function sendNearbyPlacesAPIRequest(radius, callback) {
 
 export function suggestOtherNearbyPlaces(event) {
     event.preventDefault();
-    let nearbyPlaces = [];
-    const nearbyPlacesIndex = this.state.nearbyPlacesIndex + 5;
-    if (this.state.totalNearbyPlaces.length > nearbyPlacesIndex) {
-        nearbyPlaces = this.state.totalNearbyPlaces.slice(nearbyPlacesIndex, nearbyPlacesIndex + 5);
-        this.setState({nearbyPlacesIndex: nearbyPlacesIndex});
-    } else {
-        if (this.state.nearbyPlacesIndex !== 0) {
-            nearbyPlaces = this.state.totalNearbyPlaces.slice(0, 5);
-            this.setState({nearbyPlacesIndex: 0});
-        }
+    let nearbyPlacesIndex = this.state.nearbyPlacesIndex + 5;
+    if (this.state.totalNearbyPlaces.length <= nearbyPlacesIndex && this.state.nearbyPlacesIndex !== 0) {
+        nearbyPlacesIndex = 0;
     }
-    if (nearbyPlaces.length > 0) {
-        this.setState({nearbyPlaces: new Array(5)}, () => {
+    const nearbyPlaces = this.state.totalNearbyPlaces.slice(nearbyPlacesIndex, nearbyPlacesIndex + 5);
+    if (this.state.totalSortedNearbyPlaces > nearbyPlacesIndex) {
+        this.setState({
+            nearbyPlaces: nearbyPlaces,
+            nearbyPlacesIndex: nearbyPlacesIndex,
+        });
+    } else {
+        this.setState({
+            nearbyPlaces: new Array(5),
+            nearbyPlacesIndex: nearbyPlacesIndex,
+            totalSortedNearbyPlaces: this.state.totalSortedNearbyPlaces + nearbyPlaces.length,
+        }, () => {
             const places = sortPlacesBasedOnDistanceFromCenter(nearbyPlaces, this.state.center);
             places.forEach(this.getNearbyPlaceDetail);
         });

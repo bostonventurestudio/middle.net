@@ -12,7 +12,7 @@ import {MAX_RADIUS, MIN_RADIUS} from "../../constants";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
 import icon_copy from "../../images/iconCopy.png";
 import filter from "../../images/filter.svg";
-import {addNewForm, copyLinkToClipboard, deleteForm, getNearbyPlaceDetail, handleAddressSelect, handleSubmit, populateFormsData, sendNearbyPlacesAPIRequest, setCenterAndNearbyPlaces, setHeatMapData, setNearbyPlaceDetail, setNearbyPlaces, suggestOtherNearbyPlaces} from "./helpers";
+import {addNewForm, copyLinkToClipboard, deleteForm, getNearbyPlaceDetail, handleAddressSelect, handleSubmit, populateFormsData, sendNearbyPlacesAPIRequest, setHeatMapDataAndNearbyPlaces, setHeatMapData, setNearbyPlaceDetail, setNearbyPlaces, suggestOtherNearbyPlaces} from "./helpers";
 import {ThreeDots} from "react-loader-spinner";
 import {toast} from "react-toastify";
 
@@ -33,10 +33,12 @@ class Middle extends Component {
             forms_data: {},
             totalNearbyPlaces: [],
             nearbyPlacesIndex: 0,
+            totalSortedNearbyPlaces: 0,
             nearbyPlaces: new Array(5),
             center: {lat: 0, lng: 0},
             mapCenter: {lat: 0, lng: 0},
             canRenderMap: true,
+            canRenderPlaces: true,
             heatMapData: [],
             searchRadius: MIN_RADIUS,
             maxRadius: MAX_RADIUS,
@@ -52,7 +54,7 @@ class Middle extends Component {
         this.copyLinkToClipboard = copyLinkToClipboard.bind(this);
         this.addNewForm = addNewForm.bind(this);
         this.deleteForm = deleteForm.bind(this);
-        this.setCenterAndNearbyPlaces = setCenterAndNearbyPlaces.bind(this);
+        this.setHeatMapDataAndNearbyPlaces = setHeatMapDataAndNearbyPlaces.bind(this);
         this.getNearbyPlaceDetail = getNearbyPlaceDetail.bind(this);
         this.setNearbyPlaceDetail = setNearbyPlaceDetail.bind(this);
         this.setNearbyPlaces = setNearbyPlaces.bind(this);
@@ -72,14 +74,14 @@ class Middle extends Component {
                     state.forms_data[form_key].address = response.results[0].formatted_address;
                     state.forms_data[form_key].google_place_id = response.results[0].place_id;
                     return state;
-                }, this.setCenterAndNearbyPlaces);
+                }, this.setHeatMapDataAndNearbyPlaces);
             }).catch((error) => {
                 toast.error(error.message ? error.message : error);
-                this.setCenterAndNearbyPlaces();
+                this.setHeatMapDataAndNearbyPlaces();
             });
         }, (error) => {
             toast.error(error.message ? error.message : error);
-            this.setCenterAndNearbyPlaces();
+            this.setHeatMapDataAndNearbyPlaces();
         });
     }
 
@@ -141,7 +143,7 @@ class Middle extends Component {
             state.forms_data[form_key].isCorrectLocation = true;
             state.forms_data[form_key].google_place_id = place_id;
             return state;
-        }, this.setCenterAndNearbyPlaces);
+        }, this.setHeatMapDataAndNearbyPlaces);
     }
 
     render() {
@@ -184,7 +186,7 @@ class Middle extends Component {
                 <div className="search-results-block">
                     <div className="tab">
                         <div className="filter">
-                            <button className={this.state.nearbyPlaces[0] ? "btn-primary" : "btn-primary disabled"} onClick={this.suggestOtherNearbyPlaces}><span>Filter</span> <img src={filter} alt=""/></button>
+                            <button className={"btn-primary"} onClick={this.suggestOtherNearbyPlaces}><span>Filter</span> <img src={filter} alt=""/></button>
                         </div>
                         <div className="tab-links">
                             <a href="#list-view" data-tab="places" className="b-nav-tab active" onClick={this.change}>List View</a>
@@ -202,20 +204,20 @@ class Middle extends Component {
                     <div className="tabset">
                         <div id="places" className="b-tab active">
                             <div className="list-view-block">
-                                {this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"] && this.state.forms_data["form_2"].google_place_id !== '' ? this.state.nearbyPlaces[0] ? this.state.nearbyPlaces.map((place, index) => {
+                                {this.state.canRenderPlaces ? this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"] && this.state.forms_data["form_2"].google_place_id !== '' ? this.state.nearbyPlaces[0] ? this.state.nearbyPlaces.map((place, index) => {
                                     return <NearbyPlace place={place} index={index + 1} key={index} popUp={false}/>
                                 }) : <div className="instruction-places">
                                     No place available to meet in the middle.
                                 </div> : <div className="instruction-places">
                                     No places yet! Enter another location to generate places to meet in the middle.
-                                </div>}
+                                </div> : <ThreeDots color='grey'/>}
                             </div>
                         </div>
                         <div id="map" className="b-tab">
                             {this.state.canRenderMap ? <MapHolder google={this.props.google} forms_count={this.state.forms_count}
                                                                   center={this.state.center} forms_data={this.state.forms_data} nearbyPlaces={this.state.nearbyPlaces}
                                                                   setAddress={this.setAddress} setPosition={this.setPosition} mapCenter={this.state.mapCenter}
-                                                                  setPlaceId={this.setPlaceId} addNewForm={this.addNewForm} heatMapData={this.state.heatMapData} centerOfMass={this.state.centerOfMass}
+                                                                  setPlaceId={this.setPlaceId} addNewForm={this.addNewForm} heatMapData={this.state.heatMapData}
                             /> : <ThreeDots color='grey'/>}
                         </div>
                     </div>
