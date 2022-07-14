@@ -7,7 +7,7 @@ import {delay, getCenterOfPolygonLatLngs, getDistanceToFarthestLocationFromCente
 import copy from "copy-to-clipboard";
 import {MAX_RADIUS, MIN_RADIUS, TYPE} from "../../constants";
 
-export function populateFormsData(locations, extra_form=false) {
+export function populateFormsData(locations, extra_form = false) {
     var forms_data = {};
     var forms_count;
     var key;
@@ -245,20 +245,20 @@ export function setCenterAndNearbyPlaces() {
     var locations = Object.values(this.state.forms_data);
     for (var i = 0, l = locations.length; i < l; i++) {
         if (locations[i].latitude !== 0 && locations[i].longitude !== 0) {
-            lagLngs.push([locations[i].latitude, locations[i].longitude]);
+            lagLngs.push({lat: Number(locations[i].latitude), lng: Number(locations[i].longitude)});
         }
     }
     if (lagLngs.length < 2) {
         this.setState({
             canRenderMap: true,
             center: {lat: 0, lng: 0},
-            mapCenter: lagLngs.length === 1 ? {lat: lagLngs[0][0], lng: lagLngs[0][1]} : {lat: 0, lng: 0}
+            mapCenter: lagLngs.length === 1 ? lagLngs[0] : {lat: 0, lng: 0}
         });
         return;
     }
     var center = getCenterOfPolygonLatLngs(lagLngs);
     var farthestPoint = getDistanceToFarthestLocationFromCenter(lagLngs, center);
-    const maxRadius = farthestPoint > MAX_RADIUS ? MAX_RADIUS : farthestPoint;
+    const maxRadius = farthestPoint > MAX_RADIUS ? MAX_RADIUS : farthestPoint < MIN_RADIUS ? MIN_RADIUS : farthestPoint;
     this.setState({
         center: center,
         mapCenter: center,
@@ -275,11 +275,11 @@ export function moveCenterToNewLocation(new_center) {
     var locations = Object.values(this.state.forms_data);
     for (var i = 0, l = locations.length; i < l; i++) {
         if (locations[i].latitude !== 0 && locations[i].longitude !== 0) {
-            lagLngs.push([locations[i].latitude, locations[i].longitude]);
+            lagLngs.push({lat: Number(locations[i].latitude), lng: Number(locations[i].longitude)});
         }
     }
     var farthestPoint = getDistanceToFarthestLocationFromCenter(lagLngs, new_center);
-    const maxRadius = farthestPoint > MAX_RADIUS ? MAX_RADIUS : farthestPoint;
+    const maxRadius = farthestPoint > MAX_RADIUS ? MAX_RADIUS : farthestPoint < MIN_RADIUS ? MIN_RADIUS : farthestPoint;
     this.setState({
         canRenderMap: false,
         totalNearbyPlaces: [],

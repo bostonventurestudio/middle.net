@@ -282,6 +282,7 @@ export function setHeatMapDataAndNearbyPlaces() {
     if (lagLngs.length < 2) {
         this.setState({
             canRenderMap: true,
+            canRenderPlaces: true,
             center: {lat: 0, lng: 0},
             mapCenter: lagLngs.length === 1 ? lagLngs[0] : {lat: 0, lng: 0}
         });
@@ -289,7 +290,7 @@ export function setHeatMapDataAndNearbyPlaces() {
     }
     const centerOfGravity = getCenterOfGravityOfLatLngs(lagLngs);
     const farthestPoint = getDistanceToFarthestLocationFromCenter(lagLngs, centerOfGravity);
-    const maxRadius = farthestPoint > MAX_RADIUS ? MAX_RADIUS : farthestPoint;
+    const maxRadius = farthestPoint > MAX_RADIUS ? MAX_RADIUS : farthestPoint < MIN_RADIUS ? MIN_RADIUS : farthestPoint;
     this.setState({
         center: centerOfGravity,
         mapCenter: centerOfGravity,
