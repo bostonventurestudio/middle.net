@@ -2,6 +2,7 @@
 #  Copyright (c) 2022, Boston Venture Studio, Inc - https://www.bvs.net/
 # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+from apps.core.constants import LOCATION, CENTER
 from apps.core.models import Location
 from apps.core.serializers import LocationModelSerializer, LocationSerializer
 from apps.core.utils import populate_slug_for_multiple_locations
@@ -13,7 +14,12 @@ from rest_framework.views import APIView
 
 class LocationView(APIView):
     def get(self, request, slug):
-        return Response(LocationModelSerializer(Location.objects.filter(slug=slug), many=True).data)
+        center = Location.objects.filter(slug=slug, type=CENTER).first()
+        data = {
+            'locations': LocationModelSerializer(Location.objects.filter(slug=slug, type=LOCATION), many=True).data,
+            'center': {'lat': center.latitude, 'lng': center.longitude} if center else None
+        }
+        return Response(data, status=status.HTTP_200_OK)
 
     def post(self, request, *args, **kwargs):
         serializer = LocationSerializer(data=populate_slug_for_multiple_locations(request.data), many=True)
@@ -21,7 +27,14 @@ class LocationView(APIView):
         if len(serializer.validated_data) > 0:
             Location.objects.filter(slug=serializer.validated_data[0]['slug']).delete()
         locations = serializer.save()
-        return Response(LocationModelSerializer(Location.objects.filter(slug=locations[0].slug) if len(locations) > 0 else [], many=True).data, status=status.HTTP_201_CREATED)
+        data = {}
+        if len(locations) > 0:
+            center = Location.objects.filter(slug=locations[0].slug, type=CENTER).first()
+            data = {
+                'locations': LocationModelSerializer(Location.objects.filter(slug=locations[0].slug, type=LOCATION), many=True).data,
+                'center': {'lat': center.latitude, 'lng': center.longitude} if center else None
+            }
+        return Response(data, status=status.HTTP_201_CREATED)
 
     def delete(self, request, slug):
         if 'id' in request.query_params:
