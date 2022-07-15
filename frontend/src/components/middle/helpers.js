@@ -106,8 +106,9 @@ export function deleteForm(event, form_key) {
         this.setState(state => {
             state.forms_count = forms_count;
             state.forms_data = forms_data;
+            state.isCustomCenter = false;
             return state;
-        }, this.setHeatMapDataAndNearbyPlaces);
+        }, this.findHeatMapDataAndNearbyPlaces);
     } else {
         this.setState(state => {
             state.forms_count = forms_count;
@@ -141,11 +142,19 @@ export function handleSubmit(event) {
             slug: slug
         });
     }
+    if (this.state.isCustomCenter) {
+        data.push({
+            latitude: parseFloat(this.state.center.lat).toFixed(5),
+            longitude: parseFloat(this.state.center.lng).toFixed(5),
+            type: 'center',
+            slug: slug
+        });
+    }
     saveLocation(data).then((response) => {
         if (response.data.length === 0) {
             toast.error("Unable to save locations");
         } else {
-            this.populateFormsData(response.data);
+            this.populateFormsData(response.data.locations);
             if (this.state.slug === "") {
                 this.setState({slug: response.data[0].slug});
             }
@@ -167,7 +176,10 @@ export function copyLinkToClipboard() {
         clearTimeout(this.copyLinkToClipboard);
     } else {
         if (copy(`${window.location.origin}/${this.state.slug}`)) {
-            document.getElementById("copied").style.display = "block";
+            this.setState({copied: true});
+            setTimeout(() => {
+                this.setState({copied: false});
+            }, 3000);
         }
         clearTimeout(this.copyLinkToClipboard);
     }
@@ -188,20 +200,29 @@ export function setHeatMapData(results, status, pagination) {
         isHeatMapDataCollected = true;
     }
     if (isHeatMapDataCollected) {
-        if(this.state.heatMapData.length > 0) {
+        if (this.state.heatMapData.length > 0) {
             const heatMapData = this.state.heatMapData.map(place => {
                 return {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}
             });
-            const centerOfGravityOfHeatMapData = getCenterOfGravityOfLatLngs(heatMapData);
-            this.setState({
-                center: centerOfGravityOfHeatMapData,
-                mapCenter: centerOfGravityOfHeatMapData,
-                heatMapData: heatMapData,
-                canRenderMap: true,
-            }, () => {
-                this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
-            });
-        }else{
+            if (this.state.isCustomCenter) {
+                this.setState({
+                    heatMapData: heatMapData,
+                    canRenderMap: true,
+                }, () => {
+                    this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
+                });
+            } else {
+                const centerOfGravityOfHeatMapData = getCenterOfGravityOfLatLngs(heatMapData);
+                this.setState({
+                    center: centerOfGravityOfHeatMapData,
+                    mapCenter: centerOfGravityOfHeatMapData,
+                    heatMapData: heatMapData,
+                    canRenderMap: true,
+                }, () => {
+                    this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
+                });
+            }
+        } else {
             this.setState({
                 canRenderPlaces: true,
                 canRenderMap: true,
@@ -275,44 +296,6 @@ export function setNearbyPlaces(results, status) {
     }
 }
 
-export function setHeatMapDataAndNearbyPlaces() {
-    this.setState({
-        canRenderMap: false,
-        canRenderPlaces: false,
-        totalNearbyPlaces: [],
-        nearbyPlacesIndex: 0,
-        nearbyPlaces: new Array(5),
-        heatMapData: []
-    });
-    var lagLngs = [];
-    var locations = Object.values(this.state.forms_data);
-    for (var i = 0, l = locations.length; i < l; i++) {
-        if (locations[i].latitude !== 0 && locations[i].longitude !== 0) {
-            lagLngs.push({lat: Number(locations[i].latitude), lng: Number(locations[i].longitude)});
-        }
-    }
-    if (lagLngs.length < 2) {
-        this.setState({
-            canRenderMap: true,
-            canRenderPlaces: true,
-            center: {lat: 0, lng: 0},
-            mapCenter: lagLngs.length === 1 ? lagLngs[0] : {lat: 0, lng: 0}
-        });
-        return;
-    }
-    const centerOfGravity = getCenterOfGravityOfLatLngs(lagLngs);
-    const farthestPoint = getDistanceToFarthestLocationFromCenter(lagLngs, centerOfGravity);
-    const maxRadius = farthestPoint > MAX_RADIUS ? MAX_RADIUS : farthestPoint < MIN_RADIUS ? MIN_RADIUS : farthestPoint;
-    this.setState({
-        center: centerOfGravity,
-        mapCenter: centerOfGravity,
-        searchRadius: MIN_RADIUS,
-        maxRadius: maxRadius
-    }, () => {
-        this.sendNearbyPlacesAPIRequest(maxRadius, this.setHeatMapData);
-    });
-}
-
 export function sendNearbyPlacesAPIRequest(radius, callback) {
     var nearbyPlacesRequest = {
         location: this.state.center,
@@ -344,4 +327,69 @@ export function suggestOtherNearbyPlaces(event) {
             places.forEach(this.getNearbyPlaceDetail);
         });
     }
+}
+
+export function findHeatMapDataAndNearbyPlaces() {
+    this.setState({
+        canRenderMap: false,
+        canRenderPlaces: false,
+        totalNearbyPlaces: [],
+        nearbyPlacesIndex: 0,
+        nearbyPlaces: new Array(5),
+        heatMapData: []
+    });
+    var lagLngs = [];
+    var locations = Object.values(this.state.forms_data);
+    for (var i = 0, l = locations.length; i < l; i++) {
+        if (locations[i].latitude !== 0 && locations[i].longitude !== 0) {
+            lagLngs.push({lat: Number(locations[i].latitude), lng: Number(locations[i].longitude)});
+        }
+    }
+    if (lagLngs.length < 2) {
+        this.setState({
+            canRenderMap: true,
+            canRenderPlaces: true,
+            center: {lat: 0, lng: 0},
+            mapCenter: lagLngs.length === 1 ? lagLngs[0] : {lat: 0, lng: 0}
+        });
+        return;
+    }
+    const centerOfGravity = this.state.isCustomCenter ? this.state.center : getCenterOfGravityOfLatLngs(lagLngs);
+    const farthestPoint = getDistanceToFarthestLocationFromCenter(lagLngs, centerOfGravity);
+    const maxRadius = farthestPoint > MAX_RADIUS ? MAX_RADIUS : farthestPoint < MIN_RADIUS ? MIN_RADIUS : farthestPoint;
+    this.setState({
+        center: centerOfGravity,
+        mapCenter: centerOfGravity,
+        searchRadius: MIN_RADIUS,
+        maxRadius: maxRadius
+    }, () => {
+        this.sendNearbyPlacesAPIRequest(maxRadius, this.setHeatMapData);
+    });
+}
+
+export function moveCenterToCustomLocation(customCenter) {
+    var lagLngs = [];
+    var locations = Object.values(this.state.forms_data);
+    for (var i = 0, l = locations.length; i < l; i++) {
+        if (locations[i].latitude !== 0 && locations[i].longitude !== 0) {
+            lagLngs.push({lat: Number(locations[i].latitude), lng: Number(locations[i].longitude)});
+        }
+    }
+    var farthestPoint = getDistanceToFarthestLocationFromCenter(lagLngs, customCenter);
+    const maxRadius = farthestPoint > MAX_RADIUS ? MAX_RADIUS : farthestPoint < MIN_RADIUS ? MIN_RADIUS : farthestPoint;
+    this.setState({
+        canRenderMap: false,
+        canRenderPlaces: false,
+        totalNearbyPlaces: [],
+        nearbyPlacesIndex: 0,
+        nearbyPlaces: new Array(5),
+        heatMapData: [],
+        isCustomCenter: true,
+        center: customCenter,
+        mapCenter: customCenter,
+        searchRadius: MIN_RADIUS,
+        maxRadius: maxRadius
+    }, () => {
+        this.sendNearbyPlacesAPIRequest(maxRadius, this.setHeatMapData);
+    });
 }

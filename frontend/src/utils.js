@@ -41,7 +41,7 @@ export function getCenterOfGravityOfLatLngs(latLngs) {
         lat_sum += latLngs[i].lat;
         lng_sum += latLngs[i].lng;
     }
-    return {lat: lat_sum / latLngs.length, lng: lng_sum / latLngs.length};
+    return {lat: Number((lat_sum / latLngs.length).toFixed(5)), lng: Number((lng_sum / latLngs.length).toFixed(5))};
 }
 
 

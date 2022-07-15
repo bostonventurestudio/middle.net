@@ -17,6 +17,8 @@ class Home extends Component {
         this.state = {
             loading: true,
             slug: '',
+            center: {lat: 0, lng: 0},
+            isCustomCenter: false,
             locations: [],
         };
     }
@@ -26,12 +28,14 @@ class Home extends Component {
         var slug = url.substring(url.lastIndexOf('/') + 1);
         if (slug) {
             getLocations(slug).then((response) => {
-                if (response.data.length === 0) {
+                if (response.data.locations.length === 0) {
                     toast.error("Unable to get locations");
                     this.props.router.navigate(NOT_FOUND);
                 }
                 this.setState({
-                    locations: response.data,
+                    locations: response.data.locations,
+                    center: response.data.center ? response.data.center : {lat: 0, lng: 0},
+                    isCustomCenter: !!response.data.center,
                     slug: slug,
                     loading: false
                 });
@@ -49,7 +53,7 @@ class Home extends Component {
             <main id="main">
                 <div className="content-block">
                     <div className="container">
-                        {!this.state.loading ? <Middle locations={this.state.locations} slug={this.state.slug}/> : <ThreeDots color='grey'/>}
+                        {!this.state.loading ? <Middle locations={this.state.locations} center={this.state.center} isCustomCenter={this.state.isCustomCenter} slug={this.state.slug}/> : <ThreeDots color='grey'/>}
                     </div>
                 </div>
             </main>

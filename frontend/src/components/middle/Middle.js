@@ -12,7 +12,7 @@ import {MAX_RADIUS, MIN_RADIUS} from "../../constants";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
 import icon_copy from "../../images/iconCopy.png";
 import filter from "../../images/filter.svg";
-import {addNewForm, copyLinkToClipboard, deleteForm, getNearbyPlaceDetail, handleAddressSelect, handleSubmit, populateFormsData, sendNearbyPlacesAPIRequest, setHeatMapDataAndNearbyPlaces, setHeatMapData, setNearbyPlaceDetail, setNearbyPlaces, suggestOtherNearbyPlaces} from "./helpers";
+import {addNewForm, copyLinkToClipboard, deleteForm, findHeatMapDataAndNearbyPlaces, getNearbyPlaceDetail, handleAddressSelect, handleSubmit, moveCenterToCustomLocation, populateFormsData, sendNearbyPlacesAPIRequest, setHeatMapData, setNearbyPlaceDetail, setNearbyPlaces, suggestOtherNearbyPlaces} from "./helpers";
 import {ThreeDots} from "react-loader-spinner";
 import {toast} from "react-toastify";
 
@@ -31,12 +31,14 @@ class Middle extends Component {
             slug: this.props.slug,
             forms_count: 1,
             forms_data: {},
+            copied: false,
             totalNearbyPlaces: [],
             nearbyPlacesIndex: 0,
             totalSortedNearbyPlaces: 0,
             nearbyPlaces: new Array(5),
-            center: {lat: 0, lng: 0},
-            mapCenter: {lat: 0, lng: 0},
+            center: props.center,
+            isCustomCenter: props.isCustomCenter,
+            mapCenter: props.center,
             canRenderMap: true,
             canRenderPlaces: true,
             heatMapData: [],
@@ -54,7 +56,7 @@ class Middle extends Component {
         this.copyLinkToClipboard = copyLinkToClipboard.bind(this);
         this.addNewForm = addNewForm.bind(this);
         this.deleteForm = deleteForm.bind(this);
-        this.setHeatMapDataAndNearbyPlaces = setHeatMapDataAndNearbyPlaces.bind(this);
+        this.findHeatMapDataAndNearbyPlaces = findHeatMapDataAndNearbyPlaces.bind(this);
         this.getNearbyPlaceDetail = getNearbyPlaceDetail.bind(this);
         this.setNearbyPlaceDetail = setNearbyPlaceDetail.bind(this);
         this.setNearbyPlaces = setNearbyPlaces.bind(this);
@@ -63,25 +65,29 @@ class Middle extends Component {
         this.handleSubmit = handleSubmit.bind(this);
         this.populateFormsData = populateFormsData.bind(this);
         this.suggestOtherNearbyPlaces = suggestOtherNearbyPlaces.bind(this);
+        this.moveCenterToCustomLocation = moveCenterToCustomLocation.bind(this);
     }
 
     componentWillMount() {
         const form_key = this.populateFormsData(this.props.locations, true);
         navigator.geolocation.getCurrentPosition((position) => {
             this.setPosition(position.coords.latitude, position.coords.longitude, form_key);
-            getLocationDetailFormLatLng(position.coords.latitude, position.coords.longitude).then((response) => {
-                this.setState(state => {
-                    state.forms_data[form_key].address = response.results[0].formatted_address;
-                    state.forms_data[form_key].google_place_id = response.results[0].place_id;
-                    return state;
-                }, this.setHeatMapDataAndNearbyPlaces);
-            }).catch((error) => {
-                toast.error(error.message ? error.message : error);
-                this.setHeatMapDataAndNearbyPlaces();
-            });
+            getLocationDetailFormLatLng(position.coords.latitude, position.coords.longitude)
+                .then((response) => {
+                    this.setState(state => {
+                        state.forms_data[form_key].address = response.results[0].formatted_address;
+                        state.forms_data[form_key].google_place_id = response.results[0].place_id;
+                        state.isCustomCenter = false;
+                        return state;
+                    }, this.findHeatMapDataAndNearbyPlaces);
+                })
+                .catch((error) => {
+                    toast.error(error.message ? error.message : error);
+                    this.findHeatMapDataAndNearbyPlaces();
+                });
         }, (error) => {
             toast.error(error.message ? error.message : error);
-            this.setHeatMapDataAndNearbyPlaces();
+            this.findHeatMapDataAndNearbyPlaces();
         });
     }
 
@@ -127,7 +133,6 @@ class Middle extends Component {
         if (isInvalidAddress && this.state.forms_data[form_key].google_place_id !== '') {
             this.setPlaceId('', form_key);
         }
-        document.getElementById("copied").style.display = "none";
     }
 
     setPosition(lat, lng, form_key) {
@@ -142,8 +147,9 @@ class Middle extends Component {
         this.setState(state => {
             state.forms_data[form_key].isCorrectLocation = true;
             state.forms_data[form_key].google_place_id = place_id;
+            state.isCustomCenter = false;
             return state;
-        }, this.setHeatMapDataAndNearbyPlaces);
+        }, this.findHeatMapDataAndNearbyPlaces);
     }
 
     render() {
@@ -178,9 +184,9 @@ class Middle extends Component {
                     </div>}
                     <div className="share-btn-row">
                         <button type="submit" className={this.state.forms_data["form_1"].google_place_id !== '' ? "btn-primary" : "btn-primary disabled"}><span>Share</span> link <img src={icon_copy} alt=""/></button>
-                        <div className="copied" id="copied">
+                        {this.state.copied && <div className="copied">
                             link has been copied to clipboard!
-                        </div>
+                        </div>}
                     </div>
                 </form>
                 <div className="search-results-block">
@@ -218,6 +224,7 @@ class Middle extends Component {
                                                                   center={this.state.center} forms_data={this.state.forms_data} nearbyPlaces={this.state.nearbyPlaces}
                                                                   setAddress={this.setAddress} setPosition={this.setPosition} mapCenter={this.state.mapCenter}
                                                                   setPlaceId={this.setPlaceId} addNewForm={this.addNewForm} heatMapData={this.state.heatMapData}
+                                                                  moveCenterToNewLocation={this.moveCenterToCustomLocation}
                             /> : <ThreeDots color='grey'/>}
                         </div>
                     </div>

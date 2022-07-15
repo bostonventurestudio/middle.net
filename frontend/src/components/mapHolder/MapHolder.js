@@ -25,7 +25,9 @@ class MapHolder extends Component {
         this.onInfoWindowClose = this.onInfoWindowClose.bind(this);
         this.onFullScreenToggle = this.onFullScreenToggle.bind(this);
         this.onMarkerDragEnd = this.onMarkerDragEnd.bind(this);
+        this.onCenterMarkerDragEnd = this.onCenterMarkerDragEnd.bind(this);
         this.toggleHeatMap = this.toggleHeatMap.bind(this);
+        this.populateLocationData = this.populateLocationData.bind(this);
         document.addEventListener('fullscreenchange', this.onFullScreenToggle);
     }
 
@@ -62,12 +64,16 @@ class MapHolder extends Component {
         this.populateLocationData(coord, form_key);
     };
 
+    onCenterMarkerDragEnd(coord) {
+        this.props.moveCenterToNewLocation({lat: coord.latLng.lat(), lng: coord.latLng.lng()});
+    };
+
     populateLocationData(coord, form_key) {
         const lat = coord.latLng.lat();
         const lng = coord.latLng.lng();
         getLocationDetailFormLatLng(lat, lng).then((response) => {
             this.props.setAddress(response.results[0].formatted_address, form_key);
-            this.props.setPlaceId(response.results[0].place_id, form_key, true);
+            this.props.setPlaceId(response.results[0].place_id, form_key);
             this.props.setPosition(lat, lng, form_key);
         }).catch((error) => {
             toast.error(error.message ? error.message : error);
@@ -99,10 +105,6 @@ class MapHolder extends Component {
                     zoom={12} style={{height: "600px"}}>
                     <button className="heatmap-toggle-btn" title="Toggle HeatMap" onClick={this.toggleHeatMap}>{this.state.showHeatMap ? "Hide HeatMap" : "Show HeatMap"}</button>
                     {this.props.heatMapData.length > 0 && this.state.showHeatMap && <HeatMap gradient={gradient} positions={this.props.heatMapData} opacity={0.8} radius={20}/>}
-                    {this.props.center.lat !== 0 && this.props.center.lng !== 0 &&
-                    <Marker position={this.props.center} name={`Center: ${this.state.centerAddress}`} onClick={this.onMarkerClick}
-                            icon={{url: require("../../images/star.png"), anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}/>
-                    }
                     {Object.keys(this.props.forms_data).map((form_key, index) => {
                         return this.props.forms_data[form_key].latitude && this.props.forms_data[form_key].longitude &&
                             <Marker draggable={true} onClick={this.onMarkerClick} name={this.props.forms_data[form_key].address}
@@ -114,7 +116,11 @@ class MapHolder extends Component {
                                         key={index} position={{lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}} name={`${place.name}: ${place.vicinity}`} onClick={this.onMarkerClick}/>)
 
                     })}
-
+                    {this.props.center.lat !== 0 && this.props.center.lng !== 0 &&
+                    <Marker draggable={true} position={this.props.center} name={`Center: ${this.state.centerAddress}`} onClick={this.onMarkerClick}
+                            icon={{url: require("../../images/star.png"), anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}
+                            onDragend={(event, map, coord) => this.onCenterMarkerDragEnd(coord)}/>
+                    }
                     <InfoWindow marker={this.state.activeMarker} onClose={this.onInfoWindowClose} visible={this.state.showingInfoWindow}>
                         {this.state.activeMarker && (this.state.activeMarker.location ?
                                 <div className="search-results-block">
