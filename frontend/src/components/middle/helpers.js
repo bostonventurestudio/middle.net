@@ -151,12 +151,12 @@ export function handleSubmit(event) {
         });
     }
     saveLocation(data).then((response) => {
-        if (response.data.length === 0) {
+        if (response.data.locations.length === 0) {
             toast.error("Unable to save locations");
         } else {
             this.populateFormsData(response.data.locations);
             if (this.state.slug === "") {
-                this.setState({slug: response.data[0].slug});
+                this.setState({slug: response.data.locations[0].slug});
             }
             toast.success("Locations saved successfully");
         }
