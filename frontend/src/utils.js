@@ -50,8 +50,10 @@ export function get12HourTime(opening_hours, open_or_close) {
     if (opening_hours && opening_hours.weekday_text && opening_hours.weekday_text.length >= day && opening_hours.weekday_text[day]) {
         var time_str = opening_hours.weekday_text[day].split(": ");
         if (time_str.length >= 1) {
-            if (time_str[1] === OPEN_24_HOURS || time_str[1] === CLOSED) {
+            if (time_str[1] === OPEN_24_HOURS) {
                 return time_str[1];
+            } else if (time_str[1] === CLOSED) {
+                return '';
             } else {
                 time_str = time_str[1].split(" – ");
                 return open_or_close === OPEN ? `Opens ${time_str[0]}` : `Closes ${time_str[time_str.length - 1]}`;
