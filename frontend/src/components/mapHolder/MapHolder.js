@@ -15,7 +15,7 @@ class MapHolder extends Component {
         super(props);
         this.state = {
             activeMarker: {},
-            showingInfoWindow: false,
+            showInfoWindow: false,
             centerAddress: "",
             isFullScreen: false,
             showHeatMap: false,
@@ -23,6 +23,8 @@ class MapHolder extends Component {
         this.onMapClicked = this.onMapClicked.bind(this);
         this.onMarkerClick = this.onMarkerClick.bind(this);
         this.onInfoWindowClose = this.onInfoWindowClose.bind(this);
+        this.onMouseOver = this.onMouseOver.bind(this);
+        this.onMouseOut = this.onMouseOut.bind(this);
         this.onFullScreenToggle = this.onFullScreenToggle.bind(this);
         this.onMarkerDragEnd = this.onMarkerDragEnd.bind(this);
         this.onCenterMarkerDragEnd = this.onCenterMarkerDragEnd.bind(this);
@@ -32,41 +34,61 @@ class MapHolder extends Component {
     }
 
 
-    onFullScreenToggle = (event) => {
-        this.setState({isFullScreen: !this.state.isFullScreen})
+    onFullScreenToggle(event) {
+        this.setState({isFullScreen: !this.state.isFullScreen});
     }
 
-    onMarkerClick = (props, marker) =>
-        this.setState({
-            activeMarker: marker,
-            showingInfoWindow: true
-        });
+    onMouseOver(props, marker) {
+        if (!this.state.showInfoWindow || (this.state.showInfoWindow && !this.state.activeMarker.center)) {
+            this.setState({
+                activeMarker: marker,
+                showInfoWindow: true
+            });
+        }
+    }
 
-    onInfoWindowClose = () =>
-        this.setState({
-            activeMarker: null,
-            showingInfoWindow: false
-        });
-
-    onMapClicked(coord) {
-        if (this.state.showingInfoWindow) {
+    onMouseOut() {
+        if (this.state.showInfoWindow) {
             this.setState({
                 activeMarker: null,
-                showingInfoWindow: false
+                showInfoWindow: false
+            });
+        }
+    }
+
+    onMarkerClick(props, marker) {
+        this.setState({
+            activeMarker: marker,
+            showInfoWindow: true
+        });
+    }
+
+    onInfoWindowClose() {
+        this.setState({
+            activeMarker: null,
+            showInfoWindow: false
+        });
+    }
+
+    onMapClicked(coord) {
+        if (this.state.showInfoWindow) {
+            this.setState({
+                activeMarker: null,
+                showInfoWindow: false
             });
         } else {
             const form_key = this.props.addNewForm(null, true);
             this.populateLocationData(coord, form_key);
         }
-    };
+    }
 
     onMarkerDragEnd(coord, form_key) {
         this.populateLocationData(coord, form_key);
-    };
+    }
 
     onCenterMarkerDragEnd(coord) {
         this.props.moveCenterToNewLocation({lat: coord.latLng.lat(), lng: coord.latLng.lng()});
-    };
+    }
 
     populateLocationData(coord, form_key) {
         const lat = coord.latLng.lat();
@@ -117,18 +139,23 @@ class MapHolder extends Component {
 
                     })}
                     {this.props.center.lat !== 0 && this.props.center.lng !== 0 &&
-                    <Marker draggable={true} position={this.props.center} name={`Center: ${this.state.centerAddress}`} onClick={this.onMarkerClick}
+                    <Marker center={true} draggable={true} position={this.props.center} name={`Center: ${this.state.centerAddress}`}
                             icon={{url: require("../../images/star.png"), anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}
-                            onDragend={(event, map, coord) => this.onCenterMarkerDragEnd(coord)} zIndex={99}/>
+                            onDragend={(event, map, coord) => this.onCenterMarkerDragEnd(coord)} zIndex={99} onMouseover={this.onMouseOver} onMouseout={this.onMouseOut}/>
                     }
-                    <InfoWindow marker={this.state.activeMarker} onClose={this.onInfoWindowClose} visible={this.state.showingInfoWindow}>
+                    <InfoWindow marker={this.state.activeMarker} onClose={this.onInfoWindowClose} visible={this.state.showInfoWindow} style={{background: "aqua"}}>
                         {this.state.activeMarker && (this.state.activeMarker.location ?
                                 <div className="search-results-block">
-                                    <NearbyPlace place={this.state.activeMarker.location} popUp={true}/>
+                                    <NearbyPlace place={this.state.activeMarker.location} popUp={true} style={{background: "#5A9AE4", color: "white", fontWeight: "500"}} directionStyle={{color: "white"}} timeStyle={{color: "#034da3"}}/>
                                 </div> :
-                                <div>
-                                    <h4>{this.state.activeMarker.name}</h4>
-                                </div>
+                                (this.state.activeMarker.center ?
+                                        <div className="center-info">
+                                            <span>drag to move search area</span>
+                                        </div> :
+                                        <div className="location-info">
+                                            <span>{this.state.activeMarker.name}</span>
+                                        </div>
+                                )
                         )}
                     </InfoWindow>
                 </Map>}

@@ -1469,3 +1469,25 @@ form .share-btn-row {
     -webkit-transform: rotate(360deg);
   }
 }
+
+
+.gm-style .gm-style-iw-d::-webkit-scrollbar-track,
+.gm-style .gm-style-iw-d::-webkit-scrollbar-track-piece,
+.gm-style .gm-style-iw-c, .gm-style .gm-style-iw-t::after {
+  opacity: 0.9;
+  background: #5A9AE4 !important;
+}
+
+.center-info, .location-info {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.center-info {
+  width: 90px;
+}
+
+.location-info {
+  width: 180px;
+}

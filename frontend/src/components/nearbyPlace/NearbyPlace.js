@@ -16,7 +16,7 @@ class NearbyPlace extends Component {
             return null;
         }
         return (
-            <div className={this.props.popUp ? "list-holder pop-up": "list-holder"} key={this.props.index}>
+            <div className={this.props.popUp ? "list-holder pop-up": "list-holder"} key={this.props.index} style={this.props.style}>
                 <div className="left-block">
                     <span className="num">{this.props.index}</span>
                     <div className="img-detail-block">
@@ -39,8 +39,8 @@ class NearbyPlace extends Component {
                             <Rating ratingValue={this.props.place.rating ? this.props.place.rating * 20 : 0} readonly={true} size={15}/>
                         </ul>
                         <div className="timing-info">
-                            <span className="distance">{`${this.props.place.distanceFromCenter}km form center`}</span>
-                            <span className="open">{this.props.place.opening_hours?.isOpen() ? "Open" : "Closed"}</span>
+                            <span className="distance">{`${this.props.place.distanceFromCenter}km from center`}</span>
+                            <span className="open" style={this.props.timeStyle}>{this.props.place.opening_hours?.isOpen() ? "Open" : "Closed"}</span>
                             <span className="time">{this.props.place.opening_hours?.isOpen() ? get12HourTime(this.props.place.opening_hours, CLOSE) : get12HourTime(this.props.place.opening_hours, OPEN)}</span>
                         </div>
                     </div>
@@ -49,7 +49,7 @@ class NearbyPlace extends Component {
                             <div className="icon-holder">
                                 <i className="icon-directions"/>
                             </div>
-                            <span>get <br/>directions</span>
+                            <span style={this.props.directionStyle}>get <br/>directions</span>
                         </a>
                     </div>
                 </div>
