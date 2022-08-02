@@ -751,7 +751,7 @@ input[type=submit] {
 }
 
 .content-block {
-  padding: 30px 0 10px;
+  padding: 25px 0;
 }
 
 .form p {
@@ -1045,6 +1045,7 @@ form .share-btn-row {
 
 .search-results-block .filter {
   text-align: left;
+  margin-top: 10px;
 }
 
 .search-results-block .filter .btn-primary {
@@ -1077,22 +1078,20 @@ form .share-btn-row {
 }
 
 .search-results-block .tab-title {
-    margin-top: 15px;
-  }
+  margin-top: 15px;
+}
 
 @media (min-width: 768px) {
   .search-results-block .tab-title {
     float: left;
     height: 40px;
-    width: 390px;
+    width: 245px;
     position: relative;
     margin-top: 5px;
   }
 
   .search-results-block .filter {
     height: 40px;
-    width: 376px;
-    margin-top: 10px;
     text-align: right;
     padding-right: 20px;
   }
@@ -1101,7 +1100,7 @@ form .share-btn-row {
 @media (min-width: 768px) {
   .search-results-block .tab-title span {
     position: absolute;
-    bottom: 0;
+    bottom: 5px;
     width: 260px;
   }
 }
@@ -1131,11 +1130,18 @@ form .share-btn-row {
 
 .search-results-block .tab-links {
   margin-top: 15px;
+  margin-bottom: 25px;
+}
+
+@media (min-width: 768px) {
+  .search-results-block .tab-links {
+    margin-bottom: 0;
+   }
 }
 
 .search-results-block .tabset {
-  margin-top: 25px;
-  margin-bottom: 30px;
+  margin-top: 10px;
+  margin-bottom: 15px;
   min-height: 500px;
 }
 .search-results-block .map-holder iframe {
@@ -1143,7 +1149,7 @@ form .share-btn-row {
   max-width: 569px;
 }
 .search-results-block .tab-links a {
-  padding: 8px 18px;
+  padding: 6px 18px;
   text-decoration: none;
   color: #CECECE;
   background: #fff;
@@ -1305,12 +1311,6 @@ form .share-btn-row {
   margin-bottom: 3px;
 }
 
-.search-results-block .other {
-  text-align: left;
-  max-width: 574px;
-  margin-top: 10px;
-}
-
 .search-results-block .other .btn-primary {
   border-radius: 30px;
   border: none;
@@ -1321,6 +1321,7 @@ form .share-btn-row {
   line-height: 10px;
   height: 30px;
 }
+
 .search-results-block .other .btn-primary:hover {
   background: #448de0;
 }
@@ -1331,10 +1332,6 @@ form .share-btn-row {
 }
 
 @media (min-width: 768px) {
-  .search-results-block .other {
-    text-align: right;
-    margin-top: 15px;
-  }
   .search-results-block .other .btn-primary {
     font-size: 16px;
    }
@@ -1377,7 +1374,6 @@ form .share-btn-row {
 
 .map-holder, .map-holder-full {
   height: 600px;
-  margin-bottom: 20px;
 }
 
 .map-holder div:first-child {

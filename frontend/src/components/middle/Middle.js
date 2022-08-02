@@ -191,20 +191,15 @@ class Middle extends Component {
                 </form>
                 <div className="search-results-block">
                     <div className="tab">
+                        <div className="tab-title">
+                            <span>Top places in the middle:</span>
+                        </div>
                         <div className="filter">
                             <button className={"btn-primary"} onClick={this.suggestOtherNearbyPlaces}><span>Filter</span> <img src={filter} alt=""/></button>
                         </div>
                         <div className="tab-links">
                             <a href="#list-view" data-tab="places" className="b-nav-tab active" onClick={this.change}>List View</a>
                             <a href="#map-view" data-tab="map" className="b-nav-tab" onClick={this.change}>Map View</a>
-                        </div>
-                    </div>
-                    <div className="tab">
-                        <div className="tab-title">
-                            <span>Top places in the middle:</span>
-                        </div>
-                        <div className="other">
-                            <button className={this.state.nearbyPlaces[0] ? "btn-primary" : "btn-primary disabled"} onClick={this.suggestOtherNearbyPlaces}>Other top Places</button>
                         </div>
                     </div>
                     <div className="tabset">
@@ -227,6 +222,9 @@ class Middle extends Component {
                                                                   moveCenterToNewLocation={this.moveCenterToCustomLocation}
                             /> : <ThreeDots color='grey'/>}
                         </div>
+                    </div>
+                    <div className="other">
+                        <button className={this.state.nearbyPlaces[0] ? "btn-primary" : "btn-primary disabled"} onClick={this.suggestOtherNearbyPlaces}>Other top Places</button>
                     </div>
                 </div>
             </div>
