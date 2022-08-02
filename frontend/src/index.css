@@ -1448,28 +1448,6 @@ form .share-btn-row {
   background: none rgb(240, 240, 240);
 }
 
-.loading {
-  position: absolute;
-  height: 2em;
-  width: 2em;
-  margin: auto;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  padding: 15px;
-  border: 6px solid #ccc;
-  border-right-color: #888;
-  border-radius: 22px;
-  -webkit-animation: rotate 1s infinite linear;
-}
-
-@-webkit-keyframes rotate {
-  100% {
-    -webkit-transform: rotate(360deg);
-  }
-}
-
 
 .gm-style .gm-style-iw-d::-webkit-scrollbar-track,
 .gm-style .gm-style-iw-d::-webkit-scrollbar-track-piece,
@@ -1490,4 +1468,21 @@ form .share-btn-row {
 
 .location-info {
   width: 180px;
+}
+
+.list-loading, .map-loading {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background: grey;
+  opacity: 0.35;
+}
+
+.list-loading {
+  max-width: 572px;
+  height: 500px;
+}
+
+.map-loading {
+  height: 600px;
 }

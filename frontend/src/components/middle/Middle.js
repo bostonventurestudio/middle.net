@@ -211,7 +211,7 @@ class Middle extends Component {
                                     No place available to meet in the middle.
                                 </div> : <div className="instruction-places">
                                     No places yet! Enter another location to generate places to meet in the middle.
-                                </div> : <ThreeDots color='grey'/>}
+                                </div> : <div className="list-loading"><ThreeDots color='white'/></div>}
                             </div>
                         </div>
                         <div id="map" className="b-tab">
@@ -220,7 +220,7 @@ class Middle extends Component {
                                                                   setAddress={this.setAddress} setPosition={this.setPosition} mapCenter={this.state.mapCenter}
                                                                   setPlaceId={this.setPlaceId} addNewForm={this.addNewForm} heatMapData={this.state.heatMapData}
                                                                   moveCenterToNewLocation={this.moveCenterToCustomLocation}
-                            /> : <ThreeDots color='grey'/>}
+                            /> : <div className="map-loading"><ThreeDots color='white'/></div>}
                         </div>
                     </div>
                     <div className="other">
