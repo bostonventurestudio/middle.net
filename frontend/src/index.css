@@ -677,30 +677,36 @@ input[type=submit] {
     padding: 20px 0;
   }
 }
-#header .sub-text, .site-link {
-  display: block;
+#header .sub-text {
   font-size: 14px;
 }
+
+#header .site-link {
+  font-size: 12px;
+}
+
 @media (min-width: 768px) {
-  #header .sub-text, .site-link {
-    display: inline;
+  #header .sub-text {
     font-size: 18px;
+  }
+
+  #header .site-link {
+    font-size: 14px;
   }
 }
 @media (min-width: 1300px) {
-  #header .sub-text, .site-link {
-     display: inline;
+  #header .sub-text {
     font-size: 22px;
+  }
+
+  #header .site-link {
+    font-size: 16px;
   }
 }
 #header .container {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-}
-
-#header .container a {
-  text-decoration: none;
 }
 
 #header .logo {
