@@ -53,7 +53,7 @@ class Home extends Component {
             <main id="main">
                 <div className="content-block">
                     <div className="container">
-                        {!this.state.loading ? <Middle locations={this.state.locations} center={this.state.center} isCustomCenter={this.state.isCustomCenter} slug={this.state.slug}/> : <ThreeDots color='grey'/>}
+                        {!this.state.loading ? <Middle locations={this.state.locations} center={this.state.center} isCustomCenter={this.state.isCustomCenter} slug={this.state.slug}/> : <ThreeDots color='white'/>}
                     </div>
                 </div>
             </main>

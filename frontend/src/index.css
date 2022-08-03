@@ -818,12 +818,17 @@ input[type=submit] {
   font-size: 33px;
   line-height: 35px;
 }
-.form .target-location button {
+.form .target-location .btn {
   text-decoration: none;
   color: #5A9AE4;
   background: none;
   border: none;
   padding: 0;
+}
+
+.form .target-location .disabled {
+  color: #b5b3b3;
+  pointer-events: none;
 }
 
 .form .target-location button:hover {
@@ -836,7 +841,7 @@ input[type=submit] {
   right: 0;
   font-size: 33px;
 }
-.form .location-delete button {
+.form .location-delete .btn {
   text-decoration: none;
   background: white;
   border: none;
@@ -847,7 +852,12 @@ input[type=submit] {
   padding: 0;
 }
 
-.form .location-delete button i {
+.form .location-delete .disabled {
+  color: #b5b3b3;
+  pointer-events: none;
+}
+
+.form .location-delete .btn i {
   -webkit-text-stroke: 4px white;
 }
 
@@ -912,7 +922,7 @@ input[type=submit] {
   font-size: 24px;
 }
 .form .btn-primary.disabled {
-  background: #CECECE;
+  background: #b5b3b3;
   pointer-events: none;
 }
 .form .location-url {
@@ -1073,7 +1083,7 @@ form .share-btn-row {
 }
 
 .search-results-block .filter .btn-primary.disabled {
-  background: #CECECE;
+  background: #b5b3b3;
   pointer-events: none;
 }
 
@@ -1151,7 +1161,7 @@ form .share-btn-row {
 .search-results-block .tab-links a {
   padding: 6px 18px;
   text-decoration: none;
-  color: #CECECE;
+  color: #b5b3b3;
   background: #fff;
   border-bottom: 2px solid transparent;
   font-size: 14px;
@@ -1327,7 +1337,7 @@ form .share-btn-row {
 }
 
 .search-results-block .other .btn-primary.disabled {
-  background: #CECECE;
+  background: #b5b3b3;
   pointer-events: none;
 }
 

@@ -207,7 +207,6 @@ export function setHeatMapData(results, status, pagination) {
             if (this.state.isCustomCenter) {
                 this.setState({
                     heatMapData: heatMapData,
-                    canRenderMap: true,
                 }, () => {
                     this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
                 });
@@ -217,15 +216,13 @@ export function setHeatMapData(results, status, pagination) {
                     center: centerOfGravityOfHeatMapData,
                     mapCenter: centerOfGravityOfHeatMapData,
                     heatMapData: heatMapData,
-                    canRenderMap: true,
                 }, () => {
                     this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
                 });
             }
         } else {
             this.setState({
-                canRenderPlaces: true,
-                canRenderMap: true,
+                canRender: true,
             });
         }
     }
@@ -291,7 +288,7 @@ export function setNearbyPlaces(results, status) {
             totalNearbyPlaces = totalNearbyPlaces.filter(place => !uniq[place.place_id] && (uniq[place.place_id] = true));
             const places = sortPlacesBasedOnDistanceFromCenter(totalNearbyPlaces.slice(0, 5), this.state.center);
             this.setState({
-                canRenderPlaces: true,
+                canRender: true,
                 totalNearbyPlaces: totalNearbyPlaces,
                 totalSortedNearbyPlaces: places.length,
                 typeIndex: 0,
@@ -350,7 +347,7 @@ export function suggestOtherNearbyPlaces(event) {
         return;
     }
     this.setState({
-        canRenderPlaces: false,
+        canRender: false,
     }, () => {
         let nearbyPlacesIndex = this.state.nearbyPlacesIndex + 5;
         if (this.state.totalNearbyPlaces.length <= nearbyPlacesIndex) {
@@ -359,13 +356,13 @@ export function suggestOtherNearbyPlaces(event) {
         const nearbyPlaces = this.state.totalNearbyPlaces.slice(nearbyPlacesIndex, nearbyPlacesIndex + 5);
         if (this.state.totalSortedNearbyPlaces > nearbyPlacesIndex) {
             this.setState({
-                canRenderPlaces: true,
+                canRender: true,
                 nearbyPlaces: nearbyPlaces,
                 nearbyPlacesIndex: nearbyPlacesIndex,
             });
         } else {
             this.setState({
-                canRenderPlaces: true,
+                canRender: true,
                 nearbyPlaces: new Array(5),
                 nearbyPlacesIndex: nearbyPlacesIndex,
                 totalSortedNearbyPlaces: this.state.totalSortedNearbyPlaces + nearbyPlaces.length,
@@ -380,8 +377,7 @@ export function suggestOtherNearbyPlaces(event) {
 
 export function findHeatMapDataAndNearbyPlaces() {
     this.setState({
-        canRenderMap: false,
-        canRenderPlaces: false,
+        canRender: false,
         totalNearbyPlaces: [],
         nearbyPlacesIndex: 0,
         nearbyPlaces: new Array(5),
@@ -396,8 +392,7 @@ export function findHeatMapDataAndNearbyPlaces() {
     }
     if (lagLngs.length < 2) {
         this.setState({
-            canRenderMap: true,
-            canRenderPlaces: true,
+            canRender: true,
             center: {lat: 0, lng: 0},
             mapCenter: lagLngs.length === 1 ? lagLngs[0] : {lat: 0, lng: 0}
         });
@@ -427,8 +422,7 @@ export function moveCenterToCustomLocation(customCenter) {
     var farthestPoint = getDistanceToFarthestLocationFromCenter(lagLngs, customCenter);
     const maxRadius = farthestPoint > MAX_RADIUS ? MAX_RADIUS : farthestPoint < MIN_RADIUS ? MIN_RADIUS : farthestPoint;
     this.setState({
-        canRenderMap: false,
-        canRenderPlaces: false,
+        canRender: false,
         totalNearbyPlaces: [],
         nearbyPlacesIndex: 0,
         nearbyPlaces: new Array(5),

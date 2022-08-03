@@ -128,7 +128,7 @@ class MapHolder extends Component {
                     {this.props.center.lat !== 0 && this.props.center.lng !== 0 &&
                     <Marker center={true} draggable={true} onClick={this.onMarkerClick} position={this.props.center} name={`Center: ${this.state.centerAddress}`}
                             icon={{url: require("../../images/star.png"), anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}
-                            onDragend={(event, map, coord) => this.onCenterMarkerDragEnd(coord)}/>
+                            onDragend={(event, map, coord) => this.onCenterMarkerDragEnd(coord)} zIndex={999}/>
                     }
                     <InfoWindow marker={this.state.activeMarker} onClose={this.onInfoWindowClose} visible={this.state.showInfoWindow} style={{background: "aqua"}}>
                         {this.state.activeMarker && (this.state.activeMarker.location ?

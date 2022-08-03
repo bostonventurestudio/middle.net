@@ -20,8 +20,8 @@ class LocationSearch extends Component {
                         <div>
                             <div className="input-holder">
                                 <input{...getInputProps({placeholder: "Enter your location", className: "location-search-input",})} required/>
-                                {this.props.canDelete && <span className="location-delete"><button onClick={(event) => this.props.deleteForm(event, this.props.form_key)} title="Remove Location"><i className="fa fa-close"/></button></span>}
-                                <span className="target-location"><button onClick={(event) => this.props.setMapCenter(event, this.props.form_key)} title="Target Location"><i className="icon-target"/></button></span>
+                                <span className="location-delete"><button className={this.props.canDelete ? "btn" : "btn disabled"} onClick={(event) => this.props.deleteForm(event, this.props.form_key)} title="remove location"><i className="fa fa-close"/></button></span>
+                                <span className="target-location"><button className={this.props.canTarget ? "btn" : "btn disabled"} onClick={(event) => this.props.setMapCenter(event, this.props.form_key)} title="target location"><i className="icon-target"/></button></span>
                                 {this.props.isCorrectLocation !== undefined && this.props.isCorrectLocation === false && <span className="error">ERROR: Invalid Location</span>}
                             </div>
                             <div style={{position: "relative"}}>

@@ -40,8 +40,7 @@ class Middle extends Component {
             center: props.center,
             isCustomCenter: props.isCustomCenter,
             mapCenter: props.center,
-            canRenderMap: true,
-            canRenderPlaces: true,
+            canRender: true,
             heatMapData: [],
             searchRadius: MIN_RADIUS,
             maxRadius: MAX_RADIUS,
@@ -125,12 +124,16 @@ class Middle extends Component {
 
     change(event) {
         this.clear();
+        console.log(event.target);
         event.target.classList.add('active');
         var id = event.currentTarget.getAttribute('data-tab');
+        console.log(id);
+        console.log(document.getElementById(id));
         document.getElementById(id).classList.add('active');
     }
 
     setMapCenter(event, form_key) {
+        document.getElementById("map-link").click();
         if (event) {
             event.preventDefault();
         }
@@ -197,7 +200,7 @@ class Middle extends Component {
             nearbyPlacesIndex: 0,
             nearbyPlaces: new Array(5),
             searchRadius: MIN_RADIUS,
-            canRenderPlaces: false,
+            canRender: false,
         }, () => {
             this.sendNearbyPlacesAPIRequest(MIN_RADIUS, this.setNearbyPlaces);
         });
@@ -222,7 +225,8 @@ class Middle extends Component {
                                         address={this.state.forms_data[form_key].address}
                                         setAddress={this.setAddress}
                                         handleAddressSelect={this.handleAddressSelect}
-                                        canDelete={this.state.forms_count > 1 && this.state.canRenderPlaces}
+                                        canDelete={this.state.forms_count > 1 && this.state.canRender}
+                                        canTarget={this.state.canRender && this.state.forms_data[form_key].google_place_id}
                                         deleteForm={this.deleteForm}
                                         setMapCenter={this.setMapCenter}/>
                         ))
@@ -234,7 +238,7 @@ class Middle extends Component {
                         </button>
                     </div>}
                     <div className="share-btn-row">
-                        <button type="submit" className={this.state.forms_data["form_1"].google_place_id !== '' ? "btn-primary" : "btn-primary disabled"}><span>Share</span> link <img src={icon_copy} alt=""/></button>
+                        <button type="submit" title="save locations and copy link" className={this.state.forms_data["form_1"].google_place_id !== '' ? "btn-primary" : "btn-primary disabled"}><span>Share</span> link <img src={icon_copy} alt=""/></button>
                         {this.state.copied && <div className="copied">
                             link has been copied to clipboard!
                         </div>}
@@ -246,18 +250,18 @@ class Middle extends Component {
                             <span>Top places in the middle:</span>
                         </div>
                         <div className="filter">
-                            <button className={this.state.canRenderPlaces ? "btn-primary" : "btn-primary disabled"} onClick={this.handleShowFilters}><span>Filter</span> <img src={filter} alt=""/></button>
+                            <button title="toggle filter" className={this.state.canRender ? "btn-primary" : "btn-primary disabled"} onClick={this.handleShowFilters}><span>Filter</span> <img src={filter} alt=""/></button>
                             {this.state.showFilters && <Filters filters={this.state.filters} closeFilters={this.handleShowFilters} setFilters={this.setFilters}/>}
                         </div>
                         <div className="tab-links">
                             <a href="#list-view" data-tab="places" className="b-nav-tab active" onClick={this.change}>List View</a>
-                            <a href="#map-view" data-tab="map" className="b-nav-tab" onClick={this.change}>Map View</a>
+                            <a id="map-link" href="#map-view" data-tab="map" className="b-nav-tab" onClick={this.change}>Map View</a>
                         </div>
                     </div>
                     <div className="tabset">
                         <div id="places" className="b-tab active">
                             <div className="list-view-block">
-                                {this.state.canRenderPlaces ? this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"] && this.state.forms_data["form_2"].google_place_id !== '' ? this.state.nearbyPlaces[0] ? this.state.nearbyPlaces.map((place, index) => {
+                                {this.state.canRender ? this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"] && this.state.forms_data["form_2"].google_place_id !== '' ? this.state.nearbyPlaces[0] ? this.state.nearbyPlaces.map((place, index) => {
                                     return <NearbyPlace place={place} index={index + 1} key={index} popUp={false} filters={this.state.filters.type}/>
                                 }) : <div className="instruction-places">
                                     No place available to meet in the middle.
@@ -267,7 +271,7 @@ class Middle extends Component {
                             </div>
                         </div>
                         <div id="map" className="b-tab">
-                            {this.state.canRenderMap ? <MapHolder google={this.props.google} forms_count={this.state.forms_count}
+                            {this.state.canRender ? <MapHolder google={this.props.google} forms_count={this.state.forms_count}
                                                                   center={this.state.center} forms_data={this.state.forms_data} nearbyPlaces={this.state.nearbyPlaces}
                                                                   setAddress={this.setAddress} setPosition={this.setPosition} mapCenter={this.state.mapCenter}
                                                                   setPlaceId={this.setPlaceId} addNewForm={this.addNewForm} heatMapData={this.state.heatMapData}
@@ -276,7 +280,7 @@ class Middle extends Component {
                         </div>
                     </div>
                     <div className="other">
-                        <button className={this.state.nearbyPlaces[0] ? "btn-primary" : "btn-primary disabled"} onClick={this.suggestOtherNearbyPlaces}>Other top Places</button>
+                        <button title="suggest other top location" className={this.state.nearbyPlaces[0] ? "btn-primary" : "btn-primary disabled"} onClick={this.suggestOtherNearbyPlaces}>Other top Places</button>
                     </div>
                 </div>
             </div>
