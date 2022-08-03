@@ -26,7 +26,7 @@ class NearbyPlace extends Component {
                         </div>
                         <div className="detail-block">
                             <span className="title">{this.props.place.name}</span>
-                            <span className="detail">{this.props.place.types.includes("bar") ? "Bar" : this.props.place.types.includes("cafe") ? "Coffee Shop" : "Restaurant"}</span>
+                            <span className="detail">{ this.props.filters.bar && this.props.place.types.includes("bar") ? "Bar" : this.props.filters.coffee && this.props.place.types.includes("cafe") ? "Coffee Shop" : "Restaurant"}</span>
                             <span className="detail">{this.props.place.formatted_address}</span>
                             <span className="phone_number">{this.props.place.international_phone_number}</span>
                         </div>
@@ -45,7 +45,7 @@ class NearbyPlace extends Component {
                         </div>
                     </div>
                     <div className="directions-block">
-                        <a href={GoogleMapDirectionLink + `?api=1&destination=${this.props.place.geometry.location.lat()},${this.props.place.geometry.location.lng()}`}>
+                        <a href={`${GoogleMapDirectionLink}?api=1&destination=${this.props.place.geometry.location.lat()},${this.props.place.geometry.location.lng()}`}>
                             <div className="icon-holder">
                                 <i className="icon-directions"/>
                             </div>

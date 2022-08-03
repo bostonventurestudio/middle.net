@@ -15,6 +15,7 @@ import filter from "../../images/filter.svg";
 import {addNewForm, copyLinkToClipboard, deleteForm, findHeatMapDataAndNearbyPlaces, getNearbyPlaceDetail, handleAddressSelect, handleSubmit, moveCenterToCustomLocation, populateFormsData, sendNearbyPlacesAPIRequest, setHeatMapData, setNearbyPlaceDetail, setNearbyPlaces, suggestOtherNearbyPlaces} from "./helpers";
 import {ThreeDots} from "react-loader-spinner";
 import {toast} from "react-toastify";
+import Filters from "../filters/Filters";
 
 
 const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
@@ -44,6 +45,24 @@ class Middle extends Component {
             heatMapData: [],
             searchRadius: MIN_RADIUS,
             maxRadius: MAX_RADIUS,
+            showFilters: false,
+            filters: {
+                price: {
+                    price_level_1: true,
+                    price_level_2: true,
+                    price_level_3: true,
+                    price_level_4: true,
+                },
+                hours: {
+                    all: true,
+                    open_now: false,
+                },
+                type: {
+                    restaurant: true,
+                    coffee: true,
+                    bar: true,
+                }
+            }
         };
         this.change = this.change.bind(this);
         this.clear = this.clear.bind(this);
@@ -52,6 +71,8 @@ class Middle extends Component {
         this.setPosition = this.setPosition.bind(this);
         this.setPlaceId = this.setPlaceId.bind(this);
         this.setIsCorrectLocation = this.setIsCorrectLocation.bind(this);
+        this.setFilters = this.setFilters.bind(this);
+        this.handleShowFilters = this.handleShowFilters.bind(this);
         this.handleAddressSelect = handleAddressSelect.bind(this);
         this.copyLinkToClipboard = copyLinkToClipboard.bind(this);
         this.addNewForm = addNewForm.bind(this);
@@ -152,6 +173,19 @@ class Middle extends Component {
         }, this.findHeatMapDataAndNearbyPlaces);
     }
 
+    handleShowFilters() {
+        this.setState({showFilters: !this.state.showFilters});
+    }
+
+    setFilters(filters) {
+        this.setState({
+            filters: filters,
+            nearbyPlaces: new Array(5),
+        }, () => {
+            this.sendNearbyPlacesAPIRequest(MIN_RADIUS, this.setNearbyPlaces);
+        });
+    }
+
     render() {
         let canAddLocation = true;
         for (var form_key in this.state.forms_data) {
@@ -160,6 +194,7 @@ class Middle extends Component {
                 break;
             }
         }
+        console.log(this.state.totalNearbyPlaces);
         return (
             <div>
                 <form className="form" onSubmit={this.handleSubmit}>
@@ -195,7 +230,8 @@ class Middle extends Component {
                             <span>Top places in the middle:</span>
                         </div>
                         <div className="filter">
-                            <button className={"btn-primary"} onClick={this.suggestOtherNearbyPlaces}><span>Filter</span> <img src={filter} alt=""/></button>
+                            <button className="btn-primary" onClick={this.handleShowFilters}><span>Filter</span> <img src={filter} alt=""/></button>
+                            {this.state.showFilters && <Filters filters={this.state.filters} closeFilters={this.handleShowFilters} setFilters={this.setFilters}/>}
                         </div>
                         <div className="tab-links">
                             <a href="#list-view" data-tab="places" className="b-nav-tab active" onClick={this.change}>List View</a>
@@ -206,7 +242,7 @@ class Middle extends Component {
                         <div id="places" className="b-tab active">
                             <div className="list-view-block">
                                 {this.state.canRenderPlaces ? this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"] && this.state.forms_data["form_2"].google_place_id !== '' ? this.state.nearbyPlaces[0] ? this.state.nearbyPlaces.map((place, index) => {
-                                    return <NearbyPlace place={place} index={index + 1} key={index} popUp={false}/>
+                                    return <NearbyPlace place={place} index={index + 1} key={index} popUp={false} filters={this.state.filters.type}/>
                                 }) : <div className="instruction-places">
                                     No place available to meet in the middle.
                                 </div> : <div className="instruction-places">

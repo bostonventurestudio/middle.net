@@ -5,7 +5,7 @@
 import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
 import {delay, getCenterOfGravityOfLatLngs, getDistanceToFarthestLocationFromCenter, saveLocation, sortPlacesBasedOnDistanceFromCenter} from "../../utils";
 import copy from "copy-to-clipboard";
-import {MAX_RADIUS, MIN_RADIUS, TYPE} from "../../constants";
+import {BAR, COFFEE, MAX_RADIUS, MIN_RADIUS, RESTAURANT} from "../../constants";
 import {toast} from "react-toastify";
 
 export function populateFormsData(locations, extra_form = false) {
@@ -297,12 +297,41 @@ export function setNearbyPlaces(results, status) {
 }
 
 export function sendNearbyPlacesAPIRequest(radius, callback) {
-    var nearbyPlacesRequest = {
+    const request = {
         location: this.state.center,
         radius: radius,
-        type: TYPE,
+        type: [],
     };
-    this.state.service.nearbySearch(nearbyPlacesRequest, callback);
+    if (this.state.filters.hours.open_now) {
+        request.openNow = true;
+    }
+    if (this.state.filters.type.restaurant) {
+        request.type.push(RESTAURANT);
+    }
+    if (this.state.filters.type.coffee) {
+        request.type.push(COFFEE);
+    }
+    if (this.state.filters.type.bar) {
+        request.type.push(BAR);
+    }
+    if (!(this.state.filters.price.price_level_1 && this.state.filters.price.price_level_2 && this.state.filters.price.price_level_3 && this.state.filters.price.price_level_4)) {
+        const bools = Object.values(this.state.filters.price);
+        for (let i = 0; i < bools.length; i++) {
+            if (bools[i]) {
+                if (request.minPriceLevel === undefined) {
+                    request.minPriceLevel = i;
+                }
+                request.maxPriceLevel = i;
+            }
+        }
+        if (request.minPriceLevel > 1) {
+            request.minPriceLevel = request.minPriceLevel + 1;
+        }
+        if (request.maxPriceLevel > 1) {
+            request.maxPriceLevel = request.maxPriceLevel + 1;
+        }
+    }
+    this.state.service.nearbySearch(request, callback);
 }
 
 export function suggestOtherNearbyPlaces(event) {
