@@ -124,11 +124,8 @@ class Middle extends Component {
 
     change(event) {
         this.clear();
-        console.log(event.target);
         event.target.classList.add('active');
         var id = event.currentTarget.getAttribute('data-tab');
-        console.log(id);
-        console.log(document.getElementById(id));
         document.getElementById(id).classList.add('active');
     }
 

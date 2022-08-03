@@ -318,22 +318,29 @@ export function sendNearbyPlacesAPIRequest(radius, callback, forHeatMap = false)
         }
         if (!(this.state.filters.price.price_level_1 && this.state.filters.price.price_level_2 && this.state.filters.price.price_level_3 && this.state.filters.price.price_level_4)) {
             const bools = Object.values(this.state.filters.price);
+            let minPriceLevel = -1;
+            let maxPriceLevel = -1;
             for (let i = 0; i < bools.length; i++) {
                 if (bools[i]) {
-                    if (request.minPriceLevel === undefined) {
-                        request.minPriceLevel = i;
+                    if (minPriceLevel === -1) {
+                        minPriceLevel = i;
                     }
-                    request.maxPriceLevel = i;
+                    maxPriceLevel = i;
                 }
             }
-            if (request.minPriceLevel > 1) {
-                request.minPriceLevel = request.minPriceLevel + 1;
+            if (minPriceLevel > 1) {
+                minPriceLevel = minPriceLevel + 1;
             }
-            if (request.maxPriceLevel > 1) {
-                request.maxPriceLevel = request.maxPriceLevel + 1;
+            if (maxPriceLevel > 1) {
+                maxPriceLevel = maxPriceLevel + 1;
+            }
+            if (!(minPriceLevel === 0 && maxPriceLevel === 4)) {
+                request.minPriceLevel = minPriceLevel;
+                request.maxPriceLevel = maxPriceLevel;
             }
         }
         request.type = [this.state.types[this.state.typeIndex]];
+        console.log(request);
         this.state.service.nearbySearch(request, callback);
     } else {
         request.type = [RESTAURANT];
