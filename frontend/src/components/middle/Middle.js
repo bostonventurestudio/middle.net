@@ -196,6 +196,7 @@ class Middle extends Component {
             totalNearbyPlaces: [],
             nearbyPlacesIndex: 0,
             nearbyPlaces: new Array(5),
+            searchRadius: MIN_RADIUS,
             canRenderPlaces: false,
         }, () => {
             this.sendNearbyPlacesAPIRequest(MIN_RADIUS, this.setNearbyPlaces);
@@ -210,7 +211,6 @@ class Middle extends Component {
                 break;
             }
         }
-        console.log(this.state.totalNearbyPlaces);
         return (
             <div>
                 <form className="form" onSubmit={this.handleSubmit}>
@@ -271,7 +271,7 @@ class Middle extends Component {
                                                                   center={this.state.center} forms_data={this.state.forms_data} nearbyPlaces={this.state.nearbyPlaces}
                                                                   setAddress={this.setAddress} setPosition={this.setPosition} mapCenter={this.state.mapCenter}
                                                                   setPlaceId={this.setPlaceId} addNewForm={this.addNewForm} heatMapData={this.state.heatMapData}
-                                                                  moveCenterToNewLocation={this.moveCenterToCustomLocation}
+                                                                  moveCenterToNewLocation={this.moveCenterToCustomLocation} filters={this.state.filters.type}
                             /> : <div className="map-loading"><ThreeDots color='white'/></div>}
                         </div>
                     </div>
