@@ -8,7 +8,7 @@ import {GoogleApiWrapper} from "google-maps-react";
 import Geocode from "react-geocode";
 import FormInputs from "../formInputs/FormInputs";
 import MapHolder from "../mapHolder/MapHolder";
-import {MAX_RADIUS, MIN_RADIUS} from "../../constants";
+import {BAR, COFFEE, MAX_RADIUS, MIN_RADIUS, RESTAURANT} from "../../constants";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
 import icon_copy from "../../images/iconCopy.png";
 import filter from "../../images/filter.svg";
@@ -46,6 +46,8 @@ class Middle extends Component {
             searchRadius: MIN_RADIUS,
             maxRadius: MAX_RADIUS,
             showFilters: false,
+            types: [BAR, COFFEE, RESTAURANT],
+            typeIndex: 0,
             filters: {
                 price: {
                     price_level_1: true,
@@ -178,8 +180,21 @@ class Middle extends Component {
     }
 
     setFilters(filters) {
+        let types = [];
+        if (filters.type.bar) {
+            types.push(BAR);
+        }
+        if (filters.type.coffee) {
+            types.push(COFFEE);
+        }
+        if (filters.type.restaurant) {
+            types.push(RESTAURANT);
+        }
         this.setState({
             filters: filters,
+            types: types,
+            totalNearbyPlaces: [],
+            nearbyPlacesIndex: 0,
             nearbyPlaces: new Array(5),
         }, () => {
             this.sendNearbyPlacesAPIRequest(MIN_RADIUS, this.setNearbyPlaces);

@@ -5,7 +5,7 @@
 import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
 import {delay, getCenterOfGravityOfLatLngs, getDistanceToFarthestLocationFromCenter, saveLocation, sortPlacesBasedOnDistanceFromCenter} from "../../utils";
 import copy from "copy-to-clipboard";
-import {BAR, COFFEE, MAX_RADIUS, MIN_RADIUS, RESTAURANT} from "../../constants";
+import {MAX_RADIUS, MIN_RADIUS, RESTAURANT} from "../../constants";
 import {toast} from "react-toastify";
 
 export function populateFormsData(locations, extra_form = false) {
@@ -258,7 +258,7 @@ export function setNearbyPlaceDetail(nearbyPlace, nearbyPlaceDetail, status, ind
 export function setNearbyPlaces(results, status) {
     let isNearbyPlacesCollected = false;
     if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        if (results.length < 5) {
+        if (this.state.totalNearbyPlaces.length + results.length < 5) {
             if (this.state.searchRadius === this.state.maxRadius) {
                 isNearbyPlacesCollected = true;
             } else {
@@ -285,53 +285,65 @@ export function setNearbyPlaces(results, status) {
         });
     }
     if (isNearbyPlacesCollected) {
-        const places = sortPlacesBasedOnDistanceFromCenter(results.slice(0, 5), this.state.center);
-        this.setState({
-            canRenderPlaces: true,
-            totalNearbyPlaces: results,
-            totalSortedNearbyPlaces: places.length,
-        }, () => {
-            places.forEach(this.getNearbyPlaceDetail);
-        });
+        let totalNearbyPlaces = this.state.totalNearbyPlaces.concat(results);
+        if (this.state.typeIndex + 1 >= this.state.types.length) {
+            var uniq = {};
+            totalNearbyPlaces = totalNearbyPlaces.filter(place => !uniq[place.place_id] && (uniq[place.place_id] = true));
+            const places = sortPlacesBasedOnDistanceFromCenter(totalNearbyPlaces.slice(0, 5), this.state.center);
+            this.setState({
+                canRenderPlaces: true,
+                totalNearbyPlaces: totalNearbyPlaces,
+                totalSortedNearbyPlaces: places.length,
+                typeIndex: 0,
+            }, () => {
+                places.forEach(this.getNearbyPlaceDetail);
+            });
+        } else {
+            this.setState({
+                totalNearbyPlaces: totalNearbyPlaces,
+                typeIndex: this.state.typeIndex + 1,
+                searchRadius: MIN_RADIUS,
+            }, () => {
+                this.sendNearbyPlacesAPIRequest(MIN_RADIUS, this.setNearbyPlaces);
+            });
+        }
     }
 }
 
-export function sendNearbyPlacesAPIRequest(radius, callback) {
+export function sendNearbyPlacesAPIRequest(radius, callback, forHeatMap = false) {
+    console.log(radius);
     const request = {
         location: this.state.center,
         radius: radius,
-        type: [],
-    };
-    if (this.state.filters.hours.open_now) {
-        request.openNow = true;
     }
-    if (this.state.filters.type.restaurant) {
-        request.type.push(RESTAURANT);
-    }
-    if (this.state.filters.type.coffee) {
-        request.type.push(COFFEE);
-    }
-    if (this.state.filters.type.bar) {
-        request.type.push(BAR);
-    }
-    if (!(this.state.filters.price.price_level_1 && this.state.filters.price.price_level_2 && this.state.filters.price.price_level_3 && this.state.filters.price.price_level_4)) {
-        const bools = Object.values(this.state.filters.price);
-        for (let i = 0; i < bools.length; i++) {
-            if (bools[i]) {
-                if (request.minPriceLevel === undefined) {
-                    request.minPriceLevel = i;
+    if (!forHeatMap) {
+        if (this.state.filters.hours.open_now) {
+            request.openNow = true;
+        }
+        if (!(this.state.filters.price.price_level_1 && this.state.filters.price.price_level_2 && this.state.filters.price.price_level_3 && this.state.filters.price.price_level_4)) {
+            const bools = Object.values(this.state.filters.price);
+            for (let i = 0; i < bools.length; i++) {
+                if (bools[i]) {
+                    if (request.minPriceLevel === undefined) {
+                        request.minPriceLevel = i;
+                    }
+                    request.maxPriceLevel = i;
                 }
-                request.maxPriceLevel = i;
+            }
+            if (request.minPriceLevel > 1) {
+                request.minPriceLevel = request.minPriceLevel + 1;
+            }
+            if (request.maxPriceLevel > 1) {
+                request.maxPriceLevel = request.maxPriceLevel + 1;
             }
         }
-        if (request.minPriceLevel > 1) {
-            request.minPriceLevel = request.minPriceLevel + 1;
-        }
-        if (request.maxPriceLevel > 1) {
-            request.maxPriceLevel = request.maxPriceLevel + 1;
-        }
+        request.type = [this.state.types[this.state.typeIndex]];
+        console.log(request);
+        this.state.service.nearbySearch(request, callback);
+    } else {
+        request.type = [RESTAURANT];
+        this.state.service.nearbySearch(request, callback);
     }
-    this.state.service.nearbySearch(request, callback);
 }
 
 export function suggestOtherNearbyPlaces(event) {
@@ -392,7 +404,7 @@ export function findHeatMapDataAndNearbyPlaces() {
         searchRadius: MIN_RADIUS,
         maxRadius: maxRadius
     }, () => {
-        this.sendNearbyPlacesAPIRequest(maxRadius, this.setHeatMapData);
+        this.sendNearbyPlacesAPIRequest(maxRadius, this.setHeatMapData, true);
     });
 }
 
@@ -419,6 +431,6 @@ export function moveCenterToCustomLocation(customCenter) {
         searchRadius: MIN_RADIUS,
         maxRadius: maxRadius
     }, () => {
-        this.sendNearbyPlacesAPIRequest(maxRadius, this.setHeatMapData);
+        this.sendNearbyPlacesAPIRequest(maxRadius, this.setHeatMapData, true);
     });
 }
