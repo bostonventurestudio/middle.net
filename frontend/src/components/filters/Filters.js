@@ -143,6 +143,8 @@ class Filters extends Component {
     }
 
     render() {
+        const errorInPrice = !(this.state.filters.price.price_level_1 || this.state.filters.price.price_level_2 || this.state.filters.price.price_level_3 || this.state.filters.price.price_level_4);
+        const errorInType = !(this.state.filters.type.restaurant || this.state.filters.type.coffee || this.state.filters.type.bar);
         return (
             <div className="filter-content">
                 <div className="cancel-div">
@@ -156,11 +158,7 @@ class Filters extends Component {
                         <button style={{width: "24%"}} className={this.state.filters.price.price_level_3 ? "btn-selected" : "btn"} onClick={this.handlePriceLevel3}>Expensive</button>
                         <button style={{width: "24%"}} className={this.state.filters.price.price_level_4 ? "btn-selected" : "btn"} onClick={this.handlePriceLevel4}>Most Expensive</button>
                     </div>
-                    {!(this.state.filters.price.price_level_1 ||
-                        this.state.filters.price.price_level_2 ||
-                        this.state.filters.price.price_level_3 ||
-                        this.state.filters.price.price_level_4) &&
-                    <span className="error">select at least 1 price level</span>}
+                    { errorInPrice && <span className="error">select at least 1 price level</span>}
                 </div>
                 <div className="filter-hours">
                     <span className="filter-head">Hours</span>
@@ -176,13 +174,10 @@ class Filters extends Component {
                         <button style={{width: "32%"}} className={this.state.filters.type.coffee ? "btn-selected" : "btn"} onClick={this.handleTypeCoffee}>Coffee</button>
                         <button style={{width: "32%"}} className={this.state.filters.type.bar ? "btn-selected" : "btn"} onClick={this.handleTypeBar}>Bar</button>
                     </div>
-                    {!(this.state.filters.type.restaurant ||
-                        this.state.filters.type.coffee ||
-                        this.state.filters.type.bar) &&
-                    <span className="error">select at least 1 type</span>}
+                    {errorInType && <span className="error">select at least 1 type</span>}
                 </div>
                 <div className="save-div">
-                    <button className="save-btn" onClick={this.saveFilters}>Save</button>
+                    <button className={ !errorInPrice && !errorInType ? "save-btn" : "save-btn disabled"} onClick={this.saveFilters}>Save</button>
                 </div>
             </div>
         );

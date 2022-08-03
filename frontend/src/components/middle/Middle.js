@@ -46,7 +46,7 @@ class Middle extends Component {
             searchRadius: MIN_RADIUS,
             maxRadius: MAX_RADIUS,
             showFilters: false,
-            types: [BAR, COFFEE, RESTAURANT],
+            types: [RESTAURANT, COFFEE, BAR],
             typeIndex: 0,
             filters: {
                 price: {
@@ -181,14 +181,14 @@ class Middle extends Component {
 
     setFilters(filters) {
         let types = [];
-        if (filters.type.bar) {
-            types.push(BAR);
+        if (filters.type.restaurant) {
+            types.push(RESTAURANT);
         }
         if (filters.type.coffee) {
             types.push(COFFEE);
         }
-        if (filters.type.restaurant) {
-            types.push(RESTAURANT);
+        if (filters.type.bar) {
+            types.push(BAR);
         }
         this.setState({
             filters: filters,
@@ -196,6 +196,7 @@ class Middle extends Component {
             totalNearbyPlaces: [],
             nearbyPlacesIndex: 0,
             nearbyPlaces: new Array(5),
+            canRenderPlaces: false,
         }, () => {
             this.sendNearbyPlacesAPIRequest(MIN_RADIUS, this.setNearbyPlaces);
         });
@@ -221,7 +222,7 @@ class Middle extends Component {
                                         address={this.state.forms_data[form_key].address}
                                         setAddress={this.setAddress}
                                         handleAddressSelect={this.handleAddressSelect}
-                                        canDelete={this.state.forms_count > 1 && this.state.canRenderMap}
+                                        canDelete={this.state.forms_count > 1 && this.state.canRenderPlaces}
                                         deleteForm={this.deleteForm}
                                         setMapCenter={this.setMapCenter}/>
                         ))
@@ -245,7 +246,7 @@ class Middle extends Component {
                             <span>Top places in the middle:</span>
                         </div>
                         <div className="filter">
-                            <button className="btn-primary" onClick={this.handleShowFilters}><span>Filter</span> <img src={filter} alt=""/></button>
+                            <button className={this.state.canRenderPlaces ? "btn-primary" : "btn-primary disabled"} onClick={this.handleShowFilters}><span>Filter</span> <img src={filter} alt=""/></button>
                             {this.state.showFilters && <Filters filters={this.state.filters} closeFilters={this.handleShowFilters} setFilters={this.setFilters}/>}
                         </div>
                         <div className="tab-links">

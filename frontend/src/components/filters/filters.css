@@ -39,8 +39,9 @@
 }
 
 .filter-btns button {
-    font-size: 12px;
+    font-size: 11px;
     margin: 1px;
+    font-weight: 500;
 }
 
 
@@ -73,6 +74,11 @@
     line-height: 10px;
     height: 25px;
     width: 80px;
+}
+
+.disabled {
+  background: #CECECE;
+  pointer-events: none;
 }
 
 .cancel-btn {

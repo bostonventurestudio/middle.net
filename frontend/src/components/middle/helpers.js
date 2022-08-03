@@ -311,7 +311,6 @@ export function setNearbyPlaces(results, status) {
 }
 
 export function sendNearbyPlacesAPIRequest(radius, callback, forHeatMap = false) {
-    console.log(radius);
     const request = {
         location: this.state.center,
         radius: radius,
@@ -348,26 +347,36 @@ export function sendNearbyPlacesAPIRequest(radius, callback, forHeatMap = false)
 
 export function suggestOtherNearbyPlaces(event) {
     event.preventDefault();
-    let nearbyPlacesIndex = this.state.nearbyPlacesIndex + 5;
-    if (this.state.totalNearbyPlaces.length <= nearbyPlacesIndex && this.state.nearbyPlacesIndex !== 0) {
-        nearbyPlacesIndex = 0;
+    if(this.state.totalNearbyPlaces.length <= 5) {
+        return;
     }
-    const nearbyPlaces = this.state.totalNearbyPlaces.slice(nearbyPlacesIndex, nearbyPlacesIndex + 5);
-    if (this.state.totalSortedNearbyPlaces > nearbyPlacesIndex) {
-        this.setState({
-            nearbyPlaces: nearbyPlaces,
-            nearbyPlacesIndex: nearbyPlacesIndex,
-        });
-    } else {
-        this.setState({
-            nearbyPlaces: new Array(5),
-            nearbyPlacesIndex: nearbyPlacesIndex,
-            totalSortedNearbyPlaces: this.state.totalSortedNearbyPlaces + nearbyPlaces.length,
-        }, () => {
-            const places = sortPlacesBasedOnDistanceFromCenter(nearbyPlaces, this.state.center);
-            places.forEach(this.getNearbyPlaceDetail);
-        });
-    }
+    this.setState({
+        canRenderPlaces: false,
+    }, () => {
+        let nearbyPlacesIndex = this.state.nearbyPlacesIndex + 5;
+        if (this.state.totalNearbyPlaces.length <= nearbyPlacesIndex) {
+            nearbyPlacesIndex = 0;
+        }
+        const nearbyPlaces = this.state.totalNearbyPlaces.slice(nearbyPlacesIndex, nearbyPlacesIndex + 5);
+        if (this.state.totalSortedNearbyPlaces > nearbyPlacesIndex) {
+            this.setState({
+                canRenderPlaces: true,
+                nearbyPlaces: nearbyPlaces,
+                nearbyPlacesIndex: nearbyPlacesIndex,
+            });
+        } else {
+            this.setState({
+                canRenderPlaces: true,
+                nearbyPlaces: new Array(5),
+                nearbyPlacesIndex: nearbyPlacesIndex,
+                totalSortedNearbyPlaces: this.state.totalSortedNearbyPlaces + nearbyPlaces.length,
+            }, () => {
+                const places = sortPlacesBasedOnDistanceFromCenter(nearbyPlaces, this.state.center);
+                places.forEach(this.getNearbyPlaceDetail);
+            });
+        }
+    });
+
 }
 
 export function findHeatMapDataAndNearbyPlaces() {

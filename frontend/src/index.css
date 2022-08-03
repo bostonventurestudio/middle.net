@@ -745,7 +745,7 @@ input[type=submit] {
 }
 
 #main {
-  min-height: calc(100vh - 120px);
+  min-height: calc(100vh - 140px);
   background: linear-gradient(rgba(255,255,255,0.2), rgba(255,255,255,0.2)),  url(./images/bg.png) fixed;
   background-size: cover;
 }
@@ -1346,14 +1346,13 @@ form .share-btn-row {
 }
 
 #footer {
-  padding: 20px 0;
+  padding: 15px 0;
   text-align: center;
 }
 @media (min-width: 768px) {
   #footer {
     text-align: left;
     font-size: 20px;
-    line-height: 24px;
   }
 }
 @media (min-width: 768px) {
