@@ -1389,10 +1389,6 @@ form .share-btn-row {
   max-height: 600px !important;
 }
 
-.map-holder-full div:first-child {
-  max-height: 100% !important;
-}
-
 .map-holder > div {
   display: block;
   position: relative !important;
