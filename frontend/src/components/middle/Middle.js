@@ -12,7 +12,22 @@ import {BAR, COFFEE, MAX_RADIUS, MIN_RADIUS, RESTAURANT} from "../../constants";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
 import icon_copy from "../../images/iconCopy.png";
 import filter from "../../images/filter.svg";
-import {addNewForm, copyLinkToClipboard, deleteForm, findHeatMapDataAndNearbyPlaces, getNearbyPlaceDetail, handleAddressSelect, handleSubmit, moveCenterToCustomLocation, populateFormsData, sendNearbyPlacesAPIRequest, setHeatMapData, setNearbyPlaceDetail, setNearbyPlaces, suggestOtherNearbyPlaces} from "./helpers";
+import {
+    addNewForm,
+    copyLinkToClipboard,
+    deleteForm,
+    findHeatMapDataAndNearbyPlaces,
+    getNearbyPlaceDetail,
+    handleAddressSelect,
+    handleSubmit,
+    moveCenterToCustomLocation,
+    populateFormsData,
+    sendNearbyPlacesAPIRequest,
+    setHeatMapData,
+    setNearbyPlaceDetail,
+    setNearbyPlaces,
+    suggestOtherNearbyPlaces
+} from "./helpers";
 import {ThreeDots} from "react-loader-spinner";
 import {toast} from "react-toastify";
 import Filters from "../filters/Filters";
@@ -130,11 +145,14 @@ class Middle extends Component {
     }
 
     setMapCenter(event, form_key) {
+        event.preventDefault();
         document.getElementById("map-link").click();
-        if (event) {
-            event.preventDefault();
-        }
-        this.setState({mapCenter: {lat: this.state.forms_data[form_key].latitude, lng: this.state.forms_data[form_key].longitude}});
+        this.setState({
+            mapCenter: {
+                lat: this.state.forms_data[form_key].latitude,
+                lng: this.state.forms_data[form_key].longitude
+            }
+        });
     }
 
     setIsCorrectLocation(isCorrectLocation, form_key) {
@@ -218,7 +236,10 @@ class Middle extends Component {
                         Object.keys(this.state.forms_data).map((form_key, index) => (
                             <FormInputs key={index} form_key={form_key}
                                         isCorrectLocation={this.state.forms_data[form_key].isCorrectLocation}
-                                        position={{lat: this.state.forms_data[form_key].latitude, lng: this.state.forms_data[form_key].longitude}}
+                                        position={{
+                                            lat: this.state.forms_data[form_key].latitude,
+                                            lng: this.state.forms_data[form_key].longitude
+                                        }}
                                         address={this.state.forms_data[form_key].address}
                                         setAddress={this.setAddress}
                                         handleAddressSelect={this.handleAddressSelect}
@@ -235,7 +256,9 @@ class Middle extends Component {
                         </button>
                     </div>}
                     <div className="share-btn-row">
-                        <button type="submit" title="save locations and copy link" className={this.state.forms_data["form_1"].google_place_id !== '' ? "btn-primary" : "btn-primary disabled"}><span>Share</span> link <img src={icon_copy} alt=""/></button>
+                        <button type="submit" title="save locations and copy link"
+                                className={this.state.forms_data["form_1"].google_place_id !== '' ? "btn-primary" : "btn-primary disabled"}>
+                            <span>Share</span> link <img src={icon_copy} alt=""/></button>
                         {this.state.copied && <div className="copied">
                             link has been copied to clipboard!
                         </div>}
@@ -247,19 +270,27 @@ class Middle extends Component {
                             <span>Top places in the middle:</span>
                         </div>
                         <div className="filter">
-                            <button title="toggle filter" className={this.state.canRender ? "btn-primary" : "btn-primary disabled"} onClick={this.handleShowFilters}><span>Filter</span> <img src={filter} alt=""/></button>
-                            {this.state.showFilters && <Filters filters={this.state.filters} closeFilters={this.handleShowFilters} setFilters={this.setFilters}/>}
+                            <button title="toggle filter"
+                                    className={this.state.canRender && this.state.totalNearbyPlaces.length !== 0 ? "btn-primary" : "btn-primary disabled"}
+                                    onClick={this.handleShowFilters}><span>Filters</span> <img src={filter} alt=""/>
+                            </button>
+                            {this.state.showFilters &&
+                            <Filters filters={this.state.filters} closeFilters={this.handleShowFilters}
+                                     setFilters={this.setFilters}/>}
                         </div>
                         <div className="tab-links">
-                            <a href="#list-view" data-tab="places" className="b-nav-tab active" onClick={this.change}>List View</a>
-                            <a id="map-link" href="#map-view" data-tab="map" className="b-nav-tab" onClick={this.change}>Map View</a>
+                            <a href="#list-view" data-tab="places" className="b-nav-tab active" onClick={this.change}>List
+                                View</a>
+                            <a id="map-link" href="#map-view" data-tab="map" className="b-nav-tab"
+                               onClick={this.change}>Map View</a>
                         </div>
                     </div>
                     <div className="tabset">
                         <div id="places" className="b-tab active">
                             <div className="list-view-block">
                                 {this.state.canRender ? this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"] && this.state.forms_data["form_2"].google_place_id !== '' ? this.state.totalNearbyPlaces.length !== 0 ? this.state.nearbyPlaces.map((place, index) => {
-                                    return <NearbyPlace place={place} index={index + 1} key={index} popUp={false} filters={this.state.filters.type}/>
+                                    return <NearbyPlace place={place} index={index + 1} key={index} popUp={false}
+                                                        filters={this.state.filters.type}/>
                                 }) : <div className="instruction-places">
                                     No place available to meet in the middle.
                                 </div> : <div className="instruction-places">
@@ -268,16 +299,24 @@ class Middle extends Component {
                             </div>
                         </div>
                         <div id="map" className="b-tab">
-                            {this.state.canRender ? <MapHolder google={this.props.google} forms_count={this.state.forms_count}
-                                                                  center={this.state.center} forms_data={this.state.forms_data} nearbyPlaces={this.state.nearbyPlaces}
-                                                                  setAddress={this.setAddress} setPosition={this.setPosition} mapCenter={this.state.mapCenter}
-                                                                  setPlaceId={this.setPlaceId} addNewForm={this.addNewForm} heatMapData={this.state.heatMapData}
-                                                                  moveCenterToNewLocation={this.moveCenterToCustomLocation} filters={this.state.filters.type}
-                            /> : <div className="map-loading"><ThreeDots color='white'/></div>}
+                            {this.state.canRender ?
+                                <MapHolder google={this.props.google} forms_count={this.state.forms_count}
+                                           center={this.state.center} forms_data={this.state.forms_data}
+                                           nearbyPlaces={this.state.nearbyPlaces}
+                                           setAddress={this.setAddress} setPosition={this.setPosition}
+                                           mapCenter={this.state.mapCenter}
+                                           setPlaceId={this.setPlaceId} addNewForm={this.addNewForm}
+                                           heatMapData={this.state.heatMapData}
+                                           moveCenterToNewLocation={this.moveCenterToCustomLocation}
+                                           filters={this.state.filters.type}
+                                /> : <div className="map-loading"><ThreeDots color='white'/></div>}
                         </div>
                     </div>
                     <div className="other">
-                        <button title="suggest other top location" className={this.state.nearbyPlaces[0] ? "btn-primary" : "btn-primary disabled"} onClick={this.suggestOtherNearbyPlaces}>Other top Places</button>
+                        <button title="suggest other top location"
+                                className={this.state.nearbyPlaces[0] ? "btn-primary" : "btn-primary disabled"}
+                                onClick={this.suggestOtherNearbyPlaces}>Other Top Places
+                        </button>
                     </div>
                 </div>
             </div>

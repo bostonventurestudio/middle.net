@@ -153,18 +153,18 @@ class Filters extends Component {
                 <div className="filter-price">
                     <span className="filter-head">Price</span>
                     <div className="filter-btns">
-                        <button style={{width: "24%"}} className={this.state.filters.price.price_level_1 ? "btn-selected" : "btn"} onClick={this.handlePriceLevel1}>Most Affordable</button>
-                        <button style={{width: "24%"}} className={this.state.filters.price.price_level_2 ? "btn-selected" : "btn"} onClick={this.handlePriceLevel2}>Affordable</button>
-                        <button style={{width: "24%"}} className={this.state.filters.price.price_level_3 ? "btn-selected" : "btn"} onClick={this.handlePriceLevel3}>Expensive</button>
-                        <button style={{width: "24%"}} className={this.state.filters.price.price_level_4 ? "btn-selected" : "btn"} onClick={this.handlePriceLevel4}>Most Expensive</button>
+                        <button style={{width: "24%"}} className={this.state.filters.price.price_level_1 ? "btn-selected" : "btn"} onClick={this.handlePriceLevel1}>$</button>
+                        <button style={{width: "24%"}} className={this.state.filters.price.price_level_2 ? "btn-selected" : "btn"} onClick={this.handlePriceLevel2}>$$</button>
+                        <button style={{width: "24%"}} className={this.state.filters.price.price_level_3 ? "btn-selected" : "btn"} onClick={this.handlePriceLevel3}>$$$</button>
+                        <button style={{width: "24%"}} className={this.state.filters.price.price_level_4 ? "btn-selected" : "btn"} onClick={this.handlePriceLevel4}>$$$$</button>
                     </div>
                     { errorInPrice && <span className="error">select at least 1 price level</span>}
                 </div>
                 <div className="filter-hours">
                     <span className="filter-head">Hours</span>
                     <div className="filter-btns">
-                        <button style={{width: "49%"}} className={this.state.filters.hours.all ? "btn-selected" : "btn"} onClick={this.handleHoursAll}>All</button>
-                        <button style={{width: "49%"}} className={this.state.filters.hours.open_now ? "btn-selected" : "btn"} onClick={this.handleHoursOpenNow}>Open Now</button>
+                        <button style={{width: "49.5%"}} className={this.state.filters.hours.all ? "btn-selected" : "btn"} onClick={this.handleHoursAll}>All</button>
+                        <button style={{width: "49.5%"}} className={this.state.filters.hours.open_now ? "btn-selected" : "btn"} onClick={this.handleHoursOpenNow}>Open Now</button>
                     </div>
                 </div>
                 <div className="filter-type">

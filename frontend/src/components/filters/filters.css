@@ -30,18 +30,18 @@
     display: flex;
 }
 
-.filter-price .filter-btns button {
-    min-height: 30px;
-}
-
-.filter-hours, .filter-type .filter-btns button {
-    min-height: 20px;
-}
-
 .filter-btns button {
+    min-height: 20px;
     font-size: 11px;
-    margin: 1px;
     font-weight: 500;
+}
+
+.filter-price .filter-btns button, .filter-type .filter-btns button {
+    margin: 1px;
+}
+
+.filter-hours .filter-btns button {
+    margin: 1px 0;
 }
 
 
@@ -77,8 +77,8 @@
 }
 
 .disabled {
-  background: #b5b3b3;
-  pointer-events: none;
+    background: #b5b3b3;
+    pointer-events: none;
 }
 
 .cancel-btn {
@@ -90,6 +90,15 @@
     /*width: 40px;*/
     -webkit-text-stroke: 2px white;
     padding: 0
+}
+
+.filter-btns .btn-selected:hover, .save-btn:hover {
+    background: #448de0;
+    color: white;
+}
+
+.filter-btns .btn:hover, .cancel-btn:hover {
+    color: #448de0;
 }
 
 .error {

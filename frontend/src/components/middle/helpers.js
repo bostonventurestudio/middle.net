@@ -340,7 +340,6 @@ export function sendNearbyPlacesAPIRequest(radius, callback, forHeatMap = false)
             }
         }
         request.type = [this.state.types[this.state.typeIndex]];
-        console.log(request);
         this.state.service.nearbySearch(request, callback);
     } else {
         request.type = [RESTAURANT];

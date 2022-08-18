@@ -112,28 +112,50 @@ class MapHolder extends Component {
                     initialCenter={this.props.mapCenter}
                     center={this.props.mapCenter}
                     zoom={12} style={{height: "600px"}}>
-                    <button className="heatmap-toggle-btn" title="Toggle HeatMap" onClick={this.toggleHeatMap}>{this.state.showHeatMap ? "Hide HeatMap" : "Show HeatMap"}</button>
-                    {this.props.heatMapData.length > 0 && this.state.showHeatMap && <HeatMap gradient={gradient} positions={this.props.heatMapData} opacity={0.8} radius={20}/>}
+                    <button className="heatmap-toggle-btn" title="Toggle HeatMap"
+                            onClick={this.toggleHeatMap}>{this.state.showHeatMap ? "Hide HeatMap" : "Show HeatMap"}</button>
+                    {this.props.heatMapData.length > 0 && this.state.showHeatMap &&
+                    <HeatMap gradient={gradient} positions={this.props.heatMapData} opacity={0.8} radius={20}/>}
                     {Object.keys(this.props.forms_data).map((form_key, index) => {
                         return this.props.forms_data[form_key].latitude && this.props.forms_data[form_key].longitude &&
-                            <Marker draggable={true} onClick={this.onMarkerClick} name={this.props.forms_data[form_key].address}
-                                    position={{lat: this.props.forms_data[form_key].latitude, lng: this.props.forms_data[form_key].longitude}}
+                            <Marker draggable={true} onClick={this.onMarkerClick}
+                                    name={this.props.forms_data[form_key].address}
+                                    position={{
+                                        lat: this.props.forms_data[form_key].latitude,
+                                        lng: this.props.forms_data[form_key].longitude
+                                    }}
                                     onDragend={(event, map, coord) => this.onMarkerDragEnd(coord, form_key)}/>
                     })}
                     {this.props.nearbyPlaces.map((place, index) => {
-                        return (<Marker location={place} icon={{url: getIcon(place.types), anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}
-                                        key={index} position={{lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}} name={`${place.name}: ${place.vicinity}`} onClick={this.onMarkerClick}/>)
+                        return (<Marker location={place} icon={{
+                            url: getIcon(place.types),
+                            anchor: new this.props.google.maps.Point(16, 16),
+                            scaledSize: new this.props.google.maps.Size(32, 32)
+                        }}
+                                        key={index} position={{
+                            lat: place.geometry.location.lat(),
+                            lng: place.geometry.location.lng()
+                        }} name={`${place.name}: ${place.vicinity}`} onClick={this.onMarkerClick}/>)
 
                     })}
                     {this.props.center.lat !== 0 && this.props.center.lng !== 0 &&
-                    <Marker center={true} draggable={true} onClick={this.onMarkerClick} position={this.props.center} name={`Center: ${this.state.centerAddress}`}
-                            icon={{url: require("../../images/star.png"), anchor: new this.props.google.maps.Point(16, 16), scaledSize: new this.props.google.maps.Size(32, 32)}}
+                    <Marker center={true} draggable={true} onClick={this.onMarkerClick} position={this.props.center}
+                            name={`Center: ${this.state.centerAddress}`}
+                            icon={{
+                                url: require("../../images/star.png"),
+                                anchor: new this.props.google.maps.Point(16, 16),
+                                scaledSize: new this.props.google.maps.Size(32, 32)
+                            }}
                             onDragend={(event, map, coord) => this.onCenterMarkerDragEnd(coord)} zIndex={999}/>
                     }
-                    <InfoWindow marker={this.state.activeMarker} onClose={this.onInfoWindowClose} visible={this.state.showInfoWindow} style={{background: "aqua"}}>
+                    <InfoWindow marker={this.state.activeMarker} onClose={this.onInfoWindowClose}
+                                visible={this.state.showInfoWindow} style={{background: "aqua"}}>
                         {this.state.activeMarker && (this.state.activeMarker.location ?
                                 <div className="search-results-block">
-                                    <NearbyPlace place={this.state.activeMarker.location} popUp={true} style={{background: "#5A9AE4", color: "white", fontWeight: "500"}} filters={this.props.filters} directionStyle={{color: "white"}} timeStyle={{color: "#034da3"}}/>
+                                    <NearbyPlace place={this.state.activeMarker.location} popUp={true}
+                                                 style={{background: "#5A9AE4", color: "white", fontWeight: "500"}}
+                                                 filters={this.props.filters} directionStyle={{color: "white"}}
+                                                 timeStyle={{color: "#034da3"}}/>
                                 </div> :
                                 (this.state.activeMarker.center ?
                                         <div className="center-info">
