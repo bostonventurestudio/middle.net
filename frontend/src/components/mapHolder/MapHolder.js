@@ -19,16 +19,25 @@ class MapHolder extends Component {
             centerAddress: "",
             isFullScreen: false,
             showHeatMap: false,
+            dragging: false,
         };
+        this.onMouseDown = this.onMouseDown.bind(this);
+        this.onMouseUp = this.onMouseUp.bind(this);
         this.onMapClicked = this.onMapClicked.bind(this);
         this.onMarkerClick = this.onMarkerClick.bind(this);
         this.onInfoWindowClose = this.onInfoWindowClose.bind(this);
+        this.onMouseOver = this.onMouseOver.bind(this);
+        this.onMouseOut = this.onMouseOut.bind(this);
         this.onFullScreenToggle = this.onFullScreenToggle.bind(this);
         this.onMarkerDragEnd = this.onMarkerDragEnd.bind(this);
         this.onCenterMarkerDragEnd = this.onCenterMarkerDragEnd.bind(this);
         this.toggleHeatMap = this.toggleHeatMap.bind(this);
         this.populateLocationData = this.populateLocationData.bind(this);
         document.addEventListener('fullscreenchange', this.onFullScreenToggle);
+    }
+
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        return this.state.dragging === nextState.dragging;
     }
 
 
@@ -55,6 +64,24 @@ class MapHolder extends Component {
             activeMarker: null,
             showInfoWindow: false
         });
+    }
+
+    onMouseOver(props, marker) {
+        if (!this.state.dragging && (!this.state.showInfoWindow || (this.state.showInfoWindow && !this.state.activeMarker.center))) {
+            this.setState({
+                activeMarker: marker,
+                showInfoWindow: true
+            });
+        }
+    }
+
+    onMouseOut() {
+        if (!this.state.dragging && this.state.showInfoWindow) {
+            this.setState({
+                activeMarker: null,
+                showInfoWindow: false
+            });
+        }
     }
 
     onMapClicked(coord) {
@@ -89,7 +116,18 @@ class MapHolder extends Component {
         });
     }
 
+    onMouseDown() {
+        this.setState({dragging: true});
+
+    }
+
+    onMouseUp() {
+        this.setState({dragging: false});
+    }
+
     componentWillMount() {
+        document.onmousedown = this.onMouseDown;
+        document.onmouseup = this.onMouseUp;
         if (this.props.center.lat !== 0 && this.props.center.lng !== 0) {
             getLocationDetailFormLatLng(this.props.center.lat, this.props.center.lng).then((response) => {
                 this.setState({centerAddress: response.results[0].formatted_address});
@@ -140,6 +178,8 @@ class MapHolder extends Component {
                     })}
                     {this.props.center.lat !== 0 && this.props.center.lng !== 0 &&
                     <Marker center={true} draggable={true} onClick={this.onMarkerClick} position={this.props.center}
+                            onMouseover={this.onMouseOver}
+                            onMouseout={this.onMouseOut}
                             name={`Center: ${this.state.centerAddress}`}
                             icon={{
                                 url: require("../../images/star.png"),

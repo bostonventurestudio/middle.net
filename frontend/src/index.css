@@ -1454,6 +1454,7 @@ form .share-btn-row {
 .gm-style .gm-style-iw-t::after,
 .gm-style  .gm-style-iw-tc::after {
   background: #5A9AE4;
+  opacity: 0.85;
 }
 
 .center-info, .location-info {
