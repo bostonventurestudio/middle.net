@@ -36,11 +36,11 @@
     font-weight: 500;
 }
 
-.filter-price .filter-btns button, .filter-type .filter-btns button {
+.filter-price .filter-btns button {
     margin: 1px;
 }
 
-.filter-hours .filter-btns button {
+.filter-hours .filter-btns button, .filter-type .filter-btns button {
     margin: 1px 0;
 }
 

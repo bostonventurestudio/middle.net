@@ -8,6 +8,7 @@ import {CLOSE, OPEN} from "../../constants";
 import image from "../../images/img-1.jpg";
 import {Rating} from "react-simple-star-rating";
 import {GoogleMapDirectionLink} from "../../config";
+import "./nearbyPlaces.css";
 
 class NearbyPlace extends Component {
 

@@ -1,0 +1,65 @@
+/*
+ * Copyright (c) 2022, Boston Venture Studio, Inc - https://www.bvs.net/
+ */
+/*.search-results-block .map-holder iframe {*/
+/*  width: 100%;*/
+/*  max-width: 569px;*/
+/*}*/
+
+.gm-style .gm-style-iw-d::-webkit-scrollbar-track,
+.gm-style .gm-style-iw-d::-webkit-scrollbar-track-piece,
+.gm-style .gm-style-iw-c,
+.gm-style .gm-style-iw-t::after,
+.gm-style .gm-style-iw-tc::after {
+  background: #5A9AE4;
+  opacity: 0.85;
+}
+
+.center-info, .location-info {
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.center-info {
+  width: 90px;
+  text-align: center;
+}
+
+.location-info {
+  width: 180px;
+}
+
+.heatmap-toggle-btn {
+  background: none rgb(255, 255, 255);
+  border: none;
+  padding: 0 17px;
+  position: absolute;
+  cursor: pointer;
+  border-radius: 2px;
+  height: 40px;
+  width: fit-content;
+  box-shadow: rgb(0 0 0 / 30%) 0 1px 4px -1px;
+  overflow: hidden;
+  bottom: 25px;
+  left: 10px;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 18px;
+}
+
+.heatmap-toggle-btn:hover {
+  background: none rgb(240, 240, 240);
+}
+
+.map-holder, .map-holder-full {
+  height: 550px;
+}
+
+.map-holder div:first-child {
+  max-height: 550px !important;
+}
+
+.map-holder > div {
+  display: block;
+  position: relative !important;
+}

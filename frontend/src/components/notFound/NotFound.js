@@ -3,7 +3,7 @@
  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 import React, {Component} from 'react';
-
+import "./notFound.css";
 
 export class NotFound extends Component {
     render() {

@@ -171,8 +171,8 @@ class Filters extends Component {
                     <span className="filter-head">Type</span>
                     <div className="filter-btns">
                         <button style={{width: "33%"}} className={this.state.filters.type.restaurant ? "btn-selected" : "btn"} onClick={this.handleTypeRestaurant}>Restaurant</button>
-                        <button style={{width: "32%"}} className={this.state.filters.type.coffee ? "btn-selected" : "btn"} onClick={this.handleTypeCoffee}>Coffee</button>
-                        <button style={{width: "32%"}} className={this.state.filters.type.bar ? "btn-selected" : "btn"} onClick={this.handleTypeBar}>Bar</button>
+                        <button style={{width: "33%"}} className={this.state.filters.type.coffee ? "btn-selected" : "btn"} onClick={this.handleTypeCoffee}>Coffee</button>
+                        <button style={{width: "33%"}} className={this.state.filters.type.bar ? "btn-selected" : "btn"} onClick={this.handleTypeBar}>Bar</button>
                     </div>
                     {errorInType && <span className="error">select at least 1 type</span>}
                 </div>

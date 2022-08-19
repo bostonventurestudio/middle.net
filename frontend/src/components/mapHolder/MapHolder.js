@@ -8,6 +8,7 @@ import {getIcon, getLocationDetailFormLatLng} from "../../utils";
 import {gradient} from "../../constants";
 import NearbyPlace from "../nearbyPlace/NearbyPlace";
 import {toast} from "react-toastify";
+import "./mapHolder.css";
 
 class MapHolder extends Component {
 
@@ -149,7 +150,7 @@ class MapHolder extends Component {
                     onClick={(event, map, coord) => this.onMapClicked(coord)}
                     initialCenter={this.props.mapCenter}
                     center={this.props.mapCenter}
-                    zoom={12} style={{height: "600px"}}>
+                    zoom={12} style={{height: "550px"}}>
                     <button className="heatmap-toggle-btn" title="Toggle HeatMap"
                             onClick={this.toggleHeatMap}>{this.state.showHeatMap ? "Hide HeatMap" : "Show HeatMap"}</button>
                     {this.props.heatMapData.length > 0 && this.state.showHeatMap &&

@@ -5,6 +5,7 @@
 import React, {Component} from 'react';
 import PlacesAutocomplete from 'react-places-autocomplete';
 import {ThreeDots} from "react-loader-spinner";
+import "./locationSearch.css";
 
 class LocationSearch extends Component {
 
