@@ -156,7 +156,7 @@ class MapHolder extends Component {
                     onClick={(event, map, coord) => this.onMapClicked(coord)}
                     initialCenter={this.props.mapCenter}
                     center={this.props.mapCenter}
-                    zoom={12} style={{height: "550px"}}>
+                    zoom={this.props.validLocationsCount > 0 ? 12 : 2} style={{height: "550px"}}>
                     <button className="heatmap-toggle-btn" title="Toggle HeatMap"
                             onClick={this.toggleHeatMap}>{this.state.showHeatMap ? "Hide HeatMap" : "Show HeatMap"}</button>
                     {this.props.heatMapData.length > 0 && this.state.showHeatMap &&

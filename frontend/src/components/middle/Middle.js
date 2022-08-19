@@ -221,14 +221,13 @@ class Middle extends Component {
     }
 
     render() {
-        let inValidLocationCount = 0;
+        let validLocationsCount = 0;
         for (var form_key in this.state.forms_data) {
-            if (this.state.forms_data[form_key].google_place_id === '') {
-                inValidLocationCount += 1;
+            if (this.state.forms_data[form_key].google_place_id !== '') {
+                validLocationsCount += 1;
             }
         }
-        const canAddLocation = inValidLocationCount === 0;
-        const hasTwoValidLocations = (this.state.forms_count - inValidLocationCount) >= 2;
+        const canAddLocation = (this.state.forms_count - validLocationsCount) === 0;
         return (
             <div>
                 <form className="form" onSubmit={this.handleSubmit}>
@@ -257,7 +256,7 @@ class Middle extends Component {
                     </div>}
                     <div className="share-btn-row">
                         <button type="submit" title="save locations and copy link"
-                                className={this.state.forms_data["form_1"].google_place_id !== '' ? "btn-primary" : "btn-primary disabled"}>
+                                className={validLocationsCount > 1 ? "btn-primary" : "btn-primary disabled"}>
                             <span>Share</span> link <img src={icon_copy} alt=""/></button>
                         {this.state.copied && <div className="copied">
                             link has been copied to clipboard!
@@ -273,7 +272,7 @@ class Middle extends Component {
                                 </div>
                                 <div className="filter">
                                     <button title="toggle filter"
-                                            className={this.state.canRender && hasTwoValidLocations ? "btn-primary" : "btn-primary disabled"}
+                                            className={this.state.canRender && validLocationsCount >= 2 ? "btn-primary" : "btn-primary disabled"}
                                             onClick={this.handleShowFilters}><span>Filters</span> <img src={filter} alt=""/>
                                     </button>
                                     {this.state.showFilters &&
@@ -282,7 +281,7 @@ class Middle extends Component {
                                 </div>
                             </div>
                             <div className="list-view-block">
-                                {this.state.canRender ? hasTwoValidLocations ? this.state.totalNearbyPlaces.length !== 0 ? this.state.nearbyPlaces.map((place, index) => {
+                                {this.state.canRender ? validLocationsCount >= 2 ? this.state.totalNearbyPlaces.length !== 0 ? this.state.nearbyPlaces.map((place, index) => {
                                     return <NearbyPlace place={place} index={index + 1} key={index} popUp={false}
                                                         filters={this.state.filters.type}/>
                                 }) : <div className="instruction-places">
@@ -303,6 +302,7 @@ class Middle extends Component {
                                            heatMapData={this.state.heatMapData}
                                            moveCenterToNewLocation={this.moveCenterToCustomLocation}
                                            filters={this.state.filters.type}
+                                           validLocationsCount={validLocationsCount}
                                 /> : <div className="map-loading"><ThreeDots color='white'/></div>}
                         </div>
                     </div>
