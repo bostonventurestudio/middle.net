@@ -3,11 +3,12 @@
  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 import {geocodeByAddress, getLatLng} from "react-places-autocomplete";
-import {delay, getCenterOfPolygonLatLngs, getDistanceToFarthestLocationFromCenter, saveLocation, sortPlacesBasedOnDistanceFromCenter} from "../../utils";
+import {delay, getCenterOfGravityOfLatLngs, getDistanceToFarthestLocationFromCenter, saveLocation, sortPlacesBasedOnDistanceFromCenter} from "../../utils";
 import copy from "copy-to-clipboard";
-import {HEATMAP_RADIUS, MAX_RADIUS, MIN_RADIUS, TYPE} from "../../constants";
+import {MAX_RADIUS, MIN_RADIUS, RESTAURANT} from "../../constants";
+import {toast} from "react-toastify";
 
-export function populateFormsData(locations, extra_form=false) {
+export function populateFormsData(locations, extra_form = false) {
     var forms_data = {};
     var forms_count;
     var key;
@@ -83,7 +84,9 @@ export function handleAddressSelect(address, form_key) {
         .then(position => {
             this.setPosition(position.lat, position.lng, form_key);
         })
-        .catch(error => console.error('Error', error));
+        .catch(error => {
+            toast.error(error.message ? error.message : error);
+        });
 
 }
 
@@ -103,8 +106,9 @@ export function deleteForm(event, form_key) {
         this.setState(state => {
             state.forms_count = forms_count;
             state.forms_data = forms_data;
+            state.isCustomCenter = false;
             return state;
-        }, this.setCenterAndNearbyPlaces);
+        }, this.findHeatMapDataAndNearbyPlaces);
     } else {
         this.setState(state => {
             state.forms_count = forms_count;
@@ -138,21 +142,30 @@ export function handleSubmit(event) {
             slug: slug
         });
     }
+    if (this.state.isCustomCenter) {
+        data.push({
+            latitude: parseFloat(this.state.center.lat).toFixed(5),
+            longitude: parseFloat(this.state.center.lng).toFixed(5),
+            type: 'center',
+            slug: slug
+        });
+    }
     saveLocation(data).then((response) => {
-        if (response.data.length === 0) {
-            alert("ERROR: Unable to save locations")
+        if (response.data.locations.length === 0) {
+            toast.error("Unable to save locations");
         } else {
-            this.populateFormsData(response.data);
+            this.populateFormsData(response.data.locations);
             if (this.state.slug === "") {
-                this.setState({slug: response.data[0].slug})
+                this.setState({slug: response.data.locations[0].slug});
             }
+            toast.success("Locations saved successfully");
         }
     }).catch((error) => {
         if (this.state.slug === "") {
-            this.setState({slug: "no-slug"})
+            this.setState({slug: "no-slug"});
         }
-        alert("ERROR: Unable to save lsocations")
-    })
+        toast.error(error.message ? error.message : error);
+    });
     this.copyLinkToClipboard();
 }
 
@@ -163,13 +176,17 @@ export function copyLinkToClipboard() {
         clearTimeout(this.copyLinkToClipboard);
     } else {
         if (copy(`${window.location.origin}/${this.state.slug}`)) {
-            document.getElementById("copied").style.display = "block";
+            this.setState({copied: true});
+            setTimeout(() => {
+                this.setState({copied: false});
+            }, 3000);
         }
         clearTimeout(this.copyLinkToClipboard);
     }
 }
 
 export function setHeatMapData(results, status, pagination) {
+    let isHeatMapDataCollected = false;
     if (status === window.google.maps.places.PlacesServiceStatus.OK) {
         this.setState({
             heatMapData: this.state.heatMapData.concat(results),
@@ -177,10 +194,37 @@ export function setHeatMapData(results, status, pagination) {
         if (pagination && pagination.hasNextPage) {
             pagination.nextPage();
         } else {
-            this.setState({canRenderMap: true});
+            isHeatMapDataCollected = true;
         }
     } else {
-        this.setState({canRenderMap: true});
+        isHeatMapDataCollected = true;
+    }
+    if (isHeatMapDataCollected) {
+        if (this.state.heatMapData.length > 0) {
+            const heatMapData = this.state.heatMapData.map(place => {
+                return {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}
+            });
+            if (this.state.isCustomCenter) {
+                this.setState({
+                    heatMapData: heatMapData,
+                }, () => {
+                    this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
+                });
+            } else {
+                const centerOfGravityOfHeatMapData = getCenterOfGravityOfLatLngs(heatMapData);
+                this.setState({
+                    center: centerOfGravityOfHeatMapData,
+                    mapCenter: centerOfGravityOfHeatMapData,
+                    heatMapData: heatMapData,
+                }, () => {
+                    this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
+                });
+            }
+        } else {
+            this.setState({
+                canRender: true,
+            });
+        }
     }
 }
 
@@ -193,8 +237,14 @@ export function getNearbyPlaceDetail(nearbyPlace, index) {
 export function setNearbyPlaceDetail(nearbyPlace, nearbyPlaceDetail, status, index) {
     if (status === window.google.maps.places.PlacesServiceStatus.OK) {
         var nearbyPlaces = this.state.nearbyPlaces;
+        nearbyPlaceDetail.distanceFromCenter = nearbyPlace.distanceFromCenter.toFixed(2);
         nearbyPlaces[index] = nearbyPlaceDetail;
-        this.setState({nearbyPlaces: nearbyPlaces});
+        var totalNearbyPlaces = this.state.totalNearbyPlaces;
+        totalNearbyPlaces[index + this.state.nearbyPlacesIndex] = nearbyPlaceDetail;
+        this.setState({
+            nearbyPlaces: nearbyPlaces,
+            totalNearbyPlaces: totalNearbyPlaces
+        });
     } else if (status === window.google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
         delay(1000).then(() => {
             this.getNearbyPlaceDetail(nearbyPlace, index);
@@ -203,12 +253,11 @@ export function setNearbyPlaceDetail(nearbyPlace, nearbyPlaceDetail, status, ind
 }
 
 export function setNearbyPlaces(results, status) {
+    let isNearbyPlacesCollected = false;
     if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        if (results.length < 5) {
+        if (this.state.totalNearbyPlaces.length + results.length < 5) {
             if (this.state.searchRadius === this.state.maxRadius) {
-                this.setState({totalNearbyPlaces: results});
-                const places = sortPlacesBasedOnDistanceFromCenter(results.slice(0, 5), this.state.center);
-                places.forEach(this.getNearbyPlaceDetail);
+                isNearbyPlacesCollected = true;
             } else {
                 let radius = this.state.searchRadius * 2 > this.state.maxRadius ? this.state.maxRadius : this.state.searchRadius * 2;
                 this.setState({searchRadius: radius}, () => {
@@ -216,26 +265,125 @@ export function setNearbyPlaces(results, status) {
                 });
             }
         } else {
-            this.setState({totalNearbyPlaces: results});
-            const places = sortPlacesBasedOnDistanceFromCenter(results.slice(0, 5), this.state.center);
-            places.forEach(this.getNearbyPlaceDetail);
+            isNearbyPlacesCollected = true;
         }
     } else if (status === window.google.maps.places.PlacesServiceStatus.ZERO_RESULTS) {
-        if (this.state.searchRadius === this.state.maxRadius) return;
-        let radius = this.state.searchRadius * 2 > this.state.maxRadius ? this.state.maxRadius : this.state.searchRadius * 2;
-        this.setState({searchRadius: radius}, () => {
-            this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
-        });
+        if (this.state.searchRadius === this.state.maxRadius) {
+            isNearbyPlacesCollected = true;
+        } else {
+            let radius = this.state.searchRadius * 2 > this.state.maxRadius ? this.state.maxRadius : this.state.searchRadius * 2;
+            this.setState({searchRadius: radius}, () => {
+                this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
+            });
+        }
     } else if (status === window.google.maps.places.PlacesServiceStatus.OVER_QUERY_LIMIT) {
         delay(1000).then(() => {
             this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
         });
     }
+    if (isNearbyPlacesCollected) {
+        let totalNearbyPlaces = this.state.totalNearbyPlaces.concat(results);
+        if (this.state.typeIndex + 1 >= this.state.types.length) {
+            var uniq = {};
+            totalNearbyPlaces = totalNearbyPlaces.filter(place => !uniq[place.place_id] && (uniq[place.place_id] = true));
+            const places = sortPlacesBasedOnDistanceFromCenter(totalNearbyPlaces.slice(0, 5), this.state.center);
+            this.setState({
+                canRender: true,
+                totalNearbyPlaces: totalNearbyPlaces,
+                totalSortedNearbyPlaces: places.length,
+                typeIndex: 0,
+            }, () => {
+                places.forEach(this.getNearbyPlaceDetail);
+            });
+        } else {
+            this.setState({
+                totalNearbyPlaces: totalNearbyPlaces,
+                typeIndex: this.state.typeIndex + 1,
+                searchRadius: MIN_RADIUS,
+            }, () => {
+                this.sendNearbyPlacesAPIRequest(MIN_RADIUS, this.setNearbyPlaces);
+            });
+        }
+    }
 }
 
-export function setCenterAndNearbyPlaces() {
+export function sendNearbyPlacesAPIRequest(radius, callback, forHeatMap = false) {
+    const request = {
+        location: this.state.center,
+        radius: radius,
+    }
+    if (!forHeatMap) {
+        if (this.state.filters.hours.open_now) {
+            request.openNow = true;
+        }
+        if (!(this.state.filters.price.price_level_1 && this.state.filters.price.price_level_2 && this.state.filters.price.price_level_3 && this.state.filters.price.price_level_4)) {
+            const bools = Object.values(this.state.filters.price);
+            let minPriceLevel = -1;
+            let maxPriceLevel = -1;
+            for (let i = 0; i < bools.length; i++) {
+                if (bools[i]) {
+                    if (minPriceLevel === -1) {
+                        minPriceLevel = i;
+                    }
+                    maxPriceLevel = i;
+                }
+            }
+            if (minPriceLevel > 1) {
+                minPriceLevel = minPriceLevel + 1;
+            }
+            if (maxPriceLevel > 1) {
+                maxPriceLevel = maxPriceLevel + 1;
+            }
+            if (!(minPriceLevel === 0 && maxPriceLevel === 4)) {
+                request.minPriceLevel = minPriceLevel;
+                request.maxPriceLevel = maxPriceLevel;
+            }
+        }
+        request.type = [this.state.types[this.state.typeIndex]];
+        this.state.service.nearbySearch(request, callback);
+    } else {
+        request.type = [RESTAURANT];
+        this.state.service.nearbySearch(request, callback);
+    }
+}
+
+export function suggestOtherNearbyPlaces(event) {
+    event.preventDefault();
+    if(this.state.totalNearbyPlaces.length <= 5) {
+        return;
+    }
     this.setState({
-        canRenderMap: false,
+        canRender: false,
+    }, () => {
+        let nearbyPlacesIndex = this.state.nearbyPlacesIndex + 5;
+        if (this.state.totalNearbyPlaces.length <= nearbyPlacesIndex) {
+            nearbyPlacesIndex = 0;
+        }
+        const nearbyPlaces = this.state.totalNearbyPlaces.slice(nearbyPlacesIndex, nearbyPlacesIndex + 5);
+        if (this.state.totalSortedNearbyPlaces > nearbyPlacesIndex) {
+            this.setState({
+                canRender: true,
+                nearbyPlaces: nearbyPlaces,
+                nearbyPlacesIndex: nearbyPlacesIndex,
+            });
+        } else {
+            this.setState({
+                canRender: true,
+                nearbyPlaces: new Array(5),
+                nearbyPlacesIndex: nearbyPlacesIndex,
+                totalSortedNearbyPlaces: this.state.totalSortedNearbyPlaces + nearbyPlaces.length,
+            }, () => {
+                const places = sortPlacesBasedOnDistanceFromCenter(nearbyPlaces, this.state.center);
+                places.forEach(this.getNearbyPlaceDetail);
+            });
+        }
+    });
+
+}
+
+export function findHeatMapDataAndNearbyPlaces() {
+    this.setState({
+        canRender: false,
         totalNearbyPlaces: [],
         nearbyPlacesIndex: 0,
         nearbyPlaces: new Array(5),
@@ -245,56 +393,52 @@ export function setCenterAndNearbyPlaces() {
     var locations = Object.values(this.state.forms_data);
     for (var i = 0, l = locations.length; i < l; i++) {
         if (locations[i].latitude !== 0 && locations[i].longitude !== 0) {
-            lagLngs.push([locations[i].latitude, locations[i].longitude]);
+            lagLngs.push({lat: Number(locations[i].latitude), lng: Number(locations[i].longitude)});
         }
     }
     if (lagLngs.length < 2) {
         this.setState({
-            canRenderMap: true,
+            canRender: true,
             center: {lat: 0, lng: 0},
-            mapCenter: lagLngs.length === 1 ? {lat: lagLngs[0][0], lng: lagLngs[0][1]} : {lat: 0, lng: 0}
+            mapCenter: lagLngs.length === 1 ? lagLngs[0] : {lat: 0, lng: 0}
         });
         return;
     }
-    var center = getCenterOfPolygonLatLngs(lagLngs);
-    var farthestPoint = getDistanceToFarthestLocationFromCenter(lagLngs, center);
+    const centerOfGravity = this.state.isCustomCenter ? this.state.center : getCenterOfGravityOfLatLngs(lagLngs);
+    const farthestPoint = getDistanceToFarthestLocationFromCenter(lagLngs, centerOfGravity);
+    const maxRadius = farthestPoint > MAX_RADIUS ? MAX_RADIUS : farthestPoint < MIN_RADIUS ? MIN_RADIUS : farthestPoint;
     this.setState({
-        center: center,
-        mapCenter: center,
+        center: centerOfGravity,
+        mapCenter: centerOfGravity,
         searchRadius: MIN_RADIUS,
-        maxRadius: farthestPoint > MAX_RADIUS ? MAX_RADIUS : farthestPoint
+        maxRadius: maxRadius
     }, () => {
-        this.sendNearbyPlacesAPIRequest(this.state.searchRadius, this.setNearbyPlaces);
-        this.sendNearbyPlacesAPIRequest(HEATMAP_RADIUS, this.setHeatMapData);
+        this.sendNearbyPlacesAPIRequest(maxRadius, this.setHeatMapData, true);
     });
 }
 
-export function sendNearbyPlacesAPIRequest(radius, callback) {
-    var nearbyPlacesRequest = {
-        location: this.state.center,
-        radius: radius,
-        type: TYPE,
-    };
-    this.state.service.nearbySearch(nearbyPlacesRequest, callback);
-}
-
-export function suggestOtherNearbyPlaces(event) {
-    event.preventDefault();
-    let nearbyPlaces = [];
-    const nearbyPlacesIndex = this.state.nearbyPlacesIndex + 5;
-    if (this.state.totalNearbyPlaces.length > nearbyPlacesIndex) {
-        nearbyPlaces = this.state.totalNearbyPlaces.slice(nearbyPlacesIndex, nearbyPlacesIndex + 5);
-        this.setState({nearbyPlacesIndex: nearbyPlacesIndex});
-    } else {
-        if (this.state.nearbyPlacesIndex !== 0) {
-            nearbyPlaces = this.state.totalNearbyPlaces.slice(0, 5);
-            this.setState({nearbyPlacesIndex: 0});
+export function moveCenterToCustomLocation(customCenter) {
+    var lagLngs = [];
+    var locations = Object.values(this.state.forms_data);
+    for (var i = 0, l = locations.length; i < l; i++) {
+        if (locations[i].latitude !== 0 && locations[i].longitude !== 0) {
+            lagLngs.push({lat: Number(locations[i].latitude), lng: Number(locations[i].longitude)});
         }
     }
-    if (nearbyPlaces.length > 0) {
-        this.setState({nearbyPlaces: new Array(5)}, () => {
-            const places = sortPlacesBasedOnDistanceFromCenter(nearbyPlaces, this.state.center);
-            places.forEach(this.getNearbyPlaceDetail);
-        });
-    }
+    var farthestPoint = getDistanceToFarthestLocationFromCenter(lagLngs, customCenter);
+    const maxRadius = farthestPoint > MAX_RADIUS ? MAX_RADIUS : farthestPoint < MIN_RADIUS ? MIN_RADIUS : farthestPoint;
+    this.setState({
+        canRender: false,
+        totalNearbyPlaces: [],
+        nearbyPlacesIndex: 0,
+        nearbyPlaces: new Array(5),
+        heatMapData: [],
+        isCustomCenter: true,
+        center: customCenter,
+        mapCenter: customCenter,
+        searchRadius: MIN_RADIUS,
+        maxRadius: maxRadius
+    }, () => {
+        this.sendNearbyPlacesAPIRequest(maxRadius, this.setHeatMapData, true);
+    });
 }

@@ -2,9 +2,14 @@
  + Copyright (c) 2022-2022, Boston Venture Studio, Inc - https://www.bvs.net/
  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
+export const HOME = "/";
+export const HOME_WITH_ID = "/:url";
+export const NOT_FOUND = "/not-found";
 export const MIN_RADIUS = 2000;
 export const MAX_RADIUS = 50000;
-export const HEATMAP_RADIUS = 300;
+export const RESTAURANT = "restaurant";
+export const COFFEE = "cafe";
+export const BAR = "bar";
 export const TYPE = ["restaurant"];
 export const KEYWORD = "cafe";
 export const RANK_BY = "distance";
@@ -28,7 +33,4 @@ export const gradient = [
     "rgba(191, 0, 31, 1)",
     "rgba(255, 0, 0, 1)"
 ];
-
-export const centerIconURL = "https://cdn-icons-png.flaticon.com/512/1828/1828884.png";
-export const locationIconURL = "https://cdn-icons-png.flaticon.com/512/565/565949.png";
-export const nearbyLocationIconURL = "https://cdn-icons-png.flaticon.com/512/45/45332.png";
+export const DEGREE_IN_RADIAN = 0.017453292519943295;    // Math.PI / 180

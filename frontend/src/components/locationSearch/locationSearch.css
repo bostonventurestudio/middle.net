@@ -1,0 +1,110 @@
+/*
+ * Copyright (c) 2022, Boston Venture Studio, Inc - https://www.bvs.net/
+ */
+
+.form .input-holder {
+  margin-bottom: 10px;
+  max-width: 85%;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .form .input-holder {
+    width: 526px;
+  }
+}
+
+.form .input-holder .error {
+  color: red;
+  margin-left: 10px;
+}
+
+.form .target-location {
+  position: absolute;
+  top: 13px;
+  right: -55px;
+  font-size: 33px;
+  line-height: 35px;
+}
+
+.form .target-location .btn {
+  text-decoration: none;
+  color: #5A9AE4;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.form .target-location .disabled {
+  color: #b5b3b3;
+  pointer-events: none;
+}
+
+.form .target-location button:hover {
+  color: #448de0;
+}
+
+.form .location-delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 33px;
+}
+
+.form .location-delete .btn {
+  text-decoration: none;
+  background: white;
+  border: none;
+  height: 62px;
+  color: #5A9AE4;
+  width: 40px;
+  -webkit-text-stroke: 2px white;
+  padding: 0;
+}
+
+.form .location-delete .disabled {
+  color: #b5b3b3;
+  pointer-events: none;
+}
+
+.form .location-delete .btn i {
+  -webkit-text-stroke: 4px white;
+}
+
+.form .location-delete button:hover {
+  color: #448de0;
+}
+
+.form input {
+  display: block;
+  width: 100%;
+  border: none;
+  background: #fff;
+  box-sizing: border-box;
+  padding: 15px 20px;
+  border-radius: 0;
+  outline: none;
+  color: #797979;
+  height: 62px;
+  font-size: 14px;
+}
+
+.autocomplete-dropdown-container {
+  margin-top: -10px;
+  margin-left: 10px;
+  font-size: 18px;
+  max-width: 90%;
+  position: absolute;
+  z-index: 99;
+  background-color: #e0eef8;
+  border-radius: 2px;
+}
+
+.autocomplete-dropdown-container .suggestion-item {
+  background: transparent !important;
+  border-bottom: 1px solid #5A9AE4;
+  position: relative;
+  z-index: 10;
+  padding: 0 5px;
+}
+

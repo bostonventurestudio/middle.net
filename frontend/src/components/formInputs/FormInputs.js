@@ -16,7 +16,8 @@ class FormInputs extends Component {
                                 handleAddressSelect={this.props.handleAddressSelect}
                                 setMapCenter={this.props.setMapCenter}
                                 canDelete={this.props.canDelete}
-                                deleteForm={this.props.deleteForm}/>
+                                deleteForm={this.props.deleteForm}
+                                canTarget={this.props.canTarget}/>
             </div>
         );
     }

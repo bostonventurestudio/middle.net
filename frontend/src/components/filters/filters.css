@@ -1,0 +1,107 @@
+/*
+ * Copyright (c) 2022, Boston Venture Studio, Inc - https://www.bvs.net/
+ */
+
+.filter-content {
+    display: block;
+    position: absolute;
+    text-align: left;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: white;
+    min-width: 250px;
+    max-width: 300px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.filter-price, .filter-hours, .filter-type {
+    margin-bottom: 10px;
+}
+
+.filter-head {
+    margin-bottom: 5px;
+    display: block;
+    font-weight: bold;
+}
+
+.filter-btns {
+    display: flex;
+}
+
+.filter-btns button {
+    min-height: 20px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.filter-price .filter-btns button {
+    margin: 1px;
+}
+
+.filter-hours .filter-btns button, .filter-type .filter-btns button {
+    margin: 1px 0;
+}
+
+
+.filter-btns .btn-selected {
+    background: #5A9AE4;
+    border: none;
+    color: white;
+}
+
+.filter-btns .btn {
+    background: white;
+    border: 1px solid #5A9AE4;
+    color: #5A9AE4;
+}
+
+.save-div {
+    margin-top: 20px;
+}
+
+.save-div, .cancel-div {
+    text-align: right;
+}
+
+.save-btn {
+    border-radius: 30px;
+    border: none;
+    color: white;
+    background: #5A9AE4;
+    font-size: 14px;
+    line-height: 10px;
+    height: 25px;
+    width: 80px;
+}
+
+.disabled {
+    background: #b5b3b3;
+    pointer-events: none;
+}
+
+.cancel-btn {
+    text-decoration: none;
+    background: white;
+    border: none;
+    /*height: 62px;*/
+    color: #5A9AE4;
+    /*width: 40px;*/
+    -webkit-text-stroke: 2px white;
+    padding: 0
+}
+
+.filter-btns .btn-selected:hover, .save-btn:hover {
+    background: #448de0;
+    color: white;
+}
+
+.filter-btns .btn:hover, .cancel-btn:hover {
+    color: #448de0;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+}
