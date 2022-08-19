@@ -256,7 +256,7 @@ class Middle extends Component {
                     </div>}
                     <div className="share-btn-row">
                         <button type="submit" title="save locations and copy link"
-                                className={validLocationsCount > 1 ? "btn-primary" : "btn-primary disabled"}>
+                                className={validLocationsCount >= 1 ? "btn-primary" : "btn-primary disabled"}>
                             <span>Share</span> link <img src={icon_copy} alt=""/></button>
                         {this.state.copied && <div className="copied">
                             link has been copied to clipboard!
