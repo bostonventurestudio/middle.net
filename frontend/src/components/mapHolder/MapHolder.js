@@ -99,6 +99,12 @@ class MapHolder extends Component {
 
     onMarkerDragEnd(coord, form_key) {
         this.populateLocationData(coord, form_key);
+        if (this.state.showInfoWindow) {
+            this.setState({
+                activeMarker: null,
+                showInfoWindow: false
+            });
+        }
     }
 
     onCenterMarkerDragEnd(coord) {

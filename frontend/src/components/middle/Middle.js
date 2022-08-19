@@ -146,7 +146,6 @@ class Middle extends Component {
 
     setMapCenter(event, form_key) {
         event.preventDefault();
-        document.getElementById("map-link").click();
         this.setState({
             mapCenter: {
                 lat: this.state.forms_data[form_key].latitude,
@@ -222,6 +221,7 @@ class Middle extends Component {
     }
 
     render() {
+        const hasTwoValidLocations = this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"] && this.state.forms_data["form_2"].google_place_id !== '';
         let canAddLocation = true;
         for (var form_key in this.state.forms_data) {
             if (this.state.forms_data[form_key].google_place_id === '') {
@@ -273,9 +273,8 @@ class Middle extends Component {
                                 </div>
                                 <div className="filter">
                                     <button title="toggle filter"
-                                            className={this.state.canRender && this.state.totalNearbyPlaces.length !== 0 ? "btn-primary" : "btn-primary disabled"}
-                                            onClick={this.handleShowFilters}><span>Filters</span> <img src={filter}
-                                                                                                       alt=""/>
+                                            className={this.state.canRender && hasTwoValidLocations ? "btn-primary" : "btn-primary disabled"}
+                                            onClick={this.handleShowFilters}><span>Filters</span> <img src={filter} alt=""/>
                                     </button>
                                     {this.state.showFilters &&
                                     <Filters filters={this.state.filters} closeFilters={this.handleShowFilters}
@@ -283,7 +282,7 @@ class Middle extends Component {
                                 </div>
                             </div>
                             <div className="list-view-block">
-                                {this.state.canRender ? this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"] && this.state.forms_data["form_2"].google_place_id !== '' ? this.state.totalNearbyPlaces.length !== 0 ? this.state.nearbyPlaces.map((place, index) => {
+                                {this.state.canRender ? hasTwoValidLocations ? this.state.totalNearbyPlaces.length !== 0 ? this.state.nearbyPlaces.map((place, index) => {
                                     return <NearbyPlace place={place} index={index + 1} key={index} popUp={false}
                                                         filters={this.state.filters.type}/>
                                 }) : <div className="instruction-places">

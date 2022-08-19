@@ -63,3 +63,7 @@
   display: block;
   position: relative !important;
 }
+
+button.gm-ui-hover-effect {
+  display: none !important;
+}

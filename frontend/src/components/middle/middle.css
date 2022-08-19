@@ -78,7 +78,7 @@
 
 .form .add-location {
   margin-bottom: 10px;
-  max-width: 80%;
+  max-width: 85%;
   position: relative;
   height: 62px;
   background: #fff;
@@ -193,7 +193,7 @@ form .share-btn-row {
 
 @media (min-width: 768px) {
   .search-results-block .instruction-places {
-    padding: 80px 145px 0;
+    padding: 70px 145px 0;
   }
 }
 
@@ -204,7 +204,7 @@ form .share-btn-row {
 @media (min-width: 768px) {
 
   .search-results-block .tabset {
-    min-height: 500px;
+    min-height: 550px;
   }
 }
 
@@ -218,10 +218,17 @@ form .share-btn-row {
 
 .list-loading {
   max-width: 572px;
+  margin-bottom: 15px;
+}
+
+@media (min-width: 970px) {
+  .list-loading {
+    margin-bottom: 0;
+  }
 }
 
 .list-loading, .map-loading {
-  height: 500px;
+  height: 550px;
 }
 
 .content-column {
@@ -237,7 +244,43 @@ form .share-btn-row {
   padding-top: 0;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 970px) {
+
+  .content-left {
+    display: inline-block;
+    width: 50%;
+  }
+
+  .content-right {
+    display: inline-block;
+    width: 50%;
+    height: 100%;
+    padding-left: 20px;
+    padding-top: 60px;
+    vertical-align: top;
+  }
+
+}
+
+@media (min-width: 1100px) {
+
+  .content-left {
+    display: inline-block;
+    width: 45%;
+  }
+
+  .content-right {
+    display: inline-block;
+    width: 55%;
+    height: 100%;
+    padding-left: 20px;
+    padding-top: 60px;
+    vertical-align: top;
+  }
+
+}
+
+@media (min-width: 1300px) {
 
   .content-left {
     display: inline-block;
@@ -254,3 +297,4 @@ form .share-btn-row {
   }
 
 }
+
