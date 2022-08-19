@@ -221,14 +221,14 @@ class Middle extends Component {
     }
 
     render() {
-        const hasTwoValidLocations = this.state.forms_data["form_1"].google_place_id !== '' && this.state.forms_data["form_2"] && this.state.forms_data["form_2"].google_place_id !== '';
-        let canAddLocation = true;
+        let inValidLocationCount = 0;
         for (var form_key in this.state.forms_data) {
             if (this.state.forms_data[form_key].google_place_id === '') {
-                canAddLocation = false;
-                break;
+                inValidLocationCount += 1;
             }
         }
+        const canAddLocation = inValidLocationCount === 0;
+        const hasTwoValidLocations = (this.state.forms_count - inValidLocationCount) >= 2;
         return (
             <div>
                 <form className="form" onSubmit={this.handleSubmit}>
