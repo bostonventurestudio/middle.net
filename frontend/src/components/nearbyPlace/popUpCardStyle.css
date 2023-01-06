@@ -1,0 +1,14 @@
+
+.popUpCard{
+    background-color: white;
+    padding: '0px';
+    z-index: 10;
+    width:20rem;
+    height:23rem;
+    overflow:auto;
+    position:fixed;
+    margin-left:600px;
+    top:24rem;
+    /* float:right; */
+    
+}

@@ -84,7 +84,7 @@ TEMPLATES = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'https://m.middle.net',
+    'http://localhost:3000',
 ]
 
 HAYSTACK_CONNECTIONS = {
@@ -119,8 +119,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'middle',
-        'USER': '',
-        'PASSWORD': '',
+        'USER': 'davidliu',
+        'PASSWORD': 'password',
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {'init_command': 'SET default_storage_engine=INNODB; SET TRANSACTION ISOLATION LEVEL SERIALIZABLE',
@@ -172,9 +172,9 @@ if DEBUG:
 STATIC_URL = '/static/'
 # STATIC_ROOT = 'static/'
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, 'static'),
+# )
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

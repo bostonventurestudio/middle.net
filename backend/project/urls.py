@@ -19,9 +19,11 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
+from . import utils
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('apps.core.urls')),
-
+    path('fetch/<str:placeid>',utils.fetchPlacesDetail),
+    path('getImg/<path:endUrl>', utils.fetchImg)
 ]
