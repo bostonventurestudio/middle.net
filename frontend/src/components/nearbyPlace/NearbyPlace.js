@@ -8,15 +8,25 @@ import {CLOSE, OPEN} from "../../constants";
 import image from "../../images/img-1.jpg";
 import {Rating} from "react-simple-star-rating";
 import {GoogleMapDirectionLink} from "../../config";
+import PopUpCard from './PopUpCard';
 
 class NearbyPlace extends Component {
-
+    constructor(props) {
+      super(props)
+      this.state = {
+         clicked:false
+      }
+    }
+    close(){
+        this.setState({clicked:false});
+    }
     render() {
         if(!this.props.place){
             return null;
         }
         return (
-            <div className={this.props.popUp ? "list-holder pop-up": "list-holder"} key={this.props.index}>
+            <>
+            <div className={this.props.popUp ? "list-holder pop-up": "list-holder"} key={this.props.index} onClick={()=>this.setState({clicked:true})}>
                 <div className="left-block">
                     <span className="num">{this.props.index}</span>
                     <div className="img-detail-block">
@@ -53,6 +63,8 @@ class NearbyPlace extends Component {
                     </div>
                 </div>
             </div>
+            <PopUpCard clicked={this.state.clicked} close={()=>this.close()} place={this.props.place}/>
+            </>
         );
     }
 

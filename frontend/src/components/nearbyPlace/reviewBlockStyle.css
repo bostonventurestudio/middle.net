@@ -1,0 +1,37 @@
+.block{
+    padding-left:0.5rem;
+    display:flex;
+    padding-bottom:.5rem;
+}
+h1{
+    padding-left:0.6rem;
+    margin-bottom:6px;
+}
+
+.profilePic{
+    height:1.5rem;
+    width:1.5rem;
+}
+
+.rightSide{
+    display:flex;
+    flex-direction: column;
+    margin-left:10px;
+}
+
+.reviewInfo{
+    display:flex;
+}
+
+.ratingReview{
+    margin-inline: 10px;
+}
+
+.reviewText{
+    text-overflow: ellipsis;
+    overflow:auto;
+    height:4rem;
+    margin-top:5px;
+    margin-bottom:5px;
+}
+

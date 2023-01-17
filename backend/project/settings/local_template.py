@@ -15,13 +15,12 @@ REST_FRAMEWORK = {
     ]
 }
 
-ALLOWED_HOSTS = ["localhost:8000", "localhost", "127.0.0.1"]
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'middle',
-        'USER': 'root',
-        'PASSWORD': 'arbisoft',
+        'USER': 'davidliu',
+        'PASSWORD': 'password',
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {'init_command': 'SET default_storage_engine=INNODB; SET TRANSACTION ISOLATION LEVEL SERIALIZABLE',

@@ -1,0 +1,32 @@
+.title{
+    font-size: 1.5rem;
+    padding:.5rem;
+    padding-bottom: .2rem;
+}
+
+.description{
+    display:flex;
+    align-items:center;
+}
+
+.rating{
+    display:flex;
+    align-items:center;
+    padding-left: .7rem;
+
+}
+
+.description1{
+    padding-inline:1rem;
+}
+
+.Image{
+    height: .8rem;
+    width: .8rem;
+    margin-left:2px;
+}
+
+.price{
+    display:flex;
+    align-items:center;
+}
