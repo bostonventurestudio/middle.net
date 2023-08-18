@@ -15,9 +15,6 @@ class LocationSearch extends Component {
                 radius: 50000,
             };
         }
-        if (this.props.currentPosition) {
-                    console.log(searchOptions, new this.props.google.maps.LatLng(this.props.currentPosition.latitude, this.props.currentPosition.longitude))
-        }
         return (
             <div id='googleMaps'>
                 <PlacesAutocomplete value={this.props.address} onChange={(address) => {
