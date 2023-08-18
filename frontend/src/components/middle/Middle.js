@@ -59,6 +59,7 @@ class Middle extends Component {
             heatMapData: [],
             searchRadius: MIN_RADIUS,
             maxRadius: MAX_RADIUS,
+            currentPosition: null,
             showFilters: false,
             types: [RESTAURANT, COFFEE, BAR],
             typeIndex: 0,
@@ -84,6 +85,7 @@ class Middle extends Component {
         this.clear = this.clear.bind(this);
         this.setMapCenter = this.setMapCenter.bind(this);
         this.setAddress = this.setAddress.bind(this);
+        this.setCurrentPosition = this.setCurrentPosition.bind(this);
         this.setPosition = this.setPosition.bind(this);
         this.setPlaceId = this.setPlaceId.bind(this);
         this.setIsCorrectLocation = this.setIsCorrectLocation.bind(this);
@@ -108,6 +110,7 @@ class Middle extends Component {
     componentWillMount() {
         const form_key = this.populateFormsData(this.props.locations, true);
         navigator.geolocation.getCurrentPosition((position) => {
+            this.setCurrentPosition(position);
             this.setPosition(position.coords.latitude, position.coords.longitude, form_key);
             getLocationDetailFormLatLng(position.coords.latitude, position.coords.longitude)
                 .then((response) => {
@@ -175,6 +178,16 @@ class Middle extends Component {
         }
     }
 
+    setCurrentPosition(position) {
+        this.setState(state => {
+            state.currentPosition = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+            };
+            return state;
+        });
+    }
+
     setPosition(lat, lng, form_key) {
         this.setState(state => {
             state.forms_data[form_key].latitude = lat;
@@ -234,6 +247,8 @@ class Middle extends Component {
                     {
                         Object.keys(this.state.forms_data).map((form_key, index) => (
                             <FormInputs key={index} form_key={form_key}
+                                        google={this.props.google}
+                                        currentPosition={this.state.currentPosition}
                                         isCorrectLocation={this.state.forms_data[form_key].isCorrectLocation}
                                         position={{
                                             lat: this.state.forms_data[form_key].latitude,

@@ -9,7 +9,10 @@ class FormInputs extends Component {
     render() {
         return (
             <div>
-                <LocationSearch form_key={this.props.form_key}
+                <LocationSearch
+                                google={this.props.google}
+                                currentPosition={this.props.currentPosition}
+                                form_key={this.props.form_key}
                                 isCorrectLocation={this.props.isCorrectLocation}
                                 address={this.props.address} position={this.props.position}
                                 setAddress={this.props.setAddress}
