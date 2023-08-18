@@ -8,13 +8,22 @@ import PlacesAutocomplete from 'react-places-autocomplete';
 class LocationSearch extends Component {
 
     render() {
+        let searchOptions = {};
+        if (this.props.currentPosition) {
+            searchOptions = {
+                location: new this.props.google.maps.LatLng(this.props.currentPosition.latitude, this.props.currentPosition.longitude),
+                radius: 50000,
+            };
+        }
         return (
             <div id='googleMaps'>
                 <PlacesAutocomplete value={this.props.address} onChange={(address) => {
                     this.props.setAddress(address, this.props.form_key, true)
                 }} onSelect={(address) => {
                     this.props.handleAddressSelect(address, this.props.form_key)
-                }}>
+                }}
+                searchOptions={searchOptions}
+                >
                     {({getInputProps, suggestions, getSuggestionItemProps, loading}) => (
                         <div>
                             <div className="input-holder">
