@@ -1,0 +1,71 @@
+/*
+ * Copyright (c) 2022, Boston Venture Studio, Inc - https://www.bvs.net/
+ */
+#header {
+  padding: 15px 0;
+}
+
+@media (min-width: 768px) {
+  #header {
+    padding: 20px 0;
+  }
+}
+
+#header .sub-text {
+  font-size: 14px;
+}
+
+#header .site-link {
+  font-size: 12px;
+}
+
+@media (min-width: 768px) {
+  #header .sub-text {
+    font-size: 18px;
+  }
+
+  #header .site-link {
+    font-size: 14px;
+  }
+}
+
+@media (min-width: 1300px) {
+  #header .sub-text {
+    font-size: 22px;
+  }
+
+  #header .site-link {
+    font-size: 16px;
+  }
+}
+
+#header .container {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+#header .logo {
+  margin-right: 10px;
+  margin-bottom: -1px;
+}
+
+#header .logo img {
+  width: 45px;
+}
+
+@media (min-width: 768px) {
+  #header .logo img {
+    width: 60px;
+    margin-bottom: 0;
+  }
+
+}
+
+@media (min-width: 1300px) {
+  #header .logo img {
+    width: 75px;
+    margin-bottom: 0;
+  }
+}
+

@@ -4,8 +4,9 @@
 
 import axios from "axios";
 import {LocationAPIURL} from "./config";
-import {CLOSED, OPEN, OPEN_24_HOURS} from "./constants";
+import {CLOSED, DEGREE_IN_RADIAN, OPEN, OPEN_24_HOURS} from "./constants";
 import Geocode from "react-geocode";
+import {useNavigate, useParams} from "react-router-dom";
 
 const GoogleAPIKey = process.env.REACT_APP_GOOGLE_API_KEY;
 
@@ -25,20 +26,34 @@ export function deleteLocation(slug, id) {
 }
 
 export function getCenterOfPolygonLatLngs(arr) {
-    var x = arr.map(xy => xy[0]);
-    var y = arr.map(xy => xy[1]);
+    var x = arr.map(xy => xy.lat);
+    var y = arr.map(xy => xy.lng);
     var cx = (Math.min(...x) + Math.max(...x)) / 2;
     var cy = (Math.min(...y) + Math.max(...y)) / 2;
     return {lat: Number((cx).toFixed(5)), lng: Number((cy).toFixed(5))};
 }
+
+
+export function getCenterOfGravityOfLatLngs(latLngs) {
+    let lat_sum = 0;
+    let lng_sum = 0;
+    for (let i = 0; i < latLngs.length; i++) {
+        lat_sum += latLngs[i].lat;
+        lng_sum += latLngs[i].lng;
+    }
+    return {lat: Number((lat_sum / latLngs.length).toFixed(5)), lng: Number((lng_sum / latLngs.length).toFixed(5))};
+}
+
 
 export function get12HourTime(opening_hours, open_or_close) {
     var day = ((new Date()).getDay() + 6) % 7;
     if (opening_hours && opening_hours.weekday_text && opening_hours.weekday_text.length >= day && opening_hours.weekday_text[day]) {
         var time_str = opening_hours.weekday_text[day].split(": ");
         if (time_str.length >= 1) {
-            if (time_str[1] === OPEN_24_HOURS || time_str[1] === CLOSED) {
+            if (time_str[1] === OPEN_24_HOURS) {
                 return time_str[1];
+            } else if (time_str[1] === CLOSED) {
+                return '';
             } else {
                 time_str = time_str[1].split(" – ");
                 return open_or_close === OPEN ? `Opens ${time_str[0]}` : `Closes ${time_str[time_str.length - 1]}`;
@@ -68,22 +83,18 @@ export function getWelcomeMessage(locations) {
 }
 
 export function sortPlacesBasedOnDistanceFromCenter(places, center) {
-    const distance = (place, center) => {
-        const x = center.lat - place.geometry.location.lat();
-        const y = center.lng - place.geometry.location.lng();
-        return Math.sqrt((x * x) + (y * y));
-    };
-    const sorter = (placeA, placeB) => distance(placeA, center) - distance(placeB, center);
+    places.forEach(place => {
+        place.distanceFromCenter = distanceBetweenTwoLocations({lat: place.geometry.location.lat(), lng: place.geometry.location.lng()}, center);
+    });
+    const sorter = (placeA, placeB) => placeA.distanceFromCenter - placeB.distanceFromCenter;
     places.sort(sorter);
     return places;
 }
 
 export function distanceBetweenTwoLocations(location, center) {
-    var p = 0.017453292519943295;    // Math.PI / 180
-    var c = Math.cos;
-    var a = 0.5 - c((center.lat - location[0]) * p) / 2 +
-        c(location[0] * p) * c(center.lat * p) *
-        (1 - c((center.lng - location[1]) * p)) / 2;
+    var a = 0.5 - Math.cos((center.lat - location.lat) * DEGREE_IN_RADIAN) / 2 +
+        Math.cos(location.lat * DEGREE_IN_RADIAN) * Math.cos(center.lat * DEGREE_IN_RADIAN) *
+        (1 - Math.cos((center.lng - location.lng) * DEGREE_IN_RADIAN)) / 2;
     return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
 }
 
@@ -104,4 +115,19 @@ export function delay(time) {
 
 export function getIcon(types) {
     return types.includes("bar") ? require("./images/bar.png") : types.includes("cafe") ? require("./images/coffee.png") : require("./images/restaurant.png");
+}
+
+export function withRouter(Component) {
+    function ComponentWithRouterProp(props) {
+        let navigate = useNavigate();
+        let params = useParams();
+        return (
+            <Component
+                {...props}
+                router={{navigate, params}}
+            />
+        );
+    }
+
+    return ComponentWithRouterProp;
 }
